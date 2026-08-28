@@ -1,0 +1,30 @@
+kind = "web"
+previewPath = "/"
+title = "BOLSO Workshop Website"
+description = "A premium fabric-painting workshop website for BOLSO, with workshop discovery, registration, pricing, and a MySQL-ready PHP admin panel."
+version = "1.0.0"
+id = "artifacts/bolso-workshop"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19438
+
+[services.development]
+run = "php -S 0.0.0.0:$PORT router.php"
+
+[services.production]
+
+[services.production.build]
+args = ["sh", "-c", "echo PHP app requires no build step"]
+
+[services.production.run]
+args = ["php", "-S", "0.0.0.0:19438", "router.php"]
+
+[services.production.run.env]
+PORT = "19438"
+
+[services.env]
+PORT = "19438"
+BASE_PATH = "/"

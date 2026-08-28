@@ -1,0 +1,377 @@
+Build a complete, professional and visually attractive workshop website for BOLSO – Startup Business.
+
+BOLSO is a fabric-painting teaching/workshop brand. It originally focused on customized fabric painting on T-shirts, bags and other fabrics, but now focuses on teaching students how to create beautiful, soft and wearable fabric paintings.
+
+STRICT TECHNOLOGY REQUIREMENT
+
+Use ONLY:
+
+- PHP
+- MySQL
+- HTML5
+- CSS3
+- JavaScript
+- Bootstrap
+
+Use PHP as the backend and MySQL as the database.
+
+Use PHP Sessions for authentication.
+
+The project must be compatible with a standard Apache + PHP + MySQL server.
+
+DO NOT use:
+
+- React
+- TypeScript
+- Vite
+- Node.js
+- Supabase
+- Laravel
+- Python
+- Any other framework or backend technology
+
+Keep the code simple, clean and easy to deploy on a PHP hosting server.
+
+---
+
+BRAND
+
+BOLSO
+
+Tagline:
+
+Art, Emotion, Fashion.
+
+The website should have a modern, premium and creative look with a subtle Kolkata/Bengali/Desi artistic influence.
+
+Use a bright but elegant colour palette such as:
+
+- Cream
+- Maroon/Burgundy
+- Mustard
+- Terracotta
+- Deep blue
+- Green
+
+Use subtle Indian textile patterns, brush strokes and fabric-inspired decorative elements.
+
+Do not make the design overly traditional or crowded.
+
+---
+
+ESSENTIAL PAGES ONLY
+
+Do NOT create too many pages.
+
+Create only:
+
+1. Home
+2. Workshops
+3. Registration
+4. Admin Login + Admin Dashboard
+
+The Home page can contain the About, learning benefits and contact information as sections instead of separate pages.
+
+---
+
+HOME PAGE
+
+Create a visually impressive hero section containing:
+
+BOLSO
+
+Art, Emotion, Fashion.
+
+Main message:
+
+Learn to turn fabric into art.
+
+Explain briefly that BOLSO teaches fabric painting on:
+
+- T-shirts
+- Bags
+- Jeans/Denim
+- Other fabrics
+
+Highlight that students learn techniques for creating soft, wearable fabric paintings with personal guidance.
+
+Add a prominent:
+
+Reserve Your Spot button.
+
+Include placeholders for 1–2 photographs of the instructor's actual artwork.
+
+Use:
+
+"assets/images/work.jpg"
+
+and
+
+"assets/images/work2.jpg"
+
+as placeholder paths so the real images can easily be added later.
+
+---
+
+WORKSHOPS SECTION
+
+Create only TWO workshop options.
+
+2-DAY WORKSHOP
+
+₹399
+
+Available:
+
+Online — ₹399
+Offline — ₹399
+
+Duration:
+
+2 Days
+
+Each session:
+
+Approximately 3–3.5 hours
+
+Include:
+
+- Beginner-friendly learning
+- Fabric painting techniques
+- Hands-on practice
+- Personal guidance
+- Small batch learning
+
+---
+
+5-DAY WORKSHOP
+
+ONLINE
+
+₹899
+
+- 5 days
+- Live instructor-led classes
+- Google Meet
+- Personal guidance
+- Students arrange their own colours/materials
+
+OFFLINE
+
+₹1,299
+
+- 5 days
+- In-person learning
+- Personal guidance
+- Hands-on practice
+- Colours/materials provided
+
+Clearly display:
+
+Maximum 6 students per batch.
+
+Make the online/offline difference visually obvious.
+
+---
+
+REGISTRATION
+
+Create a clean registration form.
+
+Fields:
+
+- Full Name
+- WhatsApp Number
+- Email
+- Workshop: 2-Day / 5-Day
+- Mode: Online / Offline
+- Preferred Date/Batch
+- What they want to learn:
+  - T-shirt
+  - Bag
+  - Jeans/Denim
+  - Other Fabric
+- Previous Experience
+- Additional Message
+
+The selected workshop and mode should automatically calculate and display the correct price:
+
+2-Day Online = ₹399
+2-Day Offline = ₹399
+5-Day Online = ₹899
+5-Day Offline = ₹1,299
+
+Use JavaScript for the dynamic price display.
+
+---
+
+REGISTRATION DATABASE
+
+Store registration information in MySQL.
+
+Create an appropriate registration table containing:
+
+- ID
+- Name
+- WhatsApp
+- Email
+- Workshop
+- Mode
+- Preferred date
+- Interest
+- Experience
+- Message
+- Price
+- Registration date
+- Payment status
+
+Use PHP to securely insert registration data into MySQL.
+
+Use prepared statements for database queries.
+
+---
+
+WHATSAPP
+
+After successful registration, provide a button to contact the instructor through WhatsApp.
+
+Use a placeholder:
+
+"YOUR_WHATSAPP_NUMBER"
+
+Generate a pre-filled WhatsApp message containing the student's:
+
+- Name
+- Workshop
+- Mode
+- Preferred date
+- Price
+
+Make the WhatsApp number easy to change in one configuration file.
+
+---
+
+PAYMENT
+
+Include a simple payment-gateway integration structure.
+
+Do NOT create a fake payment system.
+
+Keep the payment gateway credentials as placeholders/configuration variables.
+
+Use placeholders such as:
+
+"YOUR_PAYMENT_KEY"
+
+The payment status should be stored in MySQL.
+
+The exact payment provider can be configured later.
+
+---
+
+ADMIN PANEL
+
+Create a simple PHP-based admin panel.
+
+Admin login should use PHP Sessions.
+
+Admin should be able to:
+
+- Login/logout
+- View total registrations
+- View workshop registrations
+- View student details
+- View online/offline selections
+- View payment status
+- Update payment status
+- Delete registrations if required
+
+Keep the admin dashboard simple and clean.
+
+---
+
+DATABASE
+
+Create a MySQL database structure and provide a file:
+
+"database.sql"
+
+The database should contain the required tables for:
+
+- Admin
+- Registrations
+- Workshops
+- Payments
+
+Use proper primary keys and relationships where necessary.
+
+---
+
+PROJECT STRUCTURE
+
+Keep the project organized and simple.
+
+Use a structure similar to:
+
+BOLSO/
+
+- "index.php"
+- "workshops.php"
+- "registration.php"
+- "config/"
+- "includes/"
+- "admin/"
+- "assets/css/"
+- "assets/js/"
+- "assets/images/"
+- "uploads/"
+- "database.sql"
+
+Use reusable PHP files for:
+
+- Header
+- Footer
+- Database connection
+- Authentication
+
+---
+
+DESIGN REQUIREMENTS
+
+The website must be:
+
+- Responsive
+- Mobile-friendly
+- Professional
+- Bright
+- Artistic
+- Modern
+- Easy to navigate
+
+Use Bootstrap for responsive layouts and components.
+
+Use CSS for custom BOLSO branding.
+
+Add subtle animations using CSS/JavaScript, but keep them lightweight.
+
+Do not create unnecessary pages or features.
+
+The website should feel like a premium small-batch fabric-painting workshop, not an ecommerce website.
+
+---
+
+FINAL REQUIREMENT
+
+The final project must run using:
+
+Apache + PHP + MySQL
+
+It must be possible to:
+
+1. Run it locally using XAMPP.
+2. Import "database.sql" into phpMyAdmin.
+3. Configure the MySQL credentials.
+4. Upload the complete project to a standard PHP hosting server.
+5. Run the website without Node.js or any build process.
+
+Make the project fully functional, clean, responsive and ready for deployment.

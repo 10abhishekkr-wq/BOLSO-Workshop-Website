@@ -1,0 +1,1 @@
+- [PHP artifact preview](php-artifact-preview.md) — serve plain PHP from the artifact working directory with a small router for preview-only media fallbacks.
