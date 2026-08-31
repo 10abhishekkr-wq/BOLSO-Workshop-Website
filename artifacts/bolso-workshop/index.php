@@ -25,12 +25,12 @@ require __DIR__ . '/includes/header.php';
                 <div class="art-swatch swatch-blue"></div>
                 <div class="art-swatch swatch-mustard"></div>
                 <div class="hero-image-frame">
-                    <img src="assets/images/work.jpg" alt="BOLSO fabric artwork placeholder" onerror="this.style.display='none'">
-                    <div class="image-placeholder">
+                    <img src="image.png" alt="BOLSO fabric artwork placeholder" onerror="this.style.display='none'">
+                    <!-- <div class="image-placeholder">
                         <span class="placeholder-brush">B</span>
                         <small>Your artwork<br>could live here</small>
                     </div>
-                    <span class="image-caption">Artwork / BOLSO studio</span>
+                    <span class="image-caption">Artwork / BOLSO studio</span> -->
                 </div>
                 <div class="hero-stamp"><span>Make it<br>wearable</span><i class="bi bi-stars"></i></div>
             </div>
