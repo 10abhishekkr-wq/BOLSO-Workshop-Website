@@ -25,7 +25,7 @@ require __DIR__ . '/includes/header.php';
                 <div class="art-swatch swatch-blue"></div>
                 <div class="art-swatch swatch-mustard"></div>
                 <!-- <div class="hero-image-frame"> -->
-                    <!-- <img src="image.png" alt="BOLSO fabric artwork placeholder" onerror="this.style.display='none'"> -->
+                    <img src="image.png" alt="BOLSO fabric artwork placeholder" onerror="this.style.display='none'">
                     <!-- <div class="image-placeholder">
                         <span class="placeholder-brush">B</span>
                         <small>Your artwork<br>could live here</small>
