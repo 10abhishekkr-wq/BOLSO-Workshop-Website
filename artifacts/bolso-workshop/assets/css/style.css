@@ -106,7 +106,7 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
 .about-copy p:not(.lead-copy), .guidance-copy > p { color: var(--ink-soft); }
 .dark-link { color: var(--ink); border-bottom: 1px solid var(--ink); display: inline-block; margin-top: 22px; padding-bottom: 5px; }
 .material-row { border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); }
-.material-item { border-right: 1px solid var(--line); min-height: 155px; padding: 22px 24px 18px 0; position: relative; }
+.material-item { border-right: 1px solid var(--line); min-height: 5px; padding: 22px 24px 18px 0; position: relative; }
 .material-item:not(:first-child) { padding-left: 22px; }
 .material-item:last-child { border-right: 0; }
 .material-number { color: var(--terracotta); font-size: 10px; }
