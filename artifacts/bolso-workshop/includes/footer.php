@@ -20,7 +20,8 @@ declare(strict_types=1);
             </div>
             <div class="footer-links">
                 <span class="eyebrow">Say hello</span>
-                <a href="https://wa.me/<?= urlencode(bolso_config('whatsapp')) ?>" target="_blank" rel="noopener">WhatsApp <i class="bi bi-arrow-up-right"></i></a>
+                <!-- <a href="https://wa.me/<?= urlencode(bolso_config('whatsapp')) ?>" target="_blank" rel="noopener">WhatsApp <i class="bi bi-arrow-up-right"></i></a> -->
+                <a href="https://wa.me/919674773475" target="_blank" rel="noopener">WhatsApp <i class="bi bi-arrow-up-right"></i></a>
                 <a href="mailto:hello@bolso.art">hello@bolso.art</a>
                 <span>Kolkata · India</span>
             </div>
