@@ -7,6 +7,7 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main>
     <section class="hero-section">
+        <h1>ABHISHEK TEST 123</h1>
         <div class="container hero-grid">
             <div class="hero-copy reveal">
                 <div class="hero-kicker"><span></span> Small-batch fabric painting workshops</div>
