@@ -22,7 +22,7 @@ declare(strict_types=1);
                 <span class="eyebrow">Say hello</span>
                 <!-- <a href="https://wa.me/" target="_blank" rel="noopener">WhatsApp <i class="bi bi-arrow-up-right"></i></a> -->
                 <a href="https://wa.me/919674773475" target="_blank" rel="noopener">WhatsApp <i class="bi bi-arrow-up-right"></i></a>
-                <a href="mailto:chaitalyr.dey1973@gmail.com">hello@bolso.art</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=chaitalyr.dey1973@gmail.com">hello@bolso.art</a>
                 <span>Kolkata · India</span>
             </div>
         </div>
@@ -35,7 +35,7 @@ declare(strict_types=1);
 <!-- BOLSO LOCATION START -->
 <section id="location" class="location-section" style="padding:40px 0;">
   <div style="max-width:1100px;margin:0 auto;padding:0 20px;">
-    <h2 style="height:30px;width:40px;">📍 Find Us</h2>
+    <h2>📍 Find Us</h2>
     <p>Jayanti Abasan, Jhowtala Hatiara, Near Lokenath Mandir, Chinar Park, Kolkata - 700157</p>
     <p><a href="https://www.google.com/maps/search/?api=1&query=22.620363,88.440207" target="_blank" rel="noopener noreferrer">Open exact location in Google Maps</a></p>
     <div style="width:100%;height:420px;border-radius:12px;overflow:hidden;">
