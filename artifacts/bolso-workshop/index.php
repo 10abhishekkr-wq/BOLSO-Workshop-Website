@@ -24,7 +24,7 @@ require __DIR__ . '/includes/header.php';
                 <div class="art-swatch swatch-rust"></div>
                 <div class="art-swatch swatch-blue"></div>
                 <div class="art-swatch swatch-mustard"></div>
-                <img style="height:55vh;border-radius:85px;left:70vw" src="image.png" alt="BOLSO fabric artwork placeholder" onerror="this.style.display='none'">
+                <img style="height:55vh;border-radius:85px;left:70vw;box-shadow: 8px 8px 13px gray;" src="image.png" alt="BOLSO fabric artwork placeholder" onerror="this.style.display='none'">
                 <!-- <div class="hero-image-frame"> -->
                     <!-- <div class="image-placeholder">
                         <span class="placeholder-brush">B</span>
@@ -54,10 +54,10 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
             <div class="material-row">
-                <div class="material-item"><span class="material-number">01</span><span class="material-icon">✦</span><strong>T-shirts</strong><small>Make your daily uniform yours.</small></div>
-                <div class="material-item"><span class="material-number">02</span><span class="material-icon">◌</span><strong>Bags</strong><small>Carry a little bit of joy.</small></div>
-                <div class="material-item"><span class="material-number">03</span><span class="material-icon">⌁</span><strong>Denim</strong><small>Give old favourites new life.</small></div>
-                <div class="material-item"><span class="material-number">04</span><span class="material-icon">✺</span><strong>Anything fabric</strong><small>There are no wrong canvases.</small></div>
+                <div class="material-item"><span class="material-number">01</span><img style="height=100px;width=100px;border-radius=30px;" src="img3.png" alt=""><span class="material-icon">✦</span><strong>T-shirts</strong><small>Make your daily uniform yours.</small></div>
+                <div class="material-item"><span class="material-number">02</span><img style="height=100px;width=100px;border-radius=30px;" src="img4.png" alt=""><span class="material-icon">◌</span><strong>Bags</strong><small>Carry a little bit of joy.</small></div>
+                <div class="material-item"><span class="material-number">03</span><img style="height=100px;width=100px;border-radius=30px;" src="img2.png" alt=""><span class="material-icon">⌁</span><strong>Denim</strong><small>Give old favourites new life.</small></div>
+                <div class="material-item"><span class="material-number">04</span><img style="height=100px;width=100px;border-radius=30px;" src="img1.png" alt=""><span class="material-icon">✺</span><strong>Anything fabric</strong><small>There are no wrong canvases.</small></div>
             </div>
         </div>
     </section>
