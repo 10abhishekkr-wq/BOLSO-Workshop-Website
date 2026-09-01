@@ -87,7 +87,7 @@ h1 em, h2 em, h3 em { color: var(--maroon); font-style: italic; }
 .swatch-rust { width: 22px; height: 22px; background: var(--terracotta); left: 50px; top: 125px; }
 .swatch-blue { width: 14px; height: 14px; background: var(--ink); right: 22px; top: 210px; }
 .swatch-mustard { width: 36px; height: 36px; background: var(--mustard); right: 58px; bottom: 50px; }
-.hero-stamp { position: absolute; bottom: 0; left: 0; display: grid; place-items: center; width: 112px; height: 112px; border: 1px solid var(--maroon); border-radius: 50%; color: var(--maroon); font-family: var(--display); font-size: 17px; font-style: italic; line-height: 1.05; text-align: center; transform: rotate(-13deg); }
+.hero-stamp { position: absolute; bottom: 0; left: 0; display: grid; place-items: center; width: 1112px; height: 1112px; border: 1px solid var(--maroon); border-radius: 50%; color: var(--maroon); font-family: var(--display); font-size: 17px; font-style: italic; line-height: 1.05; text-align: center; transform: rotate(-13deg); }
 .hero-stamp i { font-family: var(--body); font-size: 16px; position: absolute; right: 10px; top: 12px; }
 .hero-bottom-line, .section-label { display: flex; align-items: center; gap: 14px; }
 .hero-bottom-line { bottom: 25px; color: var(--ink-soft); font-size: 10px; left: 50%; letter-spacing: .12em; position: absolute; text-transform: uppercase; transform: translateX(-50%); white-space: nowrap; }
