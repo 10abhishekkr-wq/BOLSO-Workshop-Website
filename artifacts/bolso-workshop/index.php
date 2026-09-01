@@ -54,10 +54,10 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
             <div class="material-row">
-                <div class="material-item"><span class="material-number">01</span><img style="height=100px;width=100px;border-radius=30px;" src="img3.png" alt=""><span class="material-icon">✦</span><strong>T-shirts</strong><small>Make your daily uniform yours.</small></div>
-                <div class="material-item"><span class="material-number">02</span><img style="height=100px;width=100px;border-radius=30px;" src="img4.png" alt=""><span class="material-icon">◌</span><strong>Bags</strong><small>Carry a little bit of joy.</small></div>
-                <div class="material-item"><span class="material-number">03</span><img style="height=100px;width=100px;border-radius=30px;" src="img2.png" alt=""><span class="material-icon">⌁</span><strong>Denim</strong><small>Give old favourites new life.</small></div>
-                <div class="material-item"><span class="material-number">04</span><img style="height=100px;width=100px;border-radius=30px;" src="img1.png" alt=""><span class="material-icon">✺</span><strong>Anything fabric</strong><small>There are no wrong canvases.</small></div>
+                <div class="material-item"><span class="material-number">01</span><img class="material-img" src="img3.png" alt=""><span class="material-icon">✦</span><strong>T-shirts</strong><small>Make your daily uniform yours.</small></div>
+                <div class="material-item"><span class="material-number">02</span><img   class="material-img"src="img4.png" alt=""><span class="material-icon">◌</span><strong>Bags</strong><small>Carry a little bit of joy.</small></div>
+                <div class="material-item"><span class="material-number">03</span><img  class="material-img"  src="img2.png" alt=""><span class="material-icon">⌁</span><strong>Denim</strong><small>Give old favourites new life.</small></div>
+                <div class="material-item"><span class="material-number">04</span><img   class="material-img" src="img1.png" alt=""><span class="material-icon">✺</span><strong>Anything fabric</strong><small>There are no wrong canvases.</small></div>
             </div>
         </div>
     </section>
