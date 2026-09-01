@@ -22,7 +22,7 @@ declare(strict_types=1);
                 <span class="eyebrow">Say hello</span>
                 <!-- <a href="https://wa.me/" target="_blank" rel="noopener">WhatsApp <i class="bi bi-arrow-up-right"></i></a> -->
                 <a href="https://wa.me/919674773475" target="_blank" rel="noopener">WhatsApp <i class="bi bi-arrow-up-right"></i></a>
-                <a href="mailto:hello@bolso.art">hello@bolso.art</a>
+                <a href="mailto:chaitalyr.dey1973@gmail.com">hello@bolso.art</a>
                 <span>Kolkata · India</span>
             </div>
         </div>
