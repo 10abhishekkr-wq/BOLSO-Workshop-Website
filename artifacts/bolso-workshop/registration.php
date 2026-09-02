@@ -136,7 +136,7 @@ require __DIR__ . '/includes/header.php';
                     <div class="aside-rule"></div>
                     <span class="eyebrow">Questions?</span>
                     <p class="mb-2">We’re happy to help you choose a workshop or mode.</p>
-                    <a class="text-link dark-link" href="https://wa.me/919674773475<?= urlencode(bolso_config('whatsapp')) ?>" target="_blank" rel="noopener">Talk to BOLSO <i class="bi bi-arrow-up-right"></i></a>
+                    <a class="text-link dark-link" href="https://wa.me/919674773475" target="_blank" rel="noopener">Talk to BOLSO <i class="bi bi-arrow-up-right"></i></a>
                 </div>
             </aside>
         </div>
