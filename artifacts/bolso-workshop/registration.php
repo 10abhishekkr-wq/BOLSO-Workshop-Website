@@ -7,6 +7,8 @@ $pageTitle = 'Reserve your spot';
 $activePage = 'registration';
 $errors = [];
 $success = null;
+$pendingPayment = null;
+$paymentSuccess = null;
 $submitted = $_POST;
 
 $workshop = $_POST['workshop'] ?? $_GET['workshop'] ?? '2-day';
@@ -15,7 +17,64 @@ $prices = ['2-day_online' => 399, '2-day_offline' => 399, '5-day_online' => 899,
 $priceKey = $workshop . '_' . $mode;
 $price = $prices[$priceKey] ?? 399;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// 1. Verify Razorpay Payment Signature
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'verify_payment') {
+    $regId = (int)($_POST['registration_id'] ?? 0);
+    $razorpayPaymentId = trim((string)($_POST['razorpay_payment_id'] ?? ''));
+    $razorpayOrderId = trim((string)($_POST['razorpay_order_id'] ?? ''));
+    $razorpaySignature = trim((string)($_POST['razorpay_signature'] ?? ''));
+
+    $keySecret = bolso_config('payment_secret');
+    $expectedSignature = hash_hmac('sha256', $razorpayOrderId . '|' . $razorpayPaymentId, $keySecret);
+
+    $pdo = bolso_db();
+    if ($pdo && $expectedSignature === $razorpaySignature && $razorpayPaymentId !== '') {
+        try {
+            // Update registration payment status to paid
+            $stmt = $pdo->prepare('UPDATE registrations SET payment_status = "paid" WHERE id = :id');
+            $stmt->execute([':id' => $regId]);
+
+            // Fetch registration details
+            $stmt = $pdo->prepare('SELECT * FROM registrations WHERE id = :id LIMIT 1');
+            $stmt->execute([':id' => $regId]);
+            $registration = $stmt->fetch();
+
+            if ($registration) {
+                // Record in payments table
+                try {
+                    $payStmt = $pdo->prepare(
+                        'INSERT INTO payments (registration_id, provider, provider_payment_id, amount, status)
+                         VALUES (:reg_id, "razorpay", :pay_id, :amount, "paid")'
+                    );
+                    $payStmt->execute([
+                        ':reg_id' => $regId,
+                        ':pay_id' => $razorpayPaymentId,
+                        ':amount' => $registration['price'],
+                    ]);
+                } catch (PDOException $e) {
+                    error_log('Failed to record payment in payments table: ' . $e->getMessage());
+                }
+
+                $paymentSuccess = [
+                    'name' => $registration['name'],
+                    'workshop' => $registration['workshop'],
+                    'mode' => $registration['mode'],
+                    'preferred_date' => $registration['preferred_date'],
+                    'price' => (int)$registration['price'],
+                    'payment_id' => $razorpayPaymentId,
+                ];
+            }
+        } catch (PDOException $exception) {
+            error_log('BOLSO payment update failed: ' . $exception->getMessage());
+            $errors[] = 'Payment was successful, but we had trouble updating the status. Please contact us.';
+        }
+    } else {
+        $errors[] = 'Payment signature verification failed. If money was deducted, please contact us.';
+    }
+}
+
+// 2. Handle Registration Form Submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verify_payment') {
     $name = trim((string)($_POST['name'] ?? ''));
     $whatsapp = trim((string)($_POST['whatsapp'] ?? ''));
     $email = trim((string)($_POST['email'] ?? ''));
@@ -55,13 +114,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':price' => $price,
                     ':payment_status' => 'pending',
                 ]);
-                $success = [
-                    'name' => $name,
-                    'workshop' => $workshop,
-                    'mode' => $mode,
-                    'preferred_date' => $preferredDate,
-                    'price' => $price,
-                ];
+                $registrationId = (int)$pdo->lastInsertId();
+
+                $keyId = bolso_config('payment_key');
+                $keySecret = bolso_config('payment_secret');
+
+                if ($keyId && $keyId !== 'YOUR_PAYMENT_KEY') {
+                    // Create Razorpay Order
+                    $orderData = [
+                        'amount' => $price * 100, // paise
+                        'currency' => 'INR',
+                        'receipt' => 'reg_' . $registrationId,
+                        'notes' => [
+                            'registration_id' => (string)$registrationId,
+                            'name' => $name,
+                            'workshop' => $workshop,
+                        ],
+                    ];
+
+                    $ch = curl_init('https://api.razorpay.com/v1/orders');
+                    curl_setopt($ch, CURLOPT_USERPWD, $keyId . ':' . $keySecret);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($orderData));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+
+                    $rzpResponse = curl_exec($ch);
+                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+
+                    $orderResult = json_decode((string)$rzpResponse, true);
+
+                    if ($httpCode === 200 && !empty($orderResult['id'])) {
+                        $pendingPayment = [
+                            'registration_id' => $registrationId,
+                            'order_id' => $orderResult['id'],
+                            'amount' => $orderResult['amount'],
+                            'price' => $price,
+                            'name' => $name,
+                            'email' => $email,
+                            'whatsapp' => $whatsapp,
+                            'workshop' => $workshop,
+                            'mode' => $mode,
+                        ];
+                    } else {
+                        error_log('Razorpay Order creation failed: ' . $rzpResponse);
+                        $errorDesc = $orderResult['error']['description'] ?? 'Payment gateway error';
+                        $errors[] = 'Could not initiate Razorpay payment: ' . $errorDesc;
+                    }
+                } else {
+                    $success = [
+                        'name' => $name,
+                        'workshop' => $workshop,
+                        'mode' => $mode,
+                        'preferred_date' => $preferredDate,
+                        'price' => $price,
+                    ];
+                }
             } catch (PDOException $exception) {
                 error_log('BOLSO registration insert failed: ' . $exception->getMessage());
                 $errors[] = 'We could not save your registration right now. Please try again.';
@@ -71,10 +182,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $whatsappMessage = '';
-if ($success) {
+$whatsappPayload = $paymentSuccess ?? $success;
+if ($whatsappPayload) {
+    $statusText = $paymentSuccess ? 'Paid' : 'Pending';
     $whatsappMessage = rawurlencode(
-        "Hello BOLSO! I registered for the {$success['workshop']} workshop.\n" .
-        "Name: {$success['name']}\nMode: {$success['mode']}\nPreferred date: {$success['preferred_date']}\nPrice: ₹{$success['price']}"
+        "Hello BOLSO! I registered for the {$whatsappPayload['workshop']} workshop.\n" .
+        "Name: {$whatsappPayload['name']}\nMode: {$whatsappPayload['mode']}\nPreferred date: {$whatsappPayload['preferred_date']}\nPrice: ₹{$whatsappPayload['price']}\nPayment: {$statusText}"
     );
 }
 
@@ -91,14 +204,96 @@ require __DIR__ . '/includes/header.php';
     <section class="registration-section section-space">
         <div class="container registration-grid">
             <div class="registration-form-wrap">
-                <?php if ($success): ?>
+                <?php if ($paymentSuccess): ?>
+                    <div class="success-panel reveal">
+                        <span class="success-icon" style="color: #2e7d32;">✦</span>
+                        <span class="eyebrow" style="color: #2e7d32;">Payment Received · Spot Confirmed</span>
+                        <h2>Thank you,<br><em><?= htmlspecialchars($paymentSuccess['name'], ENT_QUOTES, 'UTF-8') ?>.</em></h2>
+                        <p>We’ve received your payment of <strong>₹<?= number_format($paymentSuccess['price']) ?></strong> for the <strong><?= htmlspecialchars($paymentSuccess['workshop']) ?> workshop</strong>. Your spot is officially booked!</p>
+                        <p class="config-note" style="font-family: monospace; font-size: 13px;">Payment ID: <?= htmlspecialchars($paymentSuccess['payment_id'], ENT_QUOTES, 'UTF-8') ?></p>
+                        <?php if (bolso_config('whatsapp') !== 'YOUR_WHATSAPP_NUMBER'): ?>
+                            <a class="btn btn-primary-bolso" href="https://wa.me/<?= bolso_config('whatsapp') ?>?text=<?= $whatsappMessage ?>" target="_blank" rel="noopener">Confirm on WhatsApp <i class="bi bi-arrow-up-right"></i></a>
+                        <?php endif; ?>
+                        <a class="text-link dark-link d-block mt-4" href="index.php">Back to BOLSO <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                <?php elseif ($pendingPayment): ?>
+                    <div class="success-panel reveal">
+                        <span class="success-icon">✦</span>
+                        <span class="eyebrow">Registration Saved</span>
+                        <h2>Complete payment to confirm,<br><em><?= htmlspecialchars($pendingPayment['name'], ENT_QUOTES, 'UTF-8') ?>.</em></h2>
+                        <p>Your details for the <strong><?= htmlspecialchars($pendingPayment['workshop']) ?> workshop</strong> (<?= htmlspecialchars($pendingPayment['mode']) ?>) are saved. Please pay <strong>₹<?= number_format($pendingPayment['price']) ?></strong> to secure your spot.</p>
+                        <div class="mt-4 mb-3">
+                            <button id="rzp-pay-button" class="btn btn-primary-bolso" style="font-size: 16px; padding: 14px 28px; cursor: pointer;">
+                                Pay ₹<?= number_format($pendingPayment['price']) ?> with UPI / Card <i class="bi bi-arrow-up-right"></i>
+                            </button>
+                        </div>
+                        <p class="config-note">The Razorpay payment window will open automatically. If it doesn’t, click the button above.</p>
+                    </div>
+
+                    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                    <script>
+                    var options = {
+                        "key": "<?= htmlspecialchars(bolso_config('payment_key'), ENT_QUOTES, 'UTF-8') ?>",
+                        "amount": "<?= (int)$pendingPayment['amount'] ?>",
+                        "currency": "INR",
+                        "name": "<?= htmlspecialchars(BOLSO_NAME, ENT_QUOTES, 'UTF-8') ?>",
+                        "description": "<?= htmlspecialchars($pendingPayment['workshop'] . ' Workshop Registration', ENT_QUOTES, 'UTF-8') ?>",
+                        "order_id": "<?= htmlspecialchars($pendingPayment['order_id'], ENT_QUOTES, 'UTF-8') ?>",
+                        "handler": function (response){
+                            var form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = 'registration.php';
+
+                            var fields = {
+                                'action': 'verify_payment',
+                                'registration_id': '<?= (int)$pendingPayment['registration_id'] ?>',
+                                'razorpay_payment_id': response.razorpay_payment_id,
+                                'razorpay_order_id': response.razorpay_order_id,
+                                'razorpay_signature': response.razorpay_signature
+                            };
+
+                            for (var key in fields) {
+                                var input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = key;
+                                input.value = fields[key];
+                                form.appendChild(input);
+                            }
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        },
+                        "prefill": {
+                            "name": <?= json_encode($pendingPayment['name']) ?>,
+                            "email": <?= json_encode($pendingPayment['email']) ?>,
+                            "contact": <?= json_encode($pendingPayment['whatsapp']) ?>
+                        },
+                        "theme": {
+                            "color": "#7c2639"
+                        }
+                    };
+
+                    var rzp = new Razorpay(options);
+
+                    document.getElementById('rzp-pay-button').onclick = function(e){
+                        rzp.open();
+                        e.preventDefault();
+                    };
+
+                    window.addEventListener('load', function() {
+                        setTimeout(function() {
+                            rzp.open();
+                        }, 400);
+                    });
+                    </script>
+                <?php elseif ($success): ?>
                     <div class="success-panel reveal">
                         <span class="success-icon">✦</span>
                         <span class="eyebrow">You’re on the list</span>
                         <h2>Thank you,<br><em><?= htmlspecialchars($success['name'], ENT_QUOTES, 'UTF-8') ?>.</em></h2>
                         <p>Your BOLSO registration is saved. We’ll confirm your batch details shortly. You can also send the details directly on WhatsApp.</p>
                         <?php if (bolso_config('whatsapp') !== 'YOUR_WHATSAPP_NUMBER'): ?>
-                            <a class="btn btn-primary-bolso" href="https://wa.me/919674773475" target="_blank" rel="noopener">Message on WhatsApp <i class="bi bi-arrow-up-right"></i></a>
+                            <a class="btn btn-primary-bolso" href="https://wa.me/<?= bolso_config('whatsapp') ?>?text=<?= $whatsappMessage ?>" target="_blank" rel="noopener">Message on WhatsApp <i class="bi bi-arrow-up-right"></i></a>
                         <?php else: ?>
                             <p class="config-note">Add your WhatsApp number in <code>config/config.local.php</code> to enable the direct message button.</p>
                         <?php endif; ?>

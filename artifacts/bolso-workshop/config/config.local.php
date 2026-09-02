@@ -5,4 +5,5 @@ putenv('BOLSO_DB_NAME=bolso');
 putenv('BOLSO_DB_USER=root');
 putenv('BOLSO_DB_PASSWORD=');
 putenv('BOLSO_WHATSAPP=919674773475');
-putenv('BOLSO_PAYMENT_KEY=YOUR_PAYMENT_KEY');
+putenv('BOLSO_PAYMENT_KEY=rzp_test_TXHzubPWVcRrT7');
+putenv('BOLSO_PAYMENT_SECRET=WBOpN3a5npmtmWHNc5wIREEN');

@@ -9,6 +9,7 @@ const BOLSO_NAME = 'BOLSO';
 const BOLSO_TAGLINE = 'Art, Emotion, Fashion.';
 const BOLSO_WHATSAPP_NUMBER = 'YOUR_WHATSAPP_NUMBER';
 const BOLSO_PAYMENT_KEY = 'YOUR_PAYMENT_KEY';
+const BOLSO_PAYMENT_SECRET = 'YOUR_PAYMENT_SECRET';
 
 $bolsoLocalConfig = __DIR__ . '/config.local.php';
 if (is_file($bolsoLocalConfig)) {
@@ -31,6 +32,7 @@ function bolso_config(string $key, string $fallback = ''): string
         'db_password' => '',
         'whatsapp' => BOLSO_WHATSAPP_NUMBER,
         'payment_key' => BOLSO_PAYMENT_KEY,
+        'payment_secret' => BOLSO_PAYMENT_SECRET,
     ];
     return bolso_env(
         'BOLSO_' . strtoupper($key),
