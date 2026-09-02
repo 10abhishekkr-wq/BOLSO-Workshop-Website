@@ -98,7 +98,7 @@ require __DIR__ . '/includes/header.php';
                         <h2>Thank you,<br><em><?= htmlspecialchars($success['name'], ENT_QUOTES, 'UTF-8') ?>.</em></h2>
                         <p>Your BOLSO registration is saved. We’ll confirm your batch details shortly. You can also send the details directly on WhatsApp.</p>
                         <?php if (bolso_config('whatsapp') !== 'YOUR_WHATSAPP_NUMBER'): ?>
-                            <a class="btn btn-primary-bolso" href="https://wa.me/<?= urlencode(bolso_config('whatsapp')) ?>?text=<?= $whatsappMessage ?>" target="_blank" rel="noopener">Message on WhatsApp <i class="bi bi-arrow-up-right"></i></a>
+                            <a class="btn btn-primary-bolso" href="https://wa.me/919674773475" target="_blank" rel="noopener">Message on WhatsApp <i class="bi bi-arrow-up-right"></i></a>
                         <?php else: ?>
                             <p class="config-note">Add your WhatsApp number in <code>config/config.local.php</code> to enable the direct message button.</p>
                         <?php endif; ?>

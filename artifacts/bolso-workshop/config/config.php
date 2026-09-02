@@ -1,13 +1,10 @@
 <?php
 declare(strict_types=1);
-
 /**
  * BOLSO configuration.
- *
  * Copy this file to config/config.local.php for local overrides, or provide
  * the values as environment variables on your hosting provider.
  */
-
 const BOLSO_NAME = 'BOLSO';
 const BOLSO_TAGLINE = 'Art, Emotion, Fashion.';
 const BOLSO_WHATSAPP_NUMBER = 'YOUR_WHATSAPP_NUMBER';
@@ -35,7 +32,6 @@ function bolso_config(string $key, string $fallback = ''): string
         'whatsapp' => BOLSO_WHATSAPP_NUMBER,
         'payment_key' => BOLSO_PAYMENT_KEY,
     ];
-
     return bolso_env(
         'BOLSO_' . strtoupper($key),
         $defaults[$key] ?? $fallback
