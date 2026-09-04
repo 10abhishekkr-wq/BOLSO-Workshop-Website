@@ -23,15 +23,52 @@ require __DIR__ . '/includes/header.php';
                 <div class="art-orbit orbit-two"></div>
                 <div class="art-swatch swatch-rust"></div>
                 <div class="art-swatch swatch-blue"></div>
-                <div class="art-swatch swatch-mustard"></div>
-                <img style="height:55vh;border-radius:85px;left:70vw;box-shadow: 8px 8px 13px gray;" src="image.png" alt="BOLSO fabric artwork placeholder" onerror="this.style.display='none'">
-                <!-- <div class="hero-image-frame"> -->
-                    <!-- <div class="image-placeholder">
-                        <span class="placeholder-brush">B</span>
-                        <small>Your artwork<br>could live here</small>
+                <div class="card-stack-container hero-stack-container" id="heroCardStackSlider" data-card-stack>
+                    <div class="card-stack-track">
+                        <div class="card-stack-item" data-index="0">
+                            <img src="assets/images/slider/slide1.jpg" alt="Hand-painted custom T-shirts">
+                            <div class="card-tag">01 · Hand-Painted Tees</div>
+                        </div>
+                        <div class="card-stack-item" data-index="1">
+                            <img src="assets/images/slider/slide2.jpg" alt="Students painting at studio table">
+                            <div class="card-tag">02 · Studio Workshop</div>
+                        </div>
+                        <div class="card-stack-item" data-index="2">
+                            <img src="assets/images/slider/slide3.jpg" alt="Custom garment fabric painting">
+                            <div class="card-tag">03 · Jacket Art</div>
+                        </div>
+                        <div class="card-stack-item" data-index="3">
+                            <img src="assets/images/slider/slide4.jpg" alt="Botanical artwork painted on canvas tote bag">
+                            <div class="card-tag">04 · Canvas Tote Art</div>
+                        </div>
+                        <div class="card-stack-item" data-index="4">
+                            <img src="assets/images/slider/slide5.jpg" alt="Wearable denim floral painting">
+                            <div class="card-tag">05 · Wearable Denim</div>
+                        </div>
+                        <div class="card-stack-item" data-index="5">
+                            <img src="assets/images/slider/slide6.jpg" alt="Artisan textile pigment palettes">
+                            <div class="card-tag">06 · Color Palette</div>
+                        </div>
                     </div>
-                    <span class="image-caption">Artwork / BOLSO studio</span> -->
-                <!-- </div> -->
+
+                    <!-- Navigation Controls & Indicators -->
+                    <div class="card-stack-controls">
+                        <button type="button" class="stack-arrow-btn stack-prev" aria-label="Previous artwork">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <div class="stack-indicators">
+                            <span class="stack-dot active" data-index="0"></span>
+                            <span class="stack-dot" data-index="1"></span>
+                            <span class="stack-dot" data-index="2"></span>
+                            <span class="stack-dot" data-index="3"></span>
+                            <span class="stack-dot" data-index="4"></span>
+                            <span class="stack-dot" data-index="5"></span>
+                        </div>
+                        <button type="button" class="stack-arrow-btn stack-next" aria-label="Next artwork">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="hero-stamp"><span>Make it<br>wearable</span><i class="bi bi-stars"></i></div>
             </div>
         </div>
@@ -86,49 +123,31 @@ require __DIR__ . '/includes/header.php';
     <section class="section-space guidance-section">
         <div class="container guidance-grid">
             <div class="guidance-art reveal">
-                <div class="card-stack-container" id="cardStackSlider">
+                <div class="card-stack-container guidance-stack-container" id="guidanceCardStackSlider" data-card-stack>
                     <div class="card-stack-track">
                         <div class="card-stack-item" data-index="0">
-                            <img src="assets/images/slider/slide1.jpg" alt="T-shirt painting workshop in session">
-                            <div class="stack-card-overlay">
-                                <span>01 &bull; Workshop</span>
-                                <p>T-shirt painting in session</p>
-                            </div>
+                            <img src="assets/images/learn_beginner.jpg" alt="Beginner-friendly fabric painting techniques">
+                            <div class="card-tag">01 · Beginner Techniques</div>
                         </div>
                         <div class="card-stack-item" data-index="1">
-                            <img src="assets/images/slider/slide2.jpg" alt="Students painting at workshop studio table">
-                            <div class="stack-card-overlay">
-                                <span>02 &bull; Studio</span>
-                                <p>Hands-on student making</p>
-                            </div>
+                            <img src="assets/images/learn_guidance.jpg" alt="Live instructor-led fabric guidance">
+                            <div class="card-tag">02 · Live Guidance</div>
                         </div>
                         <div class="card-stack-item" data-index="2">
-                            <img src="assets/images/slider/slide3.jpg" alt="Artist painting jacket with textile paint">
-                            <div class="stack-card-overlay">
-                                <span>03 &bull; Technique</span>
-                                <p>Precision fabric painting</p>
-                            </div>
+                            <img src="assets/images/learn_practice.jpg" alt="Hands-on fabric painting practice">
+                            <div class="card-tag">03 · Hands-on Practice</div>
                         </div>
                         <div class="card-stack-item" data-index="3">
-                            <img src="assets/images/slider/slide4.jpg" alt="Botanical artwork painted on canvas tote bag">
-                            <div class="stack-card-overlay">
-                                <span>04 &bull; Canvas</span>
-                                <p>Botanical floral tote bags</p>
-                            </div>
+                            <img src="assets/images/learn_technique.jpg" alt="Fabric brush and pigment blending">
+                            <div class="card-tag">04 · Brush Techniques</div>
                         </div>
                         <div class="card-stack-item" data-index="4">
-                            <img src="assets/images/slider/slide5.jpg" alt="Custom floral painting on denim jacket">
-                            <div class="stack-card-overlay">
-                                <span>05 &bull; Wearable Art</span>
-                                <p>Custom painted denim jackets</p>
-                            </div>
+                            <img src="assets/images/learn_colorwash.jpg" alt="Natural dye washes on stretched linen">
+                            <div class="card-tag">05 · Dye &amp; Washes</div>
                         </div>
                         <div class="card-stack-item" data-index="5">
-                            <img src="assets/images/slider/slide6.jpg" alt="Artisan palette mixing textile pigments">
-                            <div class="stack-card-overlay">
-                                <span>06 &bull; Colors</span>
-                                <p>Mixing pigments &amp; palettes</p>
-                            </div>
+                            <img src="assets/images/learn_craft.jpg" alt="Artisan wearable finished craft samples">
+                            <div class="card-tag">06 · Wearable Craft</div>
                         </div>
                     </div>
 

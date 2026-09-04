@@ -30,35 +30,36 @@
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
-  });
-
-  // 3D Card Stack Slider (matching user reference image)
-  var container = document.getElementById('cardStackSlider');
-  if (container) {
+  });  // 3D Card Stack Slider (Cover-flow / Stacked Deck matching user reference)
+  function initCardStack(container) {
+    if (!container) return;
     var track = container.querySelector('.card-stack-track');
     var items = Array.prototype.slice.call(container.querySelectorAll('.card-stack-item'));
     var dots = Array.prototype.slice.call(container.querySelectorAll('.stack-dot'));
     var prevBtn = container.querySelector('.stack-prev');
     var nextBtn = container.querySelector('.stack-next');
     var total = items.length;
+    if (total === 0) return;
+
     var currentIndex = 0;
     var autoPlayTimer = null;
     var isDragging = false;
+    var hasDragged = false;
     var startX = 0;
     var currentX = 0;
 
     function updateStack() {
       var isMobile = window.innerWidth <= 767;
-      var xStep = isMobile ? 38 : 55;
-      var zStep = isMobile ? -40 : -50;
-      var rotStep = isMobile ? 4 : 6;
+      var xStep = isMobile ? 40 : 60;
+      var zStep = isMobile ? -35 : -45;
+      var rotStep = isMobile ? 3 : 4.5;
 
       items.forEach(function (item, i) {
         var diff = (i - currentIndex) % total;
         if (diff > total / 2) diff -= total;
         if (diff < -total / 2) diff += total;
 
-        item.classList.remove('active', 'prev', 'next', 'hidden');
+        item.classList.remove('active', 'prev', 'next', 'far-prev', 'far-next', 'hidden');
 
         if (diff === 0) {
           // Active Front Center Card
@@ -72,41 +73,43 @@
         } else if (diff === 1) {
           // Immediate Right Card
           item.classList.add('next');
-          item.style.transform = 'translateX(' + xStep + 'px) scale(0.91) translateZ(' + zStep + 'px) rotateY(-' + rotStep + 'deg)';
+          item.style.transform = 'translateX(' + xStep + 'px) scale(0.92) translateZ(' + zStep + 'px) rotateY(-' + rotStep + 'deg)';
           item.style.zIndex = '8';
-          item.style.opacity = '0.92';
-          item.style.filter = 'brightness(0.93)';
+          item.style.opacity = '0.94';
+          item.style.filter = 'brightness(0.95)';
           item.style.cursor = 'pointer';
           item.style.pointerEvents = 'auto';
         } else if (diff === 2) {
           // Far Right Card
-          item.style.transform = 'translateX(' + Math.round(xStep * 1.85) + 'px) scale(0.82) translateZ(' + (zStep * 2) + 'px) rotateY(-' + (rotStep * 1.6) + 'deg)';
+          item.classList.add('far-next');
+          item.style.transform = 'translateX(' + Math.round(xStep * 1.85) + 'px) scale(0.84) translateZ(' + (zStep * 2) + 'px) rotateY(-' + (rotStep * 1.5) + 'deg)';
           item.style.zIndex = '6';
-          item.style.opacity = '0.78';
-          item.style.filter = 'brightness(0.85)';
+          item.style.opacity = '0.82';
+          item.style.filter = 'brightness(0.88)';
           item.style.cursor = 'pointer';
           item.style.pointerEvents = 'auto';
         } else if (diff === -1) {
           // Immediate Left Card
           item.classList.add('prev');
-          item.style.transform = 'translateX(-' + xStep + 'px) scale(0.91) translateZ(' + zStep + 'px) rotateY(' + rotStep + 'deg)';
+          item.style.transform = 'translateX(-' + xStep + 'px) scale(0.92) translateZ(' + zStep + 'px) rotateY(' + rotStep + 'deg)';
           item.style.zIndex = '8';
-          item.style.opacity = '0.92';
-          item.style.filter = 'brightness(0.93)';
+          item.style.opacity = '0.94';
+          item.style.filter = 'brightness(0.95)';
           item.style.cursor = 'pointer';
           item.style.pointerEvents = 'auto';
         } else if (diff === -2) {
           // Far Left Card
-          item.style.transform = 'translateX(-' + Math.round(xStep * 1.85) + 'px) scale(0.82) translateZ(' + (zStep * 2) + 'px) rotateY(' + (rotStep * 1.6) + 'deg)';
+          item.classList.add('far-prev');
+          item.style.transform = 'translateX(-' + Math.round(xStep * 1.85) + 'px) scale(0.84) translateZ(' + (zStep * 2) + 'px) rotateY(' + (rotStep * 1.5) + 'deg)';
           item.style.zIndex = '6';
-          item.style.opacity = '0.78';
-          item.style.filter = 'brightness(0.85)';
+          item.style.opacity = '0.82';
+          item.style.filter = 'brightness(0.88)';
           item.style.cursor = 'pointer';
           item.style.pointerEvents = 'auto';
         } else {
           // Hidden Behind
           item.classList.add('hidden');
-          item.style.transform = 'translateX(0px) scale(0.72) translateZ(' + (zStep * 3) + 'px)';
+          item.style.transform = 'translateX(0px) scale(0.70) translateZ(' + (zStep * 3) + 'px)';
           item.style.zIndex = '1';
           item.style.opacity = '0';
           item.style.pointerEvents = 'none';
@@ -131,9 +134,10 @@
       goTo(currentIndex - 1);
     }
 
-    // Click card to jump to it
+    // Direct click on card to bring it to center
     items.forEach(function (item, index) {
       item.addEventListener('click', function (e) {
+        if (hasDragged) return;
         var diff = (index - currentIndex) % total;
         if (diff > total / 2) diff -= total;
         if (diff < -total / 2) diff += total;
@@ -145,41 +149,65 @@
       });
     });
 
-    // Controls
-    if (prevBtn) prevBtn.addEventListener('click', function () { prev(); resetAutoplay(); });
-    if (nextBtn) nextBtn.addEventListener('click', function () { next(); resetAutoplay(); });
-
-    // Indicators
-    dots.forEach(function (dot) {
-      dot.addEventListener('click', function () {
-        var idx = parseInt(dot.getAttribute('data-index'), 10);
-        goTo(idx);
+    // Arrow navigation
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        prev();
         resetAutoplay();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        next();
+        resetAutoplay();
+      });
+    }
+
+    // Indicator dots
+    dots.forEach(function (dot) {
+      dot.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var idx = parseInt(dot.getAttribute('data-index'), 10);
+        if (!isNaN(idx)) {
+          goTo(idx);
+          resetAutoplay();
+        }
       });
     });
 
     // Drag / Swipe Gestures
     function onPointerDown(e) {
       isDragging = true;
+      hasDragged = false;
       startX = e.type.indexOf('touch') !== -1 ? e.touches[0].clientX : e.clientX;
       currentX = startX;
+      if (track) track.classList.add('is-dragging');
       stopAutoplay();
     }
 
     function onPointerMove(e) {
       if (!isDragging) return;
       currentX = e.type.indexOf('touch') !== -1 ? e.touches[0].clientX : e.clientX;
+      if (Math.abs(currentX - startX) > 8) {
+        hasDragged = true;
+      }
     }
 
     function onPointerUp() {
       if (!isDragging) return;
       isDragging = false;
+      if (track) track.classList.remove('is-dragging');
       var delta = currentX - startX;
-      if (delta > 40) {
+      if (delta > 35) {
         prev();
-      } else if (delta < -40) {
+      } else if (delta < -35) {
         next();
       }
+      setTimeout(function () {
+        hasDragged = false;
+      }, 60);
       startAutoplay();
     }
 
@@ -216,4 +244,10 @@
     updateStack();
     startAutoplay();
   }
+
+  // Initialize all sliders with [data-card-stack] or .card-stack-container
+  var sliders = document.querySelectorAll('[data-card-stack], .card-stack-container');
+  sliders.forEach(function (slider) {
+    initCardStack(slider);
+  });
 })();
