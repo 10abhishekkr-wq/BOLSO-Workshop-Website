@@ -86,10 +86,69 @@ require __DIR__ . '/includes/header.php';
     <section class="section-space guidance-section">
         <div class="container guidance-grid">
             <div class="guidance-art reveal">
-                <div class="guidance-backdrop"></div>
-                <div class="guidance-card">
-                    <img src="assets/images/work2.jpg" alt="BOLSO workshop artwork placeholder" onerror="this.style.display='none'">
-                    <div class="image-placeholder small"><span class="placeholder-brush">✦</span><small>Made by hand,<br>made by you.</small></div>
+                <div class="card-stack-container" id="cardStackSlider">
+                    <div class="card-stack-track">
+                        <div class="card-stack-item" data-index="0">
+                            <img src="assets/images/slider/slide1.jpg" alt="T-shirt painting workshop in session">
+                            <div class="stack-card-overlay">
+                                <span>01 &bull; Workshop</span>
+                                <p>T-shirt painting in session</p>
+                            </div>
+                        </div>
+                        <div class="card-stack-item" data-index="1">
+                            <img src="assets/images/slider/slide2.jpg" alt="Students painting at workshop studio table">
+                            <div class="stack-card-overlay">
+                                <span>02 &bull; Studio</span>
+                                <p>Hands-on student making</p>
+                            </div>
+                        </div>
+                        <div class="card-stack-item" data-index="2">
+                            <img src="assets/images/slider/slide3.jpg" alt="Artist painting jacket with textile paint">
+                            <div class="stack-card-overlay">
+                                <span>03 &bull; Technique</span>
+                                <p>Precision fabric painting</p>
+                            </div>
+                        </div>
+                        <div class="card-stack-item" data-index="3">
+                            <img src="assets/images/slider/slide4.jpg" alt="Botanical artwork painted on canvas tote bag">
+                            <div class="stack-card-overlay">
+                                <span>04 &bull; Canvas</span>
+                                <p>Botanical floral tote bags</p>
+                            </div>
+                        </div>
+                        <div class="card-stack-item" data-index="4">
+                            <img src="assets/images/slider/slide5.jpg" alt="Custom floral painting on denim jacket">
+                            <div class="stack-card-overlay">
+                                <span>05 &bull; Wearable Art</span>
+                                <p>Custom painted denim jackets</p>
+                            </div>
+                        </div>
+                        <div class="card-stack-item" data-index="5">
+                            <img src="assets/images/slider/slide6.jpg" alt="Artisan palette mixing textile pigments">
+                            <div class="stack-card-overlay">
+                                <span>06 &bull; Colors</span>
+                                <p>Mixing pigments &amp; palettes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Controls & Indicators -->
+                    <div class="card-stack-controls">
+                        <button type="button" class="stack-arrow-btn stack-prev" aria-label="Previous card">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <div class="stack-indicators">
+                            <span class="stack-dot active" data-index="0"></span>
+                            <span class="stack-dot" data-index="1"></span>
+                            <span class="stack-dot" data-index="2"></span>
+                            <span class="stack-dot" data-index="3"></span>
+                            <span class="stack-dot" data-index="4"></span>
+                            <span class="stack-dot" data-index="5"></span>
+                        </div>
+                        <button type="button" class="stack-arrow-btn stack-next" aria-label="Next card">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="handwritten">softly<br>boldly<br>you.</div>
             </div>

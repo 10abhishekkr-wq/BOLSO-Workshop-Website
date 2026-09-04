@@ -137,12 +137,149 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
 .tile-middle h3 { font-size: clamp(42px, 4.5vw, 62px); line-height: .96; }
 .tile-bottom a { border-bottom: 1px solid currentColor; padding-bottom: 4px; }
 .guidance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; align-items: center; }
-.guidance-art { height: 480px; position: relative; }
-.guidance-backdrop { background: var(--sage); height: 365px; left: 35px; position: absolute; top: 42px; transform: rotate(-5deg); width: 355px; }
-.guidance-card { background: var(--mustard); height: 375px; left: 80px; overflow: hidden; position: absolute; top: 15px; transform: rotate(7deg); width: 305px; }
-.guidance-card img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 2; }
-.guidance-card .image-placeholder { background: linear-gradient(150deg, var(--mustard), var(--terracotta) 60%, var(--maroon)); }
-.handwritten { color: var(--maroon); font-family: var(--display); font-size: 30px; font-style: italic; line-height: .9; position: absolute; right: 12px; top: 60px; transform: rotate(-10deg); }
+.guidance-art { position: relative; width: 100%; max-width: 480px; margin: 0 auto; }
+/* 3D Card Stack Slider (matching user reference image) */
+.guidance-art { position: relative; width: 100%; max-width: 500px; margin: 0 auto; }
+.card-stack-container {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    perspective: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.card-stack-track {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.card-stack-track:active {
+    cursor: grabbing;
+}
+.card-stack-item {
+    position: absolute;
+    width: 290px;
+    height: 390px;
+    border-radius: 26px;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 0 20px 40px rgba(23, 36, 50, 0.18), 0 4px 14px rgba(142, 35, 46, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, filter 0.5s ease, box-shadow 0.5s ease;
+    will-change: transform, opacity;
+}
+.card-stack-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+.stack-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px 18px 14px;
+    background: linear-gradient(to top, rgba(23, 36, 50, 0.88) 0%, rgba(23, 36, 50, 0.45) 60%, transparent 100%);
+    color: var(--cream);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.stack-card-overlay span {
+    color: var(--mustard);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+}
+.stack-card-overlay p {
+    font-family: var(--display);
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.2;
+    margin: 0;
+    color: #fff;
+}
+
+/* Card Stack Controls */
+.card-stack-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 15px;
+    z-index: 15;
+}
+.stack-arrow-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--maroon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+.stack-arrow-btn:hover {
+    background: var(--maroon);
+    border-color: var(--maroon);
+    color: var(--cream);
+    transform: scale(1.08);
+}
+.stack-indicators {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.stack-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(31, 45, 61, 0.2);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.stack-dot:hover {
+    background: rgba(142, 35, 46, 0.5);
+}
+.stack-dot.active {
+    width: 24px;
+    border-radius: 5px;
+    background: var(--maroon);
+}
+
+/* Handwritten accent */
+.guidance-art .handwritten {
+    color: var(--maroon);
+    font-family: var(--display);
+    font-size: 32px;
+    font-style: italic;
+    line-height: .92;
+    position: absolute;
+    right: -24px;
+    top: -16px;
+    transform: rotate(8deg);
+    z-index: 20;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.85);
+    pointer-events: none;
+}
 .guidance-copy h2 { margin: 30px 0 23px; }
 .check-list { border-top: 1px solid var(--line); list-style: none; margin: 35px 0 31px; padding: 0; }
 .check-list li { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 12px; padding: 13px 0; }
@@ -378,7 +515,11 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
   .material-item strong { display: inline-block; }
   .material-item small { margin-left: 45px; }
   .workshop-tile { min-height: 330px; }
-  .guidance-art { height: 390px; transform: scale(.85); transform-origin: left top; width: 118%; }
+  .guidance-art { height: auto; transform: none; width: 100%; max-width: 100%; margin-bottom: 25px; }
+  .card-stack-container { height: 410px; }
+  .card-stack-track { height: 350px; }
+  .card-stack-item { width: 235px; height: 325px; border-radius: 20px; }
+  .guidance-art .handwritten { font-size: 22px; right: 2px; top: -14px; }
   .split-heading { align-items: flex-start; flex-direction: column; gap: 18px; }
   .page-hero { padding: 135px 0 70px; }
   .workshop-detail { display: block; min-height: auto; padding: 27px; }
