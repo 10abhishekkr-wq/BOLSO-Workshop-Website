@@ -27,15 +27,16 @@ $isAdminArea = $isAdminArea ?? false;
 <body class="<?= $isAdminArea ? 'admin-body' : '' ?>">
 <div class="site-grain" aria-hidden="true"></div>
 <?php if ($isAdminArea): ?>
-    <nav class="admin-topbar">
-        <a class="brand-lockup" href="../index.php">
-            <span class="brand-mark">B</span>
-            <span><strong>BOLSO</strong><small>Admin studio</small></span>
-        </a>
-        <?php if (!empty($_SESSION['admin_id'])): ?>
-            <a class="admin-logout" href="logout.php">Log out <i class="bi bi-arrow-right"></i></a>
-        <?php endif; ?>
-    </nav>
+    <?php if (!empty($_SESSION['admin_id'])): ?>
+        <?php require __DIR__ . '/admin_nav.php'; ?>
+    <?php else: ?>
+        <nav class="admin-topbar">
+            <a class="brand-lockup" href="../index.php">
+                <span class="brand-mark">B</span>
+                <span><strong>BOLSO</strong><small>Admin studio</small></span>
+            </a>
+        </nav>
+    <?php endif; ?>
 <?php else: ?>
     <nav class="navbar navbar-expand-lg bolso-nav">
         <div class="container">
@@ -51,6 +52,7 @@ $isAdminArea = $isAdminArea ?? false;
                     <li class="nav-item"><a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link <?= $activePage === 'workshops' ? 'active' : '' ?>" href="workshops.php">Workshops</a></li>
                     <li class="nav-item"><a class="nav-link <?= $activePage === 'registration' ? 'active' : '' ?>" href="registration.php">Registration</a></li>
+                    <li class="nav-item"><a class="nav-link admin-nav-link" href="admin/" title="Admin Panel"><i class="bi bi-shield-lock"></i> Admin</a></li>
                     <li class="nav-item"><a class="nav-cta" href="registration.php">Reserve your spot <i class="bi bi-arrow-up-right"></i></a></li>
                 </ul>
             </div>

@@ -44,10 +44,30 @@ require __DIR__ . '/includes/header.php';
         <div class="container">
             <div class="section-label"><span>02</span><span class="line"></span><span>Every workshop includes</span></div>
             <div class="learn-grid">
-                <div class="learn-card"><span>✦</span><h3>Beginner-friendly</h3><p>No prior experience needed. Just bring curiosity.</p></div>
-                <div class="learn-card"><span>◌</span><h3>Technique first</h3><p>Learn how colour moves, settles and stays soft on fabric.</p></div>
-                <div class="learn-card"><span>⌁</span><h3>Hands-on practice</h3><p>Less watching, more making. Your hands will remember.</p></div>
-                <div class="learn-card"><span>✺</span><h3>Personal guidance</h3><p>A small batch means you’re never painting alone.</p></div>
+                <div class="learn-card">
+                    <img class="learn-img" src="assets/images/learn_beginner.jpg" alt="Beginner-friendly">
+                    <span>✦</span>
+                    <h3>Beginner-friendly</h3>
+                    <p>No prior experience needed. Just bring curiosity.</p>
+                </div>
+                <div class="learn-card">
+                    <img class="learn-img" src="assets/images/learn_technique.jpg" alt="Technique first">
+                    <span>◌</span>
+                    <h3>Technique first</h3>
+                    <p>Learn how colour moves, settles and stays soft on fabric.</p>
+                </div>
+                <div class="learn-card">
+                    <img class="learn-img" src="assets/images/learn_practice.jpg" alt="Hands-on practice">
+                    <span>⌁</span>
+                    <h3>Hands-on practice</h3>
+                    <p>Less watching, more making. Your hands will remember.</p>
+                </div>
+                <div class="learn-card">
+                    <img class="learn-img" src="assets/images/learn_guidance.jpg" alt="Personal guidance">
+                    <span>✺</span>
+                    <h3>Personal guidance</h3>
+                    <p>A small batch means you’re never painting alone.</p>
+                </div>
             </div>
         </div>
     </section>

@@ -194,10 +194,11 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
 .mode-price span { color: var(--ink-soft); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
 .learn-section { background: var(--cream); }
 .learn-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 57px; }
-.learn-card { border: 1px solid var(--line); min-height: 220px; padding: 27px; transition: transform .25s, background .25s; }
+.learn-card { border: 1px solid var(--line); min-height: 220px; padding: 22px; transition: transform .25s, background .25s; }
 .learn-card:hover { background: var(--paper); transform: translateY(-5px); }
+.learn-img { width: 100%; height: 180px; object-fit: cover; object-position: center; border-radius: 6px; margin-bottom: 16px; display: block; }
 .learn-card > span { color: var(--terracotta); font-size: 32px; }
-.learn-card h3 { font-size: 23px; margin: 28px 0 9px; }
+.learn-card h3 { font-size: 21px; margin: 16px 0 9px; }
 .learn-card p { color: var(--ink-soft); font-size: 12px; }
 .registration-hero { padding-bottom: 74px; }
 .registration-section { background: #e7ddcf; padding-top: 82px; }
@@ -286,6 +287,63 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
 .empty-row { color: var(--ink-soft); padding: 45px 15px !important; text-align: center; }
 .dashboard-footnote { color: var(--ink-soft); font-size: 11px; margin-top: 18px; }
 .dashboard-footnote i { color: var(--terracotta); margin-right: 6px; }
+
+/* Enhanced Admin Dashboard Controls */
+.dash-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px; }
+.dash-search-box { position: relative; flex: 1; max-width: 380px; }
+.dash-search-box input { background: var(--paper); border: 1px solid var(--line); padding: 10px 14px 10px 36px; font-size: 12px; width: 100%; outline: none; }
+.dash-search-box input:focus { border-color: var(--maroon); }
+.dash-search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); font-size: 13px; }
+.dash-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-pill { background: transparent; border: 1px solid var(--line); color: var(--ink); padding: 7px 14px; font-size: 11px; letter-spacing: .05em; cursor: pointer; text-transform: uppercase; transition: all .2s; }
+.filter-pill:hover, .filter-pill.active { background: var(--maroon); border-color: var(--maroon); color: var(--cream); }
+.dash-actions { display: flex; gap: 10px; align-items: center; }
+.btn-outline-bolso { background: transparent; border: 1px solid var(--ink); color: var(--ink); font-size: 11px; font-weight: 600; letter-spacing: .08em; padding: 9px 16px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; }
+.btn-outline-bolso:hover { background: var(--ink); color: var(--cream); }
+.wa-link { color: #25d366; font-size: 14px; margin-left: 5px; transition: opacity .2s; }
+.wa-link:hover { opacity: .7; }
+.rzp-id-badge { background: rgba(31,45,61,.06); border-radius: 4px; color: var(--maroon); font-family: monospace; font-size: 10px; padding: 2px 6px; display: inline-block; margin-top: 3px; }
+.stat-card-revenue { background: var(--maroon); color: var(--cream); }
+.stat-card-revenue strong { color: var(--mustard); }
+.stat-card-revenue span, .stat-card-revenue small { color: rgba(246,240,230,.75); }
+.pwd-card { background: var(--paper); border: 1px solid var(--line); padding: 25px 30px; margin-top: 40px; max-width: 500px; }
+.pwd-card h3 { font-size: 20px; margin-bottom: 15px; }
+
+/* Admin Studio Navigation & Layout */
+.admin-studio-header { background: var(--paper); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 1000; }
+.admin-topbar-wrapper { border-bottom: 1px solid rgba(31,45,61,.08); }
+.admin-brand strong { font-size: 17px; }
+.admin-brand small { font-size: 10px; color: var(--terracotta); text-transform: uppercase; letter-spacing: .08em; display: block; }
+.admin-user-pill { background: rgba(31,45,61,.05); border: 1px solid var(--line); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: var(--ink); }
+.admin-subnav-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.admin-nav-tabs { display: flex; list-style: none; margin: 0; padding: 0; gap: 4px; }
+.admin-nav-item { flex-shrink: 0; }
+.admin-tab-link { display: inline-flex; align-items: center; gap: 7px; padding: 12px 18px; font-size: 13px; font-weight: 500; color: var(--ink-soft); text-decoration: none; border-bottom: 2px solid transparent; transition: all .2s ease; }
+.admin-tab-link:hover { color: var(--ink); background: rgba(216,165,42,.08); }
+.admin-tab-link.active { color: var(--maroon); border-bottom-color: var(--maroon); font-weight: 600; background: rgba(142,35,46,.04); }
+.admin-tab-link i { font-size: 15px; }
+
+/* Admin Nav link in public navbar */
+.admin-nav-link { color: var(--terracotta) !important; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+.admin-nav-link:hover { color: var(--maroon) !important; }
+
+/* Admin Panels & Cards */
+.admin-page-container { padding: 35px 0 60px; }
+.admin-card { background: var(--paper); border: 1px solid var(--line); border-radius: 0; padding: 25px; box-shadow: 0 4px 20px rgba(31,45,61,.03); }
+.admin-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--line); }
+.admin-card-title { font-size: 18px; margin: 0; font-weight: 600; }
+.badge-active { background: #dbe8d3; color: #48643d; font-size: 11px; padding: 4px 8px; border-radius: 3px; font-weight: 500; }
+.badge-inactive { background: #f3dbc8; color: #9d472f; font-size: 11px; padding: 4px 8px; border-radius: 3px; font-weight: 500; }
+
+/* Modals & Forms */
+.bolso-modal .modal-content { background: var(--paper); border: 1px solid var(--line); border-radius: 0; }
+.bolso-modal .modal-header { border-bottom: 1px solid var(--line); padding: 18px 25px; }
+.bolso-modal .modal-body { padding: 25px; }
+.bolso-modal .modal-footer { border-top: 1px solid var(--line); padding: 16px 25px; }
+.detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px; }
+.detail-grid-item small { color: var(--ink-soft); font-size: 11px; display: block; text-transform: uppercase; letter-spacing: .05em; }
+.detail-grid-item strong { font-size: 14px; color: var(--ink); display: block; margin-top: 2px; }
+
 .reveal { animation: rise .75s both; }
 .reveal-delay-1 { animation-delay: .13s; }
 @keyframes rise { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
