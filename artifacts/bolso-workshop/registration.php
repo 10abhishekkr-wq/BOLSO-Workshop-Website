@@ -124,6 +124,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                 ]);
                 $registrationId = (int)$pdo->lastInsertId();
 
+                // Dispatch instant registration notification to student and admin immediately upon form submit
+                require_once __DIR__ . '/includes/notifications.php';
+                $initialRegData = [
+                    'id' => $registrationId,
+                    'name' => $name,
+                    'whatsapp' => $whatsapp,
+                    'email' => $email,
+                    'workshop' => $workshop,
+                    'mode' => $mode,
+                    'preferred_date' => $preferredDate,
+                    'interest' => $interest,
+                    'experience' => $experience,
+                    'message' => $message,
+                    'price' => $price,
+                    'payment_status' => 'pending',
+                    'payment_id' => 'INITIATED',
+                ];
+                bolso_notify_payment_success($initialRegData, 'REGISTRATION_SUBMITTED');
+
                 $keyId = bolso_config('payment_key');
                 $keySecret = bolso_config('payment_secret');
 

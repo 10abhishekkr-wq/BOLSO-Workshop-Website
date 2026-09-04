@@ -375,35 +375,64 @@ function bolso_send_whatsapp(
     $apiSent = false;
     $apiError = null;
 
-    // Check if external WhatsApp gateway is configured (e.g. UltraMsg, Twilio, or Meta Cloud)
-    $apiUrl = bolso_config('whatsapp_api_url');
-    $apiToken = bolso_config('whatsapp_api_token');
-
-    if ($apiUrl !== '' && filter_var($apiUrl, FILTER_VALIDATE_URL)) {
+    // A. Check CallMeBot API (free automated WhatsApp for admin phone 9341469219)
+    $callmebotKey = bolso_config('callmebot_apikey');
+    if ($recipientType === 'admin' && !empty($callmebotKey)) {
         try {
-            $ch = curl_init($apiUrl);
-            $payload = [
-                'token' => $apiToken,
-                'to' => '+' . $cleanPhone,
-                'body' => $message,
-                'message' => $message,
-            ];
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));
+            $cmbUrl = 'https://api.callmebot.com/whatsapp.php?phone=' . urlencode($cleanPhone) . '&text=' . urlencode($message) . '&apikey=' . urlencode($callmebotKey);
+            $ch = curl_init($cmbUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 12);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $cmbResp = curl_exec($ch);
+            $cmbCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
-            if ($httpCode >= 200 && $httpCode < 300) {
+            if ($cmbCode >= 200 && $cmbCode < 300) {
                 $apiSent = true;
+                $apiError = null;
             } else {
-                $apiError = "Gateway returned HTTP {$httpCode}: " . substr((string)$response, 0, 150);
+                $apiError = "CallMeBot returned HTTP {$cmbCode}: " . substr((string)$cmbResp, 0, 120);
             }
         } catch (Throwable $t) {
-            $apiError = $t->getMessage();
+            $apiError = 'CallMeBot exception: ' . $t->getMessage();
+        }
+    }
+
+    // B. Check Universal WhatsApp gateway API (e.g. UltraMsg, GreenAPI, Twilio)
+    if (!$apiSent) {
+        $apiUrl = bolso_config('whatsapp_api_url');
+        $apiToken = bolso_config('whatsapp_api_token');
+
+        if ($apiUrl !== '' && filter_var($apiUrl, FILTER_VALIDATE_URL)) {
+            try {
+                $ch = curl_init($apiUrl);
+                $payload = [
+                    'token' => $apiToken,
+                    'to' => '+' . $cleanPhone,
+                    'body' => $message,
+                    'message' => $message,
+                ];
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                if ($httpCode >= 200 && $httpCode < 300) {
+                    $apiSent = true;
+                    $apiError = null;
+                } else {
+                    $apiError = "Gateway returned HTTP {$httpCode}: " . substr((string)$response, 0, 150);
+                }
+            } catch (Throwable $t) {
+                $apiError = $t->getMessage();
+            }
+        } elseif (!$apiSent && empty($apiError)) {
+            $apiError = 'No WhatsApp API Gateway configured in Settings. wa.me link ready for 1-click dispatch.';
         }
     }
 

@@ -10,3 +10,15 @@
 [2026-09-04 14:54:41] [CUSTOMER|WHATSAPP] To: 919876543210 | Status: READY | Subject: WhatsApp Notification 
 [2026-09-04 14:54:43] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: Timing Dispatched: Aditi Sharma (Saturday, 12 Sept • 10:30 AM – 1:30 PM)  | Error: PHP mail() not active locally; notification logged and simulated for review.
 [2026-09-04 14:54:43] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 17:07:14] [CUSTOMER|EMAIL] To: monalkr2@gmail.com | Status: SIMULATED | Subject: Payment Confirmed: Your BOLSO Workshop Spot is Secured! (ID: #7)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 17:07:16] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: 🔔 Payment Received: ₹399 from Sweety Sharma (2-Day Workshop)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 17:07:16] [CUSTOMER|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 17:07:16] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 17:14:52] [CUSTOMER|EMAIL] To: zxprince1809@gmail.com | Status: SIMULATED | Subject: Payment Confirmed: Your BOLSO Workshop Spot is Secured! (ID: #8)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 17:14:54] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: 🔔 Payment Received: ₹399 from Ahashan Kabir (2-Day Workshop)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 17:14:54] [CUSTOMER|WHATSAPP] To: 916296840295 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 17:14:54] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 17:54:20] [CUSTOMER|EMAIL] To: zxprince1809@gmail.com | Status: SIMULATED | Subject: Payment Confirmed: Your BOLSO Workshop Spot is Secured! (ID: #9)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 17:54:22] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: 🔔 Payment Received: ₹399 from Ahashan Kabir (2-Day Workshop)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 17:54:22] [CUSTOMER|WHATSAPP] To: 916296840295 | Status: READY | Subject: WhatsApp Notification  | Error: No WhatsApp API Gateway configured in Settings. wa.me link ready for 1-click dispatch.
+[2026-09-04 17:54:22] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification  | Error: No WhatsApp API Gateway configured in Settings. wa.me link ready for 1-click dispatch.

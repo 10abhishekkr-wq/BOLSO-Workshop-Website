@@ -44,6 +44,7 @@ function bolso_config(string $key, string $fallback = ''): string
         'smtp_from_name' => 'BOLSO Fabric Art Studio',
         'whatsapp_api_url' => '',
         'whatsapp_api_token' => '',
+        'callmebot_apikey' => '',
     ];
     return bolso_env(
         'BOLSO_' . strtoupper($key),
