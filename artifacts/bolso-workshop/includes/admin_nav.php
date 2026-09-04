@@ -58,6 +58,11 @@ $currentAdminPage = $adminActiveTab ?? basename($_SERVER['PHP_SELF'], '.php');
                     </a>
                 </li>
                 <li class="admin-nav-item">
+                    <a class="admin-tab-link <?= $currentAdminPage === 'notifications' ? 'active' : '' ?>" href="notifications.php">
+                        <i class="bi bi-bell"></i> Notifications
+                    </a>
+                </li>
+                <li class="admin-nav-item">
                     <a class="admin-tab-link <?= $currentAdminPage === 'settings' ? 'active' : '' ?>" href="settings.php">
                         <i class="bi bi-gear"></i> Settings
                     </a>

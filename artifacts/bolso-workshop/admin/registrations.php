@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/notifications.php';
 require_admin();
 
 $pdo = bolso_db();
@@ -63,7 +64,18 @@ if ($pdo) {
                     if ($regId && in_array($status, ['pending', 'paid', 'failed', 'refunded'], true)) {
                         $stmt = $pdo->prepare('UPDATE registrations SET payment_status = :status WHERE id = :id');
                         $stmt->execute([':status' => $status, ':id' => $regId]);
-                        admin_flash('success', "Payment status updated to " . strtoupper($status) . ".");
+                        
+                        if ($status === 'paid') {
+                            $rStmt = $pdo->prepare('SELECT * FROM registrations WHERE id = :id LIMIT 1');
+                            $rStmt->execute([':id' => $regId]);
+                            $regRow = $rStmt->fetch(PDO::FETCH_ASSOC);
+                            if ($regRow) {
+                                bolso_notify_payment_success($regRow, 'ADMIN_CONFIRMED');
+                            }
+                            admin_flash('success', "Payment marked as PAID. Confirmation email & WhatsApp alert sent to student and admin (10abhishekkr@gmail.com / 9341469219).");
+                        } else {
+                            admin_flash('success', "Payment status updated to " . strtoupper($status) . ".");
+                        }
                         header('Location: registrations.php');
                         exit;
                     } else {
@@ -107,7 +119,7 @@ if ($pdo) {
                         ]);
                         $newId = (int)$pdo->lastInsertId();
 
-                        // If marked as paid, record in payments table too
+                        // If marked as paid, record in payments table and dispatch notifications
                         if ($payStatus === 'paid') {
                             $payStmt = $pdo->prepare(
                                 'INSERT INTO payments (registration_id, provider, provider_payment_id, amount, status)
@@ -118,9 +130,48 @@ if ($pdo) {
                                 ':pay_id' => 'MANUAL_' . time(),
                                 ':amount' => $price,
                             ]);
+
+                            $rStmt = $pdo->prepare('SELECT * FROM registrations WHERE id = :id LIMIT 1');
+                            $rStmt->execute([':id' => $newId]);
+                            $newRegRow = $rStmt->fetch(PDO::FETCH_ASSOC);
+                            if ($newRegRow) {
+                                bolso_notify_payment_success($newRegRow, 'ADMIN_MANUAL_WALKIN');
+                            }
                         }
 
-                        admin_flash('success', "Student {$name} successfully registered!");
+                        admin_flash('success', "Student {$name} successfully registered! Confirmation sent to student and admin.");
+                        header('Location: registrations.php');
+                        exit;
+                    }
+                }
+
+                // C. Send Workshop Timing to Student
+                elseif ($action === 'send_timing') {
+                    $regId = filter_var($_POST['registration_id'] ?? null, FILTER_VALIDATE_INT);
+                    $timingSlot = trim((string)($_POST['timing_slot'] ?? ''));
+                    $venueOrLink = trim((string)($_POST['venue_or_link'] ?? ''));
+                    $notes = trim((string)($_POST['notes'] ?? ''));
+
+                    if (!$regId || $timingSlot === '') {
+                        $error = 'Please provide the workshop timing details.';
+                    } else {
+                        $res = bolso_notify_timing_schedule($regId, $timingSlot, $venueOrLink, $notes);
+                        if (!empty($res['success'])) {
+                            admin_flash('success', "Workshop timing dispatched to student via Email and WhatsApp! Admin confirmation copy logged.");
+                        } else {
+                            $error = 'Failed to dispatch timing: ' . ($res['error'] ?? 'Unknown error');
+                        }
+                        header('Location: registrations.php');
+                        exit;
+                    }
+                }
+
+                // D. Resend Payment Confirmation & Timing Reassurance
+                elseif ($action === 'resend_confirmation') {
+                    $regId = filter_var($_POST['registration_id'] ?? null, FILTER_VALIDATE_INT);
+                    if ($regId) {
+                        bolso_resend_payment_confirmation($regId);
+                        admin_flash('success', "Payment receipt & timing clarification resent to student and admin (10abhishekkr@gmail.com / 9341469219).");
                         header('Location: registrations.php');
                         exit;
                     }
@@ -256,13 +307,14 @@ require __DIR__ . '/../includes/header.php';
                             <th>Date / Batch</th>
                             <th>Price</th>
                             <th>Payment</th>
+                            <th>Timing & Schedule</th>
                             <th>Registered</th>
                             <th class="text-end pe-4">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php if (empty($registrations)): ?>
-                        <tr><td colspan="8" class="empty-row">No registrations found.</td></tr>
+                        <tr><td colspan="9" class="empty-row">No registrations found.</td></tr>
                     <?php endif; ?>
                     <?php foreach ($registrations as $r): 
                         $cleanPhone = preg_replace('/\D/', '', $r['whatsapp']);
@@ -304,6 +356,29 @@ require __DIR__ . '/../includes/header.php';
                                     </div>
                                 <?php endif; ?>
                             </td>
+                            <td>
+                                <?php if (!empty($r['timing_slot'])): ?>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1 px-2 py-1 mb-1" style="font-size: 11px;">
+                                        <i class="bi bi-clock-check"></i> <?= htmlspecialchars($r['timing_slot'], ENT_QUOTES, 'UTF-8') ?>
+                                    </span>
+                                    <button type="button" class="btn btn-link btn-xs p-0 d-block text-muted text-decoration-none" style="font-size: 10px;"
+                                            onclick='openTimingModal(<?= json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'>
+                                        <i class="bi bi-pencil-square"></i> Change timing
+                                    </button>
+                                <?php elseif ($r['payment_status'] === 'paid'): ?>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 px-2 py-1 mb-1" style="font-size: 11px;">
+                                        <i class="bi bi-hourglass-split"></i> Timing Pending
+                                    </span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-2 d-block" style="font-size: 11px;"
+                                            onclick='openTimingModal(<?= json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'>
+                                        <i class="bi bi-send me-1"></i> Send Timing
+                                    </button>
+                                <?php else: ?>
+                                    <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 11px;">
+                                        Awaiting Payment
+                                    </span>
+                                <?php endif; ?>
+                            </td>
                             <td><small><?= htmlspecialchars(date('d M Y', strtotime($r['registration_date'])), ENT_QUOTES, 'UTF-8') ?></small></td>
                             <td class="text-end pe-4">
                                 <div class="manage-actions justify-content-end">
@@ -318,6 +393,20 @@ require __DIR__ . '/../includes/header.php';
                                             <option value="failed" <?= $r['payment_status'] === 'failed' ? 'selected' : '' ?>>Failed</option>
                                             <option value="refunded" <?= $r['payment_status'] === 'refunded' ? 'selected' : '' ?>>Refunded</option>
                                         </select>
+                                    </form>
+
+                                    <!-- Send Timing Schedule Button -->
+                                    <button type="button" class="btn btn-sm btn-outline-success p-1" title="Send Workshop Timing (Email & WhatsApp)"
+                                            onclick='openTimingModal(<?= json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'>
+                                        <i class="bi bi-clock-history"></i>
+                                    </button>
+
+                                    <!-- Resend Payment Confirmation & Timing Reassurance -->
+                                    <form method="post" class="d-inline" onsubmit="return confirm('Resend payment confirmation and timing reassurance to student & admin?');">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                        <input type="hidden" name="action" value="resend_confirmation">
+                                        <input type="hidden" name="registration_id" value="<?= (int)$r['id'] ?>">
+                                        <button class="btn btn-sm btn-outline-info p-1" type="submit" title="Resend Payment Confirmation & Timing Clarification"><i class="bi bi-envelope-arrow-up"></i></button>
                                     </form>
 
                                     <!-- View Details Button -->
@@ -492,6 +581,10 @@ require __DIR__ . '/../includes/header.php';
                         <small>Razorpay Payment ID</small>
                         <strong id="detail_rzp">-</strong>
                     </div>
+                    <div class="detail-grid-item">
+                        <small>Workshop Timing & Schedule</small>
+                        <strong id="detail_timing" class="text-success">-</strong>
+                    </div>
                 </div>
                 <div class="mt-3">
                     <small class="text-muted d-block text-uppercase" style="font-size: 11px;">Student Message / Notes</small>
@@ -584,6 +677,71 @@ require __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
+<!-- 4. MODAL: Send Workshop Timing -->
+<div class="modal fade bolso-modal" id="timingModal" tabindex="-1" aria-labelledby="timingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                <input type="hidden" name="action" value="send_timing">
+                <input type="hidden" name="registration_id" id="timing_reg_id">
+
+                <div class="modal-header">
+                    <div>
+                        <span class="eyebrow text-success">Schedule Dispatch</span>
+                        <h5 class="modal-title" id="timingModalLabel">Send Workshop Timing to Student</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="alert alert-info py-2 px-3 mb-3 small d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+                        <div>
+                            Dispatches official timing email and WhatsApp message to <strong id="timing_student_name">Student</strong>. A confirmation copy will be sent to admin (<span class="text-dark">10abhishekkr@gmail.com</span>).
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="timing_slot_input"><strong>Workshop Timing & Schedule *</strong></label>
+                        <input type="text" class="form-control" id="timing_slot_input" name="timing_slot" required placeholder="e.g. Saturday, 12 Sept 2026 • 10:30 AM to 1:30 PM">
+                        <div class="mt-2 d-flex flex-wrap gap-1 align-items-center">
+                            <span class="text-muted small me-1">Quick presets:</span>
+                            <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size:11px;" onclick="setPresetTiming('Saturday & Sunday • 11:00 AM – 1:30 PM')">Weekend Morning</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size:11px;" onclick="setPresetTiming('Saturday & Sunday • 3:00 PM – 5:30 PM')">Weekend Afternoon</button>
+                            <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size:11px;" onclick="setPresetTiming('Upcoming Saturday • 10:00 AM – 1:00 PM')">Sat 10 AM – 1 PM</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="timing_venue_input">Location / Session Link (Optional)</label>
+                        <input type="text" class="form-control" id="timing_venue_input" name="venue_or_link" placeholder="Google Meet link or Studio Address">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="timing_notes_input">Preparation Notes / Material Checklist</label>
+                        <textarea class="form-control" id="timing_notes_input" name="notes" rows="2" placeholder="e.g. Please keep fabric canvas, paints, brushes, and water cup ready."></textarea>
+                    </div>
+
+                    <div id="timing_direct_wa_wrap" class="p-3 bg-light rounded border" style="display:none;">
+                        <span class="small text-muted d-block mb-1">Direct Student WhatsApp link:</span>
+                        <a id="timing_direct_wa_btn" href="#" target="_blank" class="btn btn-sm btn-success w-100">
+                            <i class="bi bi-whatsapp me-1"></i> Open & Preview in WhatsApp Web
+                        </a>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary-bolso">
+                        <i class="bi bi-send me-1"></i> Dispatch Schedule Now
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 let currentFilter = 'all';
 
@@ -639,6 +797,7 @@ function openDetailsModal(r) {
     document.getElementById('detail_price').innerText = '₹' + Number(r.price).toLocaleString();
     document.getElementById('detail_status').innerText = (r.payment_status || '').toUpperCase();
     document.getElementById('detail_rzp').innerText = r.provider_payment_id || 'None';
+    document.getElementById('detail_timing').innerText = r.timing_slot ? (r.timing_slot + (r.timing_sent_at ? ' (Dispatched: ' + r.timing_sent_at + ')' : '')) : 'Timing not yet assigned (Pending)';
     document.getElementById('detail_message').innerText = r.message || 'No notes provided.';
 
     const clean = (r.whatsapp || '').replace(/\D/g, '');
@@ -647,6 +806,34 @@ function openDetailsModal(r) {
 
     const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
     modal.show();
+}
+
+function openTimingModal(r) {
+    document.getElementById('timing_reg_id').value = r.id;
+    document.getElementById('timing_student_name').innerText = (r.name || 'Student') + ' (' + (r.whatsapp || '') + ')';
+    document.getElementById('timing_slot_input').value = r.timing_slot || '';
+    if (r.mode === 'offline') {
+        document.getElementById('timing_venue_input').value = 'BOLSO Art Studio, Indiranagar, Bengaluru';
+    } else {
+        document.getElementById('timing_venue_input').value = 'Google Meet: https://meet.google.com/bolso-art-session';
+    }
+    document.getElementById('timing_notes_input').value = 'Please keep your fabric canvas, acrylic/fabric paints, brushes (#2 round, #8 flat), water cup, and rag ready.';
+
+    const clean = (r.whatsapp || '').replace(/\D/g, '');
+    if (clean) {
+        const waText = encodeURIComponent('Hello ' + r.name + '! Your BOLSO workshop timing has been confirmed: ' + (r.timing_slot || 'Upcoming batch') + '. See you soon!');
+        document.getElementById('timing_direct_wa_btn').href = 'https://wa.me/' + clean + '?text=' + waText;
+        document.getElementById('timing_direct_wa_wrap').style.display = 'block';
+    } else {
+        document.getElementById('timing_direct_wa_wrap').style.display = 'none';
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('timingModal'));
+    modal.show();
+}
+
+function setPresetTiming(txt) {
+    document.getElementById('timing_slot_input').value = txt;
 }
 
 function openEditModal(r) {

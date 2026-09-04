@@ -55,13 +55,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'verif
                     error_log('Failed to record payment in payments table: ' . $e->getMessage());
                 }
 
+                require_once __DIR__ . '/includes/notifications.php';
+                $notifResult = bolso_notify_payment_success($registration, $razorpayPaymentId);
+
                 $paymentSuccess = [
+                    'id' => $registration['id'],
                     'name' => $registration['name'],
+                    'email' => $registration['email'],
+                    'whatsapp' => $registration['whatsapp'],
                     'workshop' => $registration['workshop'],
                     'mode' => $registration['mode'],
                     'preferred_date' => $registration['preferred_date'],
                     'price' => (int)$registration['price'],
                     'payment_id' => $razorpayPaymentId,
+                    'customer_wa_link' => $notifResult['customer_whatsapp_link'] ?? '',
+                    'admin_wa_link' => $notifResult['admin_whatsapp_link'] ?? '',
                 ];
             }
         } catch (PDOException $exception) {
@@ -165,12 +173,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                         $errors[] = 'Could not initiate Razorpay payment: ' . $errorDesc;
                     }
                 } else {
-                    $success = [
+                    require_once __DIR__ . '/includes/notifications.php';
+                    $directReg = [
+                        'id' => $registrationId,
                         'name' => $name,
+                        'email' => $email,
+                        'whatsapp' => $whatsapp,
+                        'workshop' => $workshop,
+                        'mode' => $mode,
+                        'preferred_date' => $preferredDate,
+                        'interest' => $interest,
+                        'experience' => $experience,
+                        'message' => $message,
+                        'price' => $price,
+                        'payment_id' => 'MANUAL_PENDING',
+                    ];
+                    $notifRes = bolso_notify_payment_success($directReg, 'DIRECT_BOOKING');
+
+                    $success = [
+                        'id' => $registrationId,
+                        'name' => $name,
+                        'email' => $email,
+                        'whatsapp' => $whatsapp,
                         'workshop' => $workshop,
                         'mode' => $mode,
                         'preferred_date' => $preferredDate,
                         'price' => $price,
+                        'customer_wa_link' => $notifRes['customer_whatsapp_link'] ?? '',
+                        'admin_wa_link' => $notifRes['admin_whatsapp_link'] ?? '',
                     ];
                 }
             } catch (PDOException $exception) {
@@ -210,10 +240,37 @@ require __DIR__ . '/includes/header.php';
                         <span class="eyebrow" style="color: #2e7d32;">Payment Received · Spot Confirmed</span>
                         <h2>Thank you,<br><em><?= htmlspecialchars($paymentSuccess['name'], ENT_QUOTES, 'UTF-8') ?>.</em></h2>
                         <p>We’ve received your payment of <strong>₹<?= number_format($paymentSuccess['price']) ?></strong> for the <strong><?= htmlspecialchars($paymentSuccess['workshop']) ?> workshop</strong>. Your spot is officially booked!</p>
+
+                        <!-- User Requested Clarification Banner on Timing -->
+                        <div style="background: #fff8eb; border: 1px solid #ebd4b5; border-left: 5px solid #c97a3e; padding: 18px 22px; border-radius: 12px; margin: 24px 0; text-align: left;">
+                            <h4 style="margin: 0 0 8px 0; color: #8e232e; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                🕒 Workshop Timing &amp; Schedule
+                            </h4>
+                            <p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #2e3842;">
+                                <strong>Your timing for the workshop will be given to you very soon!</strong><br>
+                                A confirmation and thank-you message has been sent to your email (<strong><?= htmlspecialchars($paymentSuccess['email'] ?? '', ENT_QUOTES, 'UTF-8') ?></strong>) and WhatsApp. Our studio admin has also received your booking details and will coordinate your batch schedule shortly.
+                            </p>
+                        </div>
+
                         <p class="config-note" style="font-family: monospace; font-size: 13px;">Payment ID: <?= htmlspecialchars($paymentSuccess['payment_id'], ENT_QUOTES, 'UTF-8') ?></p>
-                        <?php if (bolso_config('whatsapp') !== 'YOUR_WHATSAPP_NUMBER'): ?>
-                            <a class="btn btn-primary-bolso" href="https://wa.me/<?= bolso_config('whatsapp') ?>?text=<?= $whatsappMessage ?>" target="_blank" rel="noopener">Confirm on WhatsApp <i class="bi bi-arrow-up-right"></i></a>
-                        <?php endif; ?>
+                        
+                        <div class="d-flex flex-wrap gap-2 mt-3 justify-content-center">
+                            <?php if (!empty($paymentSuccess['customer_wa_link'])): ?>
+                                <a class="btn btn-primary-bolso" href="<?= htmlspecialchars($paymentSuccess['customer_wa_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" style="background: #25d366; border-color: #25d366; color: #fff;">
+                                    <i class="bi bi-whatsapp"></i> WhatsApp Confirmation <i class="bi bi-arrow-up-right"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (!empty($paymentSuccess['admin_wa_link'])): ?>
+                                <a class="btn btn-outline-secondary" href="<?= htmlspecialchars($paymentSuccess['admin_wa_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" style="font-size: 13px;">
+                                    <i class="bi bi-bell"></i> Alert Admin on WhatsApp
+                                </a>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top" style="font-size: 12px; color: #6a7c92;">
+                            <span><i class="bi bi-check-circle-fill text-success"></i> Notifications dispatched to Admin (<strong>10abhishekkr@gmail.com</strong> &amp; <strong>WhatsApp 9341469219</strong>)</span>
+                        </div>
+
                         <a class="text-link dark-link d-block mt-4" href="index.php">Back to BOLSO <i class="bi bi-arrow-right"></i></a>
                     </div>
                 <?php elseif ($pendingPayment): ?>
@@ -288,15 +345,39 @@ require __DIR__ . '/includes/header.php';
                     </script>
                 <?php elseif ($success): ?>
                     <div class="success-panel reveal">
-                        <span class="success-icon">✦</span>
-                        <span class="eyebrow">You’re on the list</span>
+                        <span class="success-icon" style="color: #2e7d32;">✦</span>
+                        <span class="eyebrow" style="color: #2e7d32;">Registration Saved · Spot Confirmed</span>
                         <h2>Thank you,<br><em><?= htmlspecialchars($success['name'], ENT_QUOTES, 'UTF-8') ?>.</em></h2>
-                        <p>Your BOLSO registration is saved. We’ll confirm your batch details shortly. You can also send the details directly on WhatsApp.</p>
-                        <?php if (bolso_config('whatsapp') !== 'YOUR_WHATSAPP_NUMBER'): ?>
-                            <a class="btn btn-primary-bolso" href="https://wa.me/<?= bolso_config('whatsapp') ?>?text=<?= $whatsappMessage ?>" target="_blank" rel="noopener">Message on WhatsApp <i class="bi bi-arrow-up-right"></i></a>
-                        <?php else: ?>
-                            <p class="config-note">Add your WhatsApp number in <code>config/config.local.php</code> to enable the direct message button.</p>
-                        <?php endif; ?>
+                        <p>Your BOLSO workshop registration is saved and confirmed! We are delighted to have you join us.</p>
+
+                        <!-- User Requested Clarification Banner on Timing -->
+                        <div style="background: #fff8eb; border: 1px solid #ebd4b5; border-left: 5px solid #c97a3e; padding: 18px 22px; border-radius: 12px; margin: 24px 0; text-align: left;">
+                            <h4 style="margin: 0 0 8px 0; color: #8e232e; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                🕒 Workshop Timing &amp; Batch Schedule
+                            </h4>
+                            <p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #2e3842;">
+                                <strong>Your timing for the workshop will be given to you very soon!</strong><br>
+                                A confirmation and thank-you message has been sent to your email (<strong><?= htmlspecialchars($success['email'] ?? '', ENT_QUOTES, 'UTF-8') ?></strong>) and WhatsApp. Our studio admin has been alerted and will share your exact schedule shortly.
+                            </p>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mt-3 justify-content-center">
+                            <?php if (!empty($success['customer_wa_link'])): ?>
+                                <a class="btn btn-primary-bolso" href="<?= htmlspecialchars($success['customer_wa_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" style="background: #25d366; border-color: #25d366; color: #fff;">
+                                    <i class="bi bi-whatsapp"></i> WhatsApp Confirmation <i class="bi bi-arrow-up-right"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (!empty($success['admin_wa_link'])): ?>
+                                <a class="btn btn-outline-secondary" href="<?= htmlspecialchars($success['admin_wa_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" style="font-size: 13px;">
+                                    <i class="bi bi-bell"></i> Alert Admin on WhatsApp
+                                </a>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top" style="font-size: 12px; color: #6a7c92;">
+                            <span><i class="bi bi-check-circle-fill text-success"></i> Studio Admin alerted at <strong>10abhishekkr@gmail.com</strong> &amp; <strong>WhatsApp (+91 9341469219)</strong></span>
+                        </div>
+
                         <a class="text-link dark-link d-block mt-4" href="index.php">Back to BOLSO <i class="bi bi-arrow-right"></i></a>
                     </div>
                 <?php else: ?>

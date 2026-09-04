@@ -1,0 +1,12 @@
+[2026-09-04 14:39:15] [CUSTOMER|EMAIL] To: aditi.verma@example.com | Status: SIMULATED | Subject: Payment Confirmed: Your BOLSO Workshop Spot is Secured! (ID: #999)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 14:39:17] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: 🔔 Payment Received: ₹399 from Aditi Verma (2-Day Workshop)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 14:39:17] [CUSTOMER|WHATSAPP] To: 919876543210 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 14:39:17] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 14:54:37] [CUSTOMER|EMAIL] To: aditi.sharma@example.com | Status: SIMULATED | Subject: Payment Confirmed: Your BOLSO Workshop Spot is Secured! (ID: #6)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 14:54:39] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: 🔔 Payment Received: ₹399 from Aditi Sharma (Signature 2-Day Fabric Art)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 14:54:39] [CUSTOMER|WHATSAPP] To: 919876543210 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 14:54:39] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 14:54:41] [CUSTOMER|EMAIL] To: aditi.sharma@example.com | Status: SIMULATED | Subject: Confirmed Workshop Timing: 2-Day Workshop (ID: #6)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 14:54:41] [CUSTOMER|WHATSAPP] To: 919876543210 | Status: READY | Subject: WhatsApp Notification 
+[2026-09-04 14:54:43] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: Timing Dispatched: Aditi Sharma (Saturday, 12 Sept • 10:30 AM – 1:30 PM)  | Error: PHP mail() not active locally; notification logged and simulated for review.
+[2026-09-04 14:54:43] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification 

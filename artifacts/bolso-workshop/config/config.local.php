@@ -7,3 +7,5 @@ putenv('BOLSO_DB_PASSWORD=');
 putenv('BOLSO_WHATSAPP=919674773475');
 putenv('BOLSO_PAYMENT_KEY=rzp_test_TXHzubPWVcRrT7');
 putenv('BOLSO_PAYMENT_SECRET=WBOpN3a5npmtmWHNc5wIREEN');
+putenv('BOLSO_ADMIN_EMAIL=10abhishekkr@gmail.com');
+putenv('BOLSO_ADMIN_WHATSAPP=919341469219');

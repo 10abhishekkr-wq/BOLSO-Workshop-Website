@@ -212,6 +212,10 @@ require __DIR__ . '/../includes/header.php';
                                 <span><i class="bi bi-credit-card me-1"></i> View Payment Records</span>
                                 <i class="bi bi-chevron-right"></i>
                             </a>
+                            <a href="notifications.php" class="btn btn-outline-bolso w-100 justify-content-between">
+                                <span><i class="bi bi-bell me-1"></i> Notification Dispatch Center</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
                             <a href="settings.php" class="btn btn-outline-bolso w-100 justify-content-between">
                                 <span><i class="bi bi-shield-lock me-1"></i> Security & Password</span>
                                 <i class="bi bi-chevron-right"></i>
