@@ -108,13 +108,56 @@ require __DIR__ . '/includes/header.php';
             <div class="workshop-preview-grid">
                 <article class="workshop-tile tile-dark reveal">
                     <div class="tile-top"><span class="tile-tag">The quick start</span><span>01 / 02</span></div>
-                    <div class="tile-middle"><p class="tile-days">2 days</p><h3>Start with<br><em>the basics.</em></h3></div>
-                    <div class="tile-bottom"><span>From ₹399</span><a href="registration.php?workshop=2-day">Book this <i class="bi bi-arrow-up-right"></i></a></div>
+                    <div class="tile-middle">
+                        <p class="tile-days">2 days · Fast-track</p>
+                        <h3>Start with<br><em>the basics.</em></h3>
+                        <p class="tile-desc">A hands-on introduction to fabric painting. Learn to turn plain cloth into soft, wearable art you'll love wearing.</p>
+                        <div class="tile-learn-wrap">
+                            <span class="tile-learn-title">What you'll learn:</span>
+                            <ul class="tile-learn-points">
+                                <li><i class="bi bi-check2"></i> <span><strong>Fabric &amp; Pigment Basics:</strong> Prepping cotton, denim &amp; linen for smooth, crack-free colour absorption.</span></li>
+                                <li><i class="bi bi-check2"></i> <span><strong>Brushwork &amp; Shading:</strong> Fluid brush control, blending gradients and soft-wash layering.</span></li>
+                                <li><i class="bi bi-check2"></i> <span><strong>First Finished Garment:</strong> Paint and finish your own wearable custom T-shirt or canvas tote.</span></li>
+                                <li><i class="bi bi-check2"></i> <span><strong>Personal Mentorship:</strong> Live step-by-step guidance in intimate batches (max 6 students).</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tile-bottom">
+                        <div class="tile-price-wrap">
+                            <span class="price-val">From ₹399</span>
+                            <span class="price-sub">Online &amp; Offline</span>
+                        </div>
+                        <a href="registration.php?workshop=2-day">Book this <i class="bi bi-arrow-up-right"></i></a>
+                    </div>
                 </article>
                 <article class="workshop-tile tile-sand reveal reveal-delay-1">
                     <div class="tile-top"><span class="tile-tag">The deep dive</span><span>02 / 02</span></div>
-                    <div class="tile-middle"><p class="tile-days">5 days</p><h3>Find your<br><em>signature.</em></h3></div>
-                    <div class="tile-bottom"><span>From ₹899</span><a href="registration.php?workshop=5-day">Book this <i class="bi bi-arrow-up-right"></i></a></div>
+                    <div class="tile-middle">
+                        <p class="tile-days">5 days · Complete mastery</p>
+                        <h3>Find your<br><em>signature.</em></h3>
+                        <p class="tile-desc">Immerse yourself in comprehensive fabric art. Build a distinct visual language and create a signature wearable collection.</p>
+                        <div class="tile-learn-wrap">
+                            <span class="tile-learn-title">What you'll learn:</span>
+                            <ul class="tile-learn-points">
+                                <li><i class="bi bi-check2"></i> <span><strong>Advanced Techniques:</strong> Multi-pass washes, textured strokes &amp; ombre depth on denim, jackets &amp; linen.</span></li>
+                                <li><i class="bi bi-check2"></i> <span><strong>Signature Style &amp; Composition:</strong> Discovering your motif language, freehand sketching and pattern balance.</span></li>
+                                <li><i class="bi bi-check2"></i> <span><strong>Multi-Piece Collection:</strong> Paint jackets, denim, tote bags and statement wardrobe pieces.</span></li>
+                                <li class="palette-perk">
+                                    <div class="palette-perk-badge">
+                                        <i class="bi bi-palette-fill"></i>
+                                        <span><strong>Offline 5-Day Exclusive:</strong> Includes physical <em>Colour Palettes</em> &amp; curated studio painting kit to keep!</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tile-bottom">
+                        <div class="tile-price-wrap">
+                            <span class="price-val">From ₹899</span>
+                            <span class="price-sub">Online ₹899 · Offline ₹1,299</span>
+                        </div>
+                        <a href="registration.php?workshop=5-day">Book this <i class="bi bi-arrow-up-right"></i></a>
+                    </div>
                 </article>
             </div>
         </div>

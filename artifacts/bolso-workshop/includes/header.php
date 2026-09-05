@@ -22,7 +22,10 @@ $isAdminArea = $isAdminArea ?? false;
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= $isAdminArea ? '../assets/css/style.css' : 'assets/css/style.css' ?>">
+    <link rel="icon" type="image/png" href="<?= $isAdminArea ? '../assets/images/favicon.png' : 'assets/images/favicon.png' ?>">
+    <link rel="shortcut icon" href="<?= $isAdminArea ? '../favicon.ico' : 'favicon.ico' ?>">
+    <link rel="apple-touch-icon" href="<?= $isAdminArea ? '../assets/images/favicon.png' : 'assets/images/favicon.png' ?>">
+    <link rel="stylesheet" href="<?= ($isAdminArea ? '../assets/css/style.css?v=' : 'assets/css/style.css?v=') . (file_exists(__DIR__ . '/../assets/css/style.css') ? (string)filemtime(__DIR__ . '/../assets/css/style.css') : '2.1') ?>">
 </head>
 <body class="<?= $isAdminArea ? 'admin-body' : '' ?>">
 <div class="site-grain" aria-hidden="true"></div>
@@ -31,9 +34,9 @@ $isAdminArea = $isAdminArea ?? false;
         <?php require __DIR__ . '/admin_nav.php'; ?>
     <?php else: ?>
         <nav class="admin-topbar">
-            <a class="brand-lockup" href="../index.php">
-                <span class="brand-mark">B</span>
-                <span><strong>BOLSO</strong><small>Admin studio</small></span>
+            <a class="brand-lockup" href="../index.php" aria-label="BOLSO home">
+                <img src="../assets/images/logo.png" alt="BOLSO" class="brand-logo-img" width="120" height="30" style="height: 30px; width: auto; max-width: 125px; display: inline-block; vertical-align: middle;">
+                <span class="brand-tagline admin-tagline">Admin studio</span>
             </a>
         </nav>
     <?php endif; ?>
@@ -41,8 +44,8 @@ $isAdminArea = $isAdminArea ?? false;
     <nav class="navbar navbar-expand-lg bolso-nav">
         <div class="container">
             <a class="brand-lockup" href="index.php" aria-label="BOLSO home">
-                <span class="brand-mark">B</span>
-                <span><strong>BOLSO</strong><small>Art, Emotion, Fashion.</small></span>
+                <img src="assets/images/logo.png" alt="BOLSO" class="brand-logo-img" width="130" height="34" style="height: 34px; width: auto; max-width: 140px; display: inline-block; vertical-align: middle;">
+                <span class="brand-tagline">Art · Emotion · Fashion</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="bi bi-list"></i>

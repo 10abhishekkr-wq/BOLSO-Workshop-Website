@@ -12,10 +12,12 @@
     priceDisplay.textContent = '₹' + Number(price).toLocaleString('en-IN');
     if (priceNote) {
       priceNote.textContent = mode.value === 'offline' && workshop.value === '5-day'
-        ? 'Materials and colours provided.'
-        : mode.value === 'online'
-          ? 'Live classes over Google Meet.'
-          : 'Final details shared after registration.';
+        ? 'Materials, colours & artist colour palettes provided to keep.'
+        : mode.value === 'offline'
+          ? 'Offline in-person studio batch.'
+          : mode.value === 'online'
+            ? 'Live classes over Google Meet.'
+            : 'Final details shared after registration.';
     }
   }
 

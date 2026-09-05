@@ -8,9 +8,9 @@ $currentAdminPage = $adminActiveTab ?? basename($_SERVER['PHP_SELF'], '.php');
         <div class="container-fluid px-lg-4">
             <div class="d-flex align-items-center justify-content-between py-2">
                 <div class="d-flex align-items-center gap-3">
-                    <a class="brand-lockup admin-brand" href="dashboard.php">
-                        <span class="brand-mark">B</span>
-                        <span><strong>BOLSO</strong><small>Admin Studio</small></span>
+                    <a class="brand-lockup admin-brand" href="dashboard.php" aria-label="BOLSO Admin Studio">
+                        <img src="../assets/images/logo.png" alt="BOLSO" class="brand-logo-img admin-nav-logo" width="115" height="28" style="height: 28px; width: auto; max-width: 120px; display: inline-block; vertical-align: middle;">
+                        <span class="brand-tagline admin-tagline">Admin Studio</span>
                     </a>
                     <span class="badge bg-dark-subtle text-dark-emphasis px-2 py-1 rounded-pill d-none d-md-inline-flex align-items-center gap-1">
                         <i class="bi bi-shield-check text-success"></i> Studio Manager

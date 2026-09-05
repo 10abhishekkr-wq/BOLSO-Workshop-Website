@@ -6,9 +6,9 @@ declare(strict_types=1);
     <div class="container">
         <div class="footer-main">
             <div>
-                <a class="brand-lockup footer-brand" href="index.php">
-                    <span class="brand-mark">B</span>
-                    <span><strong>BOLSO</strong><small>Art, Emotion, Fashion.</small></span>
+                <a class="brand-lockup footer-brand" href="index.php" aria-label="BOLSO home">
+                    <img src="assets/images/logo_white.png" alt="BOLSO" class="brand-logo-img footer-logo-img" width="130" height="34" style="height: 34px; width: auto; max-width: 140px; display: inline-block; vertical-align: middle;">
+                    <span class="brand-tagline footer-tagline">Art · Emotion · Fashion</span>
                 </a>
                 <p class="footer-note">Wear your imagination.<br>Make something that feels like you.</p>
             </div>

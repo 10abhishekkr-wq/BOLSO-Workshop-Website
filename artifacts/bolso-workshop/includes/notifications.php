@@ -906,7 +906,6 @@ function bolso_build_customer_timing_email_html(array $data, string $timingSlot,
 <body>
 <div class="email-container">
     <div class="header">
-        <div class="brand-mark">B</div>
         <h1 class="brand-title">BOLSO</h1>
         <p class="brand-sub">Art · Emotion · Fashion</p>
     </div>

@@ -35,6 +35,10 @@ require __DIR__ . '/includes/header.php';
                     <h2>5-Day<br><em>Workshop</em></h2>
                     <p>Slow down, build a visual language and learn to make work that feels unmistakably like yours.</p>
                     <div class="detail-meta"><span><strong>5 days</strong> of practice</span><span><strong>Live instructor</strong> led classes</span><span><strong>Maximum 6</strong> students</span></div>
+                    <div class="palette-perk-badge mt-3" style="max-width: 520px;">
+                        <i class="bi bi-palette-fill"></i>
+                        <span><strong>Offline 5-Day Workshop Bonus:</strong> Students attending the offline workshop receive physical <em>Colour Palettes</em> &amp; curated studio materials to keep!</span>
+                    </div>
                 </div>
                 <div class="detail-side"><span class="price-label">choose your mode</span><div class="mode-price"><strong>₹899</strong><span>Online</span></div><div class="mode-price"><strong>₹1,299</strong><span>Offline</span></div><a class="btn btn-primary-bolso" href="registration.php?workshop=5-day">Reserve 5-day <i class="bi bi-arrow-up-right"></i></a></div>
             </article>

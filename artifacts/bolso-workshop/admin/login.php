@@ -36,7 +36,11 @@ require __DIR__ . '/../includes/header.php';
 ?>
 <main class="admin-login-page">
     <div class="admin-login-card">
-        <div class="admin-login-mark">✦</div>
+        <div class="admin-login-logo-wrap text-center mb-4">
+            <a href="../index.php" title="Back to site">
+                <img src="../assets/images/logo.png" alt="BOLSO" class="admin-login-logo" width="160" height="42" style="height: 42px; width: auto; max-width: 175px; display: inline-block; vertical-align: middle;">
+            </a>
+        </div>
         <span class="eyebrow">BOLSO studio</span>
         <h1>Welcome<br><em>back.</em></h1>
         <p>Sign in to manage registrations and batch details.</p>
