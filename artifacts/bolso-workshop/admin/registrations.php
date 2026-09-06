@@ -21,7 +21,7 @@ if ($pdo) {
             header('Content-Type: text/csv; charset=utf-8');
             header('Content-Disposition: attachment; filename=bolso_registrations_' . date('Y-m-d') . '.csv');
             $output = fopen('php://output', 'w');
-            fputcsv($output, ['ID', 'Name', 'WhatsApp', 'Email', 'Workshop', 'Mode', 'Preferred Date', 'Canvas Interest', 'Experience', 'Student Notes', 'Price (INR)', 'Payment Status', 'Provider Payment ID', 'Registered At']);
+            fputcsv($output, ['ID', 'Name', 'WhatsApp', 'Email', 'Workshop', 'Mode', 'Payment Method', 'Preferred Date', 'Canvas Interest', 'Experience', 'Student Notes', 'Price (INR)', 'Payment Status', 'Provider Payment ID', 'Registered At']);
             $rows = $pdo->query(
                 'SELECT r.*, p.provider_payment_id 
                  FROM registrations r 
@@ -36,6 +36,7 @@ if ($pdo) {
                     $r['email'],
                     $r['workshop'],
                     $r['mode'],
+                    $r['payment_method'] ?? 'online',
                     $r['preferred_date'],
                     $r['interest'],
                     $r['experience'] ?? '',
@@ -70,6 +71,36 @@ if ($pdo) {
                             $rStmt->execute([':id' => $regId]);
                             $regRow = $rStmt->fetch(PDO::FETCH_ASSOC);
                             if ($regRow) {
+                                // Record or update in payments table
+                                try {
+                                    $isOffline = ($regRow['payment_method'] ?? '') === 'offline';
+                                    $provider = $isOffline ? 'studio_offline' : 'admin_manual';
+                                    $providerId = $isOffline ? 'COLLECTED_AT_STUDIO' : ('MANUAL_' . time());
+
+                                    // Check if existing payment record
+                                    $chk = $pdo->prepare('SELECT id FROM payments WHERE registration_id = :reg_id LIMIT 1');
+                                    $chk->execute([':reg_id' => $regId]);
+                                    $existingPay = $chk->fetch();
+
+                                    if ($existingPay) {
+                                        $upPay = $pdo->prepare('UPDATE payments SET status = "paid", provider_payment_id = :pid WHERE registration_id = :reg_id');
+                                        $upPay->execute([':pid' => $providerId, ':reg_id' => $regId]);
+                                    } else {
+                                        $inPay = $pdo->prepare(
+                                            'INSERT INTO payments (registration_id, provider, provider_payment_id, amount, status)
+                                             VALUES (:reg_id, :provider, :pid, :amount, "paid")'
+                                        );
+                                        $inPay->execute([
+                                            ':reg_id' => $regId,
+                                            ':provider' => $provider,
+                                            ':pid' => $providerId,
+                                            ':amount' => $regRow['price'],
+                                        ]);
+                                    }
+                                } catch (PDOException $e) {
+                                    error_log('Failed to update payments table: ' . $e->getMessage());
+                                }
+
                                 bolso_notify_payment_success($regRow, 'ADMIN_CONFIRMED');
                             }
                             admin_flash('success', "Payment marked as PAID. Confirmation email & WhatsApp alert sent to student and admin (10abhishekkr@gmail.com / 9341469219).");
@@ -90,6 +121,7 @@ if ($pdo) {
                     $email = trim((string)($_POST['email'] ?? ''));
                     $workshopSlug = trim((string)($_POST['workshop'] ?? '2-day'));
                     $mode = trim((string)($_POST['mode'] ?? 'offline'));
+                    $paymentMethod = trim((string)($_POST['payment_method'] ?? ($mode === 'offline' ? 'offline' : 'online')));
                     $preferredDate = trim((string)($_POST['preferred_date'] ?? ''));
                     $interest = trim((string)($_POST['interest'] ?? 'Tote bag'));
                     $experience = trim((string)($_POST['experience'] ?? 'Beginner'));
@@ -101,8 +133,8 @@ if ($pdo) {
                         $error = 'Please provide student name and WhatsApp number.';
                     } else {
                         $insertStmt = $pdo->prepare(
-                            'INSERT INTO registrations (name, whatsapp, email, workshop, mode, preferred_date, interest, experience, message, price, payment_status)
-                             VALUES (:name, :whatsapp, :email, :workshop, :mode, :preferred_date, :interest, :experience, :message, :price, :pay_status)'
+                            'INSERT INTO registrations (name, whatsapp, email, workshop, mode, preferred_date, interest, experience, message, price, payment_status, payment_method)
+                             VALUES (:name, :whatsapp, :email, :workshop, :mode, :preferred_date, :interest, :experience, :message, :price, :pay_status, :payment_method)'
                         );
                         $insertStmt->execute([
                             ':name' => $name,
@@ -116,6 +148,7 @@ if ($pdo) {
                             ':message' => $message,
                             ':price' => $price,
                             ':pay_status' => $payStatus,
+                            ':payment_method' => $paymentMethod,
                         ]);
                         $newId = (int)$pdo->lastInsertId();
 
@@ -123,11 +156,12 @@ if ($pdo) {
                         if ($payStatus === 'paid') {
                             $payStmt = $pdo->prepare(
                                 'INSERT INTO payments (registration_id, provider, provider_payment_id, amount, status)
-                                 VALUES (:reg_id, "manual_admin", :pay_id, :amount, "paid")'
+                                 VALUES (:reg_id, :provider, :pay_id, :amount, "paid")'
                             );
                             $payStmt->execute([
                                 ':reg_id' => $newId,
-                                ':pay_id' => 'MANUAL_' . time(),
+                                ':provider' => ($paymentMethod === 'offline' ? 'studio_offline' : 'manual_admin'),
+                                ':pay_id' => ($paymentMethod === 'offline' ? 'COLLECTED_AT_STUDIO' : ('MANUAL_' . time())),
                                 ':amount' => $price,
                             ]);
 
@@ -136,6 +170,27 @@ if ($pdo) {
                             $newRegRow = $rStmt->fetch(PDO::FETCH_ASSOC);
                             if ($newRegRow) {
                                 bolso_notify_payment_success($newRegRow, 'ADMIN_MANUAL_WALKIN');
+                            }
+                        } elseif ($paymentMethod === 'offline') {
+                            // Offline reservation awaiting payment on arrival
+                            try {
+                                $payStmt = $pdo->prepare(
+                                    'INSERT INTO payments (registration_id, provider, provider_payment_id, amount, status)
+                                     VALUES (:reg_id, "studio_offline", "PAY_AT_STUDIO", :amount, "pending")'
+                                );
+                                $payStmt->execute([
+                                    ':reg_id' => $newId,
+                                    ':amount' => $price,
+                                ]);
+                            } catch (PDOException $e) {
+                                error_log('Failed to record offline pending payment: ' . $e->getMessage());
+                            }
+
+                            $rStmt = $pdo->prepare('SELECT * FROM registrations WHERE id = :id LIMIT 1');
+                            $rStmt->execute([':id' => $newId]);
+                            $newRegRow = $rStmt->fetch(PDO::FETCH_ASSOC);
+                            if ($newRegRow) {
+                                bolso_notify_payment_success($newRegRow, 'PAY_AT_STUDIO');
                             }
                         }
 
@@ -350,8 +405,15 @@ require __DIR__ . '/../includes/header.php';
                                 <span class="status-pill <?= htmlspecialchars($r['payment_status'], ENT_QUOTES, 'UTF-8') ?>">
                                     <?= htmlspecialchars($r['payment_status'], ENT_QUOTES, 'UTF-8') ?>
                                 </span>
+                                <?php if (($r['payment_method'] ?? '') === 'offline'): ?>
+                                    <div>
+                                        <span class="badge" style="background: #fff3e0; color: #b45309; border: 1px solid #fed7aa; font-size: 10px; margin-top: 3px; display: inline-block;">
+                                            <i class="bi bi-geo-alt"></i> Pay at Studio
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
                                 <?php if (!empty($r['provider_payment_id'])): ?>
-                                    <div class="rzp-id-badge" title="Razorpay ID">
+                                    <div class="rzp-id-badge" title="Payment Reference">
                                         <?= htmlspecialchars($r['provider_payment_id'], ENT_QUOTES, 'UTF-8') ?>
                                     </div>
                                 <?php endif; ?>
@@ -375,13 +437,26 @@ require __DIR__ . '/../includes/header.php';
                                     </button>
                                 <?php else: ?>
                                     <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 11px;">
-                                        Awaiting Payment
+                                        <?= ($r['payment_method'] ?? '') === 'offline' ? 'Spot Reserved (Unpaid)' : 'Awaiting Payment' ?>
                                     </span>
                                 <?php endif; ?>
                             </td>
                             <td><small><?= htmlspecialchars(date('d M Y', strtotime($r['registration_date'])), ENT_QUOTES, 'UTF-8') ?></small></td>
                             <td class="text-end pe-4">
                                 <div class="manage-actions justify-content-end">
+                                    <?php if ($r['payment_status'] === 'pending' && ($r['payment_method'] ?? '') === 'offline'): ?>
+                                        <!-- Quick 1-Click Collect Button for Studio Arrival -->
+                                        <form method="post" class="d-inline" onsubmit="return confirm('Confirm receipt of ₹<?= number_format((int)$r['price']) ?> (Cash/UPI) from <?= htmlspecialchars($r['name'], ENT_QUOTES, 'UTF-8') ?> at studio?');">
+                                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                            <input type="hidden" name="action" value="update_payment">
+                                            <input type="hidden" name="registration_id" value="<?= (int)$r['id'] ?>">
+                                            <input type="hidden" name="payment_status" value="paid">
+                                            <button class="btn btn-sm btn-success p-1 px-2 text-nowrap" type="submit" title="Collect Cash / UPI at Studio" style="font-size: 11px;">
+                                                <i class="bi bi-cash-stack"></i> Collect ₹<?= number_format((int)$r['price']) ?>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+
                                     <!-- Quick Payment Status Toggle -->
                                     <form method="post" class="payment-form">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
@@ -506,10 +581,17 @@ require __DIR__ . '/../includes/header.php';
                             </select>
                         </div>
                         <div class="col-md-6">
+                            <label class="form-label" for="add_payment_method">Payment Option *</label>
+                            <select class="form-select" id="add_payment_method" name="payment_method">
+                                <option value="offline">Offline · Pay at Studio (Cash/UPI on Arrival)</option>
+                                <option value="online">Online · Pre-paid (UPI / Card / NetBanking)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
                             <label class="form-label" for="add_pay_status">Payment Status *</label>
                             <select class="form-select" id="add_pay_status" name="payment_status">
-                                <option value="paid">Paid (Cash / Direct Transfer)</option>
-                                <option value="pending">Pending</option>
+                                <option value="pending">Pending (Collect at Studio / Awaiting)</option>
+                                <option value="paid">Paid (Cash / Direct Transfer Received)</option>
                             </select>
                         </div>
                         <div class="col-12">
@@ -574,11 +656,15 @@ require __DIR__ . '/../includes/header.php';
                         <strong id="detail_price">-</strong>
                     </div>
                     <div class="detail-grid-item">
+                        <small>Payment Option</small>
+                        <strong id="detail_method">-</strong>
+                    </div>
+                    <div class="detail-grid-item">
                         <small>Payment Status</small>
                         <strong id="detail_status">-</strong>
                     </div>
                     <div class="detail-grid-item">
-                        <small>Razorpay Payment ID</small>
+                        <small>Payment Reference ID</small>
                         <strong id="detail_rzp">-</strong>
                     </div>
                     <div class="detail-grid-item">
@@ -795,6 +881,7 @@ function openDetailsModal(r) {
     document.getElementById('detail_interest').innerText = r.interest || '-';
     document.getElementById('detail_experience').innerText = r.experience || 'Not specified';
     document.getElementById('detail_price').innerText = '₹' + Number(r.price).toLocaleString();
+    document.getElementById('detail_method').innerText = (r.payment_method === 'offline') ? 'Offline · Pay at Studio on Day 1' : 'Online (UPI / Cards)';
     document.getElementById('detail_status').innerText = (r.payment_status || '').toUpperCase();
     document.getElementById('detail_rzp').innerText = r.provider_payment_id || 'None';
     document.getElementById('detail_timing').innerText = r.timing_slot ? (r.timing_slot + (r.timing_sent_at ? ' (Dispatched: ' + r.timing_sent_at + ')' : '')) : 'Timing not yet assigned (Pending)';
@@ -813,7 +900,7 @@ function openTimingModal(r) {
     document.getElementById('timing_student_name').innerText = (r.name || 'Student') + ' (' + (r.whatsapp || '') + ')';
     document.getElementById('timing_slot_input').value = r.timing_slot || '';
     if (r.mode === 'offline') {
-        document.getElementById('timing_venue_input').value = 'BOLSO Art Studio, Indiranagar, Bengaluru';
+        document.getElementById('timing_venue_input').value = 'Jayanti Abasan, Jhowtala Hatiara, Near Lokenath Mandir, Chinar Park, Kolkata - 700157';
     } else {
         document.getElementById('timing_venue_input').value = 'Google Meet: https://meet.google.com/bolso-art-session';
     }

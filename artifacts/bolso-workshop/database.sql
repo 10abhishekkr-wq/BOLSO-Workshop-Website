@@ -33,11 +33,15 @@ CREATE TABLE IF NOT EXISTS registrations (
     price DECIMAL(10,2) NOT NULL,
     registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     payment_status ENUM('pending', 'paid', 'failed', 'refunded') NOT NULL DEFAULT 'pending',
+    payment_method VARCHAR(50) NOT NULL DEFAULT 'online',
+    timing_slot VARCHAR(255) NULL,
+    timing_sent_at DATETIME NULL,
     CONSTRAINT fk_registration_workshop FOREIGN KEY (workshop) REFERENCES workshops(slug)
         ON UPDATE CASCADE ON DELETE RESTRICT,
     INDEX idx_registration_workshop (workshop),
     INDEX idx_registration_mode (mode),
-    INDEX idx_registration_payment (payment_status)
+    INDEX idx_registration_payment (payment_status),
+    INDEX idx_registration_pay_method (payment_method)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS payments (

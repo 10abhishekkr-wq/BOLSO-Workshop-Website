@@ -25,6 +25,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
                 <div class="detail-side">
                     <span class="price-label">from</span><strong class="detail-price">₹399</strong><small>Online ₹399<br>Offline ₹399</small>
+                    <span class="d-block mt-2 mb-2" style="font-size: 11.5px; opacity: 0.85;"><i class="bi bi-wallet2"></i> Offline: Pay online or at studio</span>
                     <a class="btn btn-light-bolso" href="registration.php?workshop=2-day">Reserve 2-day <i class="bi bi-arrow-up-right"></i></a>
                 </div>
             </article>
@@ -40,7 +41,7 @@ require __DIR__ . '/includes/header.php';
                         <span><strong>Offline 5-Day Workshop Bonus:</strong> Students attending the offline workshop receive physical <em>Colour Palettes</em> &amp; curated studio materials to keep!</span>
                     </div>
                 </div>
-                <div class="detail-side"><span class="price-label">choose your mode</span><div class="mode-price"><strong>₹899</strong><span>Online</span></div><div class="mode-price"><strong>₹1,299</strong><span>Offline</span></div><a class="btn btn-primary-bolso" href="registration.php?workshop=5-day">Reserve 5-day <i class="bi bi-arrow-up-right"></i></a></div>
+                <div class="detail-side"><span class="price-label">choose your mode</span><div class="mode-price"><strong>₹899</strong><span>Online</span></div><div class="mode-price"><strong>₹1,299</strong><span>Offline</span></div><span class="d-block mt-2 mb-2" style="font-size: 11.5px; color: var(--ink-soft);"><i class="bi bi-wallet2"></i> Offline: Pay online or at studio</span><a class="btn btn-primary-bolso" href="registration.php?workshop=5-day">Reserve 5-day <i class="bi bi-arrow-up-right"></i></a></div>
             </article>
         </div>
     </section>

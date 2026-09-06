@@ -472,6 +472,35 @@ function bolso_build_customer_email_html(array $data): string
     $regId = (int)($data['id'] ?? ($data['registration_id'] ?? 0));
     $whatsapp = htmlspecialchars($data['whatsapp'] ?? '', ENT_QUOTES, 'UTF-8');
     $studioWhatsApp = bolso_config('admin_whatsapp', '919341469219');
+    $isPayAtStudio = (($data['payment_method'] ?? '') === 'offline') || ($paymentId === 'PAY_AT_STUDIO');
+
+    $badgeHtml = $isPayAtStudio 
+        ? '<span class="badge-confirmed" style="background: #fff3e0; color: #b45309; border: 1px solid #fed7aa;">✓ Spot Reserved · Pay at Studio on Day 1</span>'
+        : '<span class="badge-confirmed">✓ Payment Done · Spot Confirmed</span>';
+
+    $pageTitle = $isPayAtStudio ? 'Spot Reserved - BOLSO Workshop' : 'Payment Confirmed - BOLSO Workshop';
+
+    $introHtml = $isPayAtStudio
+        ? "We are delighted to confirm that your in-person spot for the <strong>{$workshopTitle}</strong> (Offline Studio Batch) is secured! Since you opted to <strong>Pay Offline</strong>, your workshop fee of <strong>₹{$price}</strong> will be collected in Cash or via UPI directly at our studio upon arrival on Day 1."
+        : "We are delighted to confirm that your payment of <strong>₹{$price}</strong> has been received successfully. Your registration for the <strong>{$workshopTitle}</strong> is officially secured.";
+
+    $venueHtml = $isPayAtStudio
+        ? '<div style="background: #fdfaf5; border-left: 4px solid #d46d47; border-radius: 8px; padding: 18px 22px; margin: 24px 0;">
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #8e232e;">📍 Studio Location &amp; Venue</h3>
+            <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #2e3842;">
+                <strong>Jayanti Abasan, Jhowtala Hatiara, Near Lokenath Mandir, Chinar Park, Kolkata - 700157</strong><br>
+                <span style="font-size: 12.5px; color: #78716c;">All fabric canvases, pigments, materials and artist colour palettes will be ready at the studio.</span>
+            </p>
+           </div>'
+        : '';
+
+    $statusVal = $isPayAtStudio 
+        ? '<span style="color: #b45309; font-weight: 700;">Pay at Studio (Cash / UPI on Arrival)</span>'
+        : '<span style="color: #2e7d32; font-weight: 700;">Paid &amp; Confirmed ✓</span>';
+
+    $paymentMethodRow = $isPayAtStudio
+        ? '<tr><td class="label">Payment Option</td><td class="value">Offline (Pay at Studio on Day 1)</td></tr>'
+        : '<tr><td class="label">Payment Option</td><td class="value">Online (UPI / Card / NetBanking)</td></tr>';
 
     return <<<HTML
 <!DOCTYPE html>
@@ -479,7 +508,7 @@ function bolso_build_customer_email_html(array $data): string
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment Confirmed - BOLSO Workshop</title>
+<title>{$pageTitle}</title>
 <style>
     body { margin: 0; padding: 0; background-color: #f6f0e6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #172432; }
     .email-container { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 12px 35px rgba(23, 36, 50, 0.08); border: 1px solid #e7ded0; }
@@ -517,11 +546,13 @@ function bolso_build_customer_email_html(array $data): string
         <p>Art · Emotion · Fashion</p>
     </div>
     <div class="email-body">
-        <span class="badge-confirmed">✓ Payment Done · Spot Confirmed</span>
+        {$badgeHtml}
         <h2 class="greeting">Thank you, {$name}!</h2>
         <p class="intro">
-            We are delighted to confirm that your payment of <strong>₹{$price}</strong> has been received successfully. Your registration for the <strong>{$workshopTitle}</strong> is officially secured.
+            {$introHtml}
         </p>
+
+        {$venueHtml}
 
         <!-- Explicit timing clarification requested by user -->
         <div class="timing-box">
@@ -544,6 +575,7 @@ function bolso_build_customer_email_html(array $data): string
                 <td class="label">Learning Mode</td>
                 <td class="value">{$mode}</td>
             </tr>
+            {$paymentMethodRow}
             <tr>
                 <td class="label">Preferred Date</td>
                 <td class="value">{$preferredDate}</td>
@@ -554,12 +586,12 @@ function bolso_build_customer_email_html(array $data): string
             </tr>
             <tr>
                 <td class="label">Payment Status</td>
-                <td class="value" style="color: #2e7d32;">Paid &amp; Confirmed ✓</td>
+                <td class="value">{$statusVal}</td>
             </tr>
         </table>
 
         <div class="btn-wrap">
-            <a class="btn-whatsapp" href="https://wa.me/{$studioWhatsApp}?text=Hello%20BOLSO!%20My%20payment%20is%20done%20for%20workshop%20reg%20%23{$regId}.%20Looking%20forward%20to%20my%20timing." target="_blank">
+            <a class="btn-whatsapp" href="https://wa.me/{$studioWhatsApp}?text=Hello%20BOLSO!%20My%20spot%20is%20reserved%20for%20workshop%20reg%20%23{$regId}.%20Looking%20forward%20to%20my%20timing." target="_blank">
                 Chat with Studio on WhatsApp →
             </a>
         </div>
@@ -594,8 +626,30 @@ function bolso_build_admin_email_html(array $data): string
     $interest = htmlspecialchars($data['interest'] ?? 'Fabric painting', ENT_QUOTES, 'UTF-8');
     $experience = htmlspecialchars($data['experience'] ?? 'Not specified', ENT_QUOTES, 'UTF-8');
     $notes = htmlspecialchars($data['message'] ?? 'None', ENT_QUOTES, 'UTF-8');
+    $isPayAtStudio = (($data['payment_method'] ?? '') === 'offline') || ($paymentId === 'PAY_AT_STUDIO');
 
-    $waDirectLink = 'https://wa.me/' . $cleanWa . '?text=' . rawurlencode("Hello {$data['name']}! Thank you for registering for the BOLSO {$workshopTitle} workshop. Your payment of ₹{$price} is received. Here is your workshop timing: ");
+    $headerStyle = $isPayAtStudio ? 'background: #172432;' : 'background: #8e232e;';
+    $eyebrowText = $isPayAtStudio ? 'BOLSO Studio Alert · Offline Booking' : 'BOLSO Studio Alert';
+    $eyebrowColor = $isPayAtStudio ? '#f59e0b' : '#e5b352';
+    $headerTitle = $isPayAtStudio ? "📍 Pay at Studio: ₹{$price} to Collect" : "💰 Payment Received: ₹{$price}";
+    
+    $paymentRow = $isPayAtStudio
+        ? '<tr><td class="lbl">Payment Option</td><td class="val"><strong>Offline · Pay at Studio on Day 1</strong></td></tr>
+           <tr><td class="lbl">Amount to Collect</td><td class="val" style="color: #b45309; font-size: 16px; font-weight: bold;">₹' . $price . ' (Collect on Arrival)</td></tr>'
+        : '<tr><td class="lbl">Payment Option</td><td class="val">Online (Razorpay / UPI / Cards)</td></tr>
+           <tr><td class="lbl">Amount Received</td><td class="val" style="color: #2e7d32; font-size: 16px;">₹' . $price . ' (Verified Paid)</td></tr>';
+
+    $actionNotice = $isPayAtStudio
+        ? '<div class="action-notice" style="background: #fff8e1; border-left: 4px solid #f59e0b; color: #78350f;">
+            <strong>👉 Action Required:</strong> Contact ' . $name . ' to provide their workshop timing soon, and collect <strong>₹' . $price . '</strong> (Cash/UPI) upon arrival at the studio on Day 1!
+           </div>'
+        : '<div class="action-notice">
+            <strong>👉 Action Required:</strong> Please contact ' . $name . ' to provide their workshop timing soon!
+           </div>';
+
+    $waDirectLink = $isPayAtStudio
+        ? 'https://wa.me/' . $cleanWa . '?text=' . rawurlencode("Hello {$data['name']}! Thank you for registering for the BOLSO {$workshopTitle} (Offline Studio Batch). Your spot is reserved (Pay ₹{$price} at Studio). Here is your workshop timing: ")
+        : 'https://wa.me/' . $cleanWa . '?text=' . rawurlencode("Hello {$data['name']}! Thank you for registering for the BOLSO {$workshopTitle} workshop. Your payment of ₹{$price} is received. Here is your workshop timing: ");
 
     return <<<HTML
 <!DOCTYPE html>
@@ -603,12 +657,12 @@ function bolso_build_admin_email_html(array $data): string
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Alert: Payment Received - BOLSO</title>
+<title>Admin Alert: {$headerTitle} - BOLSO</title>
 <style>
     body { margin: 0; padding: 0; background-color: #172432; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
     .admin-container { max-width: 620px; margin: 30px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
-    .admin-header { background: #8e232e; padding: 28px 30px; color: #ffffff; }
-    .admin-header .eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em; color: #e5b352; font-weight: 700; margin-bottom: 6px; }
+    .admin-header { {$headerStyle} padding: 28px 30px; color: #ffffff; }
+    .admin-header .eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em; color: {$eyebrowColor}; font-weight: 700; margin-bottom: 6px; }
     .admin-header h1 { margin: 0; font-size: 24px; font-weight: 700; }
     .admin-body { padding: 32px 30px; color: #172432; }
 
@@ -634,8 +688,8 @@ function bolso_build_admin_email_html(array $data): string
 <body>
 <div class="admin-container">
     <div class="admin-header">
-        <div class="eyebrow">BOLSO Studio Alert</div>
-        <h1>💰 Payment Received: ₹{$price}</h1>
+        <div class="eyebrow">{$eyebrowText}</div>
+        <h1>{$headerTitle}</h1>
     </div>
     <div class="admin-body">
         <div class="highlight-card">
@@ -654,16 +708,13 @@ function bolso_build_admin_email_html(array $data): string
                 <td class="lbl">Learning Mode</td>
                 <td class="val">{$mode}</td>
             </tr>
-            <tr>
-                <td class="lbl">Amount Received</td>
-                <td class="val" style="color: #2e7d32; font-size: 16px;">₹{$price} (Verified Paid)</td>
-            </tr>
+            {$paymentRow}
             <tr>
                 <td class="lbl">Preferred Date</td>
                 <td class="val">{$preferredDate}</td>
             </tr>
             <tr>
-                <td class="lbl">Payment ID</td>
+                <td class="lbl">Payment ID / Ref</td>
                 <td class="val" style="font-family: monospace;">{$paymentId}</td>
             </tr>
             <tr>
@@ -684,9 +735,7 @@ function bolso_build_admin_email_html(array $data): string
             </tr>
         </table>
 
-        <div class="action-notice">
-            <strong>👉 Action Required:</strong> Please contact {$name} to provide their workshop timing soon!
-        </div>
+        {$actionNotice}
 
         <div class="button-group">
             <a class="btn-wa" href="{$waDirectLink}" target="_blank">
@@ -717,6 +766,30 @@ function bolso_build_customer_whatsapp_text(array $data): string
     $price = number_format((float)($data['price'] ?? 0));
     $preferredDate = trim((string)($data['preferred_date'] ?? 'Upcoming Batch'));
     $regId = (int)($data['id'] ?? ($data['registration_id'] ?? 0));
+    $paymentId = trim((string)($data['payment_id'] ?? ''));
+    $isPayAtStudio = (($data['payment_method'] ?? '') === 'offline') || ($paymentId === 'PAY_AT_STUDIO');
+
+    if ($isPayAtStudio) {
+        return "Hello *{$name}*! 🎨\n\n" .
+               "Thank you for registering for the *BOLSO {$workshopTitle}* (Offline Studio Batch)!\n" .
+               "Your in-person spot is successfully *reserved*! ✨\n\n" .
+               "📋 *Booking Summary:*\n" .
+               "• Registration ID: #{$regId}\n" .
+               "• Workshop: {$workshopTitle} ({$mode})\n" .
+               "• Preferred Date: {$preferredDate}\n" .
+               "• Payment Option: *Pay at Studio (Cash / UPI on Day 1)*\n" .
+               "• Fee to Pay on Arrival: *₹{$price}*\n\n" .
+               "📍 *Studio Venue:*\n" .
+               "Jayanti Abasan, Jhowtala Hatiara, Near Lokenath Mandir, Chinar Park, Kolkata - 700157\n" .
+               "(All premium canvases, pigments, and palettes will be provided at the studio!)\n\n" .
+               "🕒 *Schedule & Timing:*\n" .
+               "*Your timing for the workshop will be given to you very soon!*\n" .
+               "Our studio team will message you shortly with the exact timings and batch details.\n\n" .
+               "If you have any questions, feel free to reply right here!\n\n" .
+               "Warm regards,\n" .
+               "*BOLSO Fabric Art Studio*\n" .
+               "_Art · Emotion · Fashion_";
+    }
 
     return "Hello *{$name}*! 🎨\n\n" .
            "Thank you for registering for the *BOLSO {$workshopTitle}*!\n" .
@@ -752,6 +825,26 @@ function bolso_build_admin_whatsapp_text(array $data): string
     $paymentId = trim((string)($data['payment_id'] ?? 'VERIFIED_PAID'));
     $regId = (int)($data['id'] ?? ($data['registration_id'] ?? 0));
     $interest = trim((string)($data['interest'] ?? 'General'));
+    $isPayAtStudio = (($data['payment_method'] ?? '') === 'offline') || ($paymentId === 'PAY_AT_STUDIO');
+
+    if ($isPayAtStudio) {
+        return "🔔 *NEW OFFLINE REGISTRATION (PAY AT STUDIO) - BOLSO WORKSHOP!*\n\n" .
+               "📍 *Payment Option:* Pay at Studio on Arrival\n" .
+               "💵 *Amount to Collect:* ₹{$price} (Cash / UPI on Day 1)\n" .
+               "🎨 *Workshop:* {$workshopTitle} ({$mode})\n" .
+               "📅 *Preferred Date:* {$preferredDate}\n\n" .
+               "👤 *CUSTOMER DETAILS:*\n" .
+               "• Name: *{$name}*\n" .
+               "• Email: {$email}\n" .
+               "• WhatsApp: +{$cleanWa} ({$whatsapp})\n" .
+               "• Painting Interest: {$interest}\n" .
+               "• Reg ID: #{$regId}\n" .
+               "• Payment Ref: {$paymentId}\n\n" .
+               "👉 *ACTION NEEDED:*\n" .
+               "1. Contact {$name} with their workshop timing soon.\n" .
+               "2. Collect ₹{$price} upon their arrival at studio on Day 1.\n" .
+               "Quick chat link: https://wa.me/{$cleanWa}";
+    }
 
     return "🔔 *NEW PAYMENT RECEIVED - BOLSO WORKSHOP!*\n\n" .
            "💰 *Amount Received:* ₹{$price}\n" .
@@ -796,12 +889,15 @@ function bolso_notify_payment_success(array $registration, string $paymentId = '
 
     $registration['payment_id'] = $paymentId ?: ($registration['payment_id'] ?? 'VERIFIED_PAID');
     $regId = !empty($registration['id']) ? (int)$registration['id'] : null;
+    $isPayAtStudio = (($registration['payment_method'] ?? '') === 'offline') || ($registration['payment_id'] === 'PAY_AT_STUDIO');
 
     $adminEmail = bolso_config('admin_email', '10abhishekkr@gmail.com');
     $adminPhone = bolso_config('admin_whatsapp', '919341469219');
 
     // 1. Customer Email
-    $customerSubject = 'Payment Confirmed: Your BOLSO Workshop Spot is Secured! (ID: #' . ($regId ?: 'NEW') . ')';
+    $customerSubject = $isPayAtStudio
+        ? 'Spot Reserved: Your BOLSO Studio Workshop Spot is Confirmed! (ID: #' . ($regId ?: 'NEW') . ')'
+        : 'Payment Confirmed: Your BOLSO Workshop Spot is Secured! (ID: #' . ($regId ?: 'NEW') . ')';
     $customerHtml = bolso_build_customer_email_html($registration);
     $customerEmailResult = bolso_send_mail(
         $registration['email'],
@@ -814,7 +910,9 @@ function bolso_notify_payment_success(array $registration, string $paymentId = '
     );
 
     // 2. Admin Email (to 10abhishekkr@gmail.com)
-    $adminSubject = '🔔 Payment Received: ₹' . number_format((float)$registration['price']) . ' from ' . $registration['name'] . ' (' . $registration['workshop_title'] . ')';
+    $adminSubject = $isPayAtStudio
+        ? '📍 Spot Reserved (Pay at Studio): ₹' . number_format((float)$registration['price']) . ' to collect from ' . $registration['name'] . ' (' . $registration['workshop_title'] . ')'
+        : '🔔 Payment Received: ₹' . number_format((float)$registration['price']) . ' from ' . $registration['name'] . ' (' . $registration['workshop_title'] . ')';
     $adminHtml = bolso_build_admin_email_html($registration);
     $adminEmailResult = bolso_send_mail(
         $adminEmail,

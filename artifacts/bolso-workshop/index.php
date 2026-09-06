@@ -125,7 +125,7 @@ require __DIR__ . '/includes/header.php';
                     <div class="tile-bottom">
                         <div class="tile-price-wrap">
                             <span class="price-val">From ₹399</span>
-                            <span class="price-sub">Online &amp; Offline</span>
+                            <span class="price-sub">Online &amp; Offline · Pay online or at studio</span>
                         </div>
                         <a href="registration.php?workshop=2-day">Book this <i class="bi bi-arrow-up-right"></i></a>
                     </div>
@@ -154,7 +154,7 @@ require __DIR__ . '/includes/header.php';
                     <div class="tile-bottom">
                         <div class="tile-price-wrap">
                             <span class="price-val">From ₹899</span>
-                            <span class="price-sub">Online ₹899 · Offline ₹1,299</span>
+                            <span class="price-sub">Online ₹899 · Offline ₹1,299 (Pay at Studio available)</span>
                         </div>
                         <a href="registration.php?workshop=5-day">Book this <i class="bi bi-arrow-up-right"></i></a>
                     </div>

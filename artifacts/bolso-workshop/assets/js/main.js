@@ -5,6 +5,11 @@
   var priceDisplay = document.getElementById('priceDisplay');
   var priceNote = document.getElementById('priceNote');
 
+  var optPayOffline = document.getElementById('optPayOffline');
+  var optPayOnline = document.getElementById('optPayOnline');
+  var onlineOnlyNotice = document.getElementById('onlineOnlyNotice');
+  var submitBtn = document.querySelector('.registration-form .submit-btn');
+
   function updatePrice() {
     if (!workshop || !mode || !priceDisplay) return;
     var key = workshop.value + '_' + mode.value;
@@ -19,10 +24,57 @@
             ? 'Live classes over Google Meet.'
             : 'Final details shared after registration.';
     }
+    updatePaymentMethods(price);
+  }
+
+  function updatePaymentMethods(currentPrice) {
+    if (!mode) return;
+    var isOffline = mode.value === 'offline';
+    var offlineInput = optPayOffline ? optPayOffline.querySelector('input') : null;
+    var onlineInput = optPayOnline ? optPayOnline.querySelector('input') : null;
+
+    if (isOffline) {
+      if (optPayOffline) optPayOffline.classList.remove('disabled-opt');
+      if (offlineInput) offlineInput.disabled = false;
+      if (onlineOnlyNotice) onlineOnlyNotice.classList.add('d-none');
+    } else {
+      if (optPayOffline) optPayOffline.classList.add('disabled-opt');
+      if (offlineInput) {
+        offlineInput.disabled = true;
+        if (offlineInput.checked && onlineInput) {
+          onlineInput.checked = true;
+        }
+      }
+      if (onlineOnlyNotice) onlineOnlyNotice.classList.remove('d-none');
+    }
+
+    if (submitBtn) {
+      var selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+      var methodVal = selectedMethod ? selectedMethod.value : 'online';
+      var formattedPrice = currentPrice ? '₹' + Number(currentPrice).toLocaleString('en-IN') : priceDisplay.textContent;
+
+      if (isOffline && methodVal === 'offline') {
+        submitBtn.innerHTML = 'Reserve Spot &amp; Pay at Studio (' + formattedPrice + ') <i class="bi bi-geo-alt"></i>';
+      } else {
+        submitBtn.innerHTML = 'Proceed to Pay ' + formattedPrice + ' <i class="bi bi-arrow-up-right"></i>';
+      }
+    }
   }
 
   if (workshop) workshop.addEventListener('change', updatePrice);
   if (mode) mode.addEventListener('change', updatePrice);
+  document.querySelectorAll('input[name="payment_method"]').forEach(function(radio) {
+    radio.addEventListener('change', function() {
+      var key = (workshop ? workshop.value : '2-day') + '_' + (mode ? mode.value : 'online');
+      var price = prices[key] || 399;
+      updatePaymentMethods(price);
+    });
+  });
+
+  // Initial call on page load if elements exist
+  if (workshop && mode) {
+    updatePrice();
+  }
 
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener('click', function (event) {
