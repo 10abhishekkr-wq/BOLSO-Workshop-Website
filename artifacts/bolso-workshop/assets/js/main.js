@@ -48,6 +48,22 @@
       if (onlineOnlyNotice) onlineOnlyNotice.classList.remove('d-none');
     }
 
+    // Sync is-selected class on card containers
+    if (optPayOnline) {
+      if (onlineInput && onlineInput.checked) {
+        optPayOnline.classList.add('is-selected');
+      } else {
+        optPayOnline.classList.remove('is-selected');
+      }
+    }
+    if (optPayOffline) {
+      if (offlineInput && offlineInput.checked && isOffline) {
+        optPayOffline.classList.add('is-selected');
+      } else {
+        optPayOffline.classList.remove('is-selected');
+      }
+    }
+
     if (submitBtn) {
       var selectedMethod = document.querySelector('input[name="payment_method"]:checked');
       var methodVal = selectedMethod ? selectedMethod.value : 'online';

@@ -482,18 +482,28 @@ require __DIR__ . '/includes/header.php';
                             <div class="col-12 form-field" id="paymentMethodContainer">
                                 <label>Payment Option <span>*</span></label>
                                 <div class="payment-method-cards">
-                                    <label class="payment-card-opt" id="optPayOnline">
+                                    <label class="payment-card-opt <?= ($submitted['payment_method'] ?? 'online') !== 'offline' ? 'is-selected' : '' ?>" id="optPayOnline">
                                         <input type="radio" name="payment_method" value="online" <?= ($submitted['payment_method'] ?? 'online') !== 'offline' ? 'checked' : '' ?>>
                                         <div class="payment-card-content">
-                                            <strong><i class="bi bi-credit-card-2-front"></i> Pay Online Now</strong>
-                                            <small>Instant confirmation via UPI (Google Pay, PhonePe, Paytm), Debit / Credit Cards, or NetBanking.</small>
+                                            <div class="payment-card-top">
+                                                <span class="payment-card-title">
+                                                    <i class="bi bi-credit-card-2-front"></i> Pay Online Now
+                                                </span>
+                                                <span class="custom-radio-circle" aria-hidden="true"></span>
+                                            </div>
+                                            <small class="payment-card-sub">Instant confirmation via UPI (Google Pay, PhonePe, Paytm), Debit / Credit Cards, or NetBanking.</small>
                                         </div>
                                     </label>
-                                    <label class="payment-card-opt <?= $mode !== 'offline' ? 'disabled-opt' : '' ?>" id="optPayOffline">
+                                    <label class="payment-card-opt <?= ($submitted['payment_method'] ?? '') === 'offline' && $mode === 'offline' ? 'is-selected' : '' ?> <?= $mode !== 'offline' ? 'disabled-opt' : '' ?>" id="optPayOffline">
                                         <input type="radio" name="payment_method" value="offline" <?= ($submitted['payment_method'] ?? '') === 'offline' && $mode === 'offline' ? 'checked' : '' ?> <?= $mode !== 'offline' ? 'disabled' : '' ?>>
                                         <div class="payment-card-content">
-                                            <strong><i class="bi bi-geo-alt"></i> Pay at Studio (Offline)</strong>
-                                            <small>Reserve your spot now. Pay via Cash or UPI upon arrival at the studio on Day 1.</small>
+                                            <div class="payment-card-top">
+                                                <span class="payment-card-title">
+                                                    <i class="bi bi-geo-alt"></i> Pay at Studio (Offline)
+                                                </span>
+                                                <span class="custom-radio-circle" aria-hidden="true"></span>
+                                            </div>
+                                            <small class="payment-card-sub">Reserve your spot now. Pay via Cash or UPI upon arrival at the studio on Day 1.</small>
                                         </div>
                                     </label>
                                 </div>
