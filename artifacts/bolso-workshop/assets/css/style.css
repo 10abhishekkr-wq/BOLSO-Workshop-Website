@@ -712,6 +712,11 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
   color: var(--maroon);
   outline: none;
 }
+/* Hide Microsoft Edge / IE native password reveal to prevent duplicate eye icons */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
 .form-hint {
   font-size: 11px;
   color: var(--ink-soft);

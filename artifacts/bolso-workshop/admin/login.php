@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/db_schema.php';
 
 if (!empty($_SESSION['admin_id'])) {
     header('Location: dashboard.php');
@@ -13,21 +14,41 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim((string)($_POST['username'] ?? ''));
     $password = (string)($_POST['password'] ?? '');
-    $pdo = bolso_db();
 
-    if ($pdo) {
-        $statement = $pdo->prepare('SELECT id, username, password_hash FROM admins WHERE username = :username LIMIT 1');
-        $statement->execute([':username' => $username]);
-        $admin = $statement->fetch();
-        if ($admin && password_verify($password, $admin['password_hash'])) {
-            session_regenerate_id(true);
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_username'] = $admin['username'];
-            header('Location: dashboard.php');
-            exit;
+    try {
+        $pdo = bolso_db();
+
+        if (!$pdo) {
+            $error = 'Database connection failed. Please check MySQL settings in config/config.php or visit /setup_database.php.';
+        } else {
+            // Auto-heal: verify admins table exists, if not auto-initialize schema
+            try {
+                $tableCheck = $pdo->query("SHOW TABLES LIKE 'admins'")->fetch();
+                if (!$tableCheck) {
+                    bolso_ensure_schema($pdo);
+                }
+            } catch (Throwable $schemaEx) {
+                // Attempt schema creation anyway
+                bolso_ensure_schema($pdo);
+            }
+
+            $statement = $pdo->prepare('SELECT id, username, password_hash FROM admins WHERE username = :username LIMIT 1');
+            $statement->execute([':username' => $username]);
+            $admin = $statement->fetch();
+
+            if ($admin && password_verify($password, (string)$admin['password_hash'])) {
+                session_regenerate_id(true);
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_username'] = $admin['username'];
+                header('Location: dashboard.php');
+                exit;
+            }
+            $error = 'That login did not match. Please check your details.';
         }
+    } catch (Throwable $e) {
+        error_log('Admin login error: ' . $e->getMessage());
+        $error = 'Database error: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . '. Run <a href="../setup_database.php" style="text-decoration:underline;">setup_database.php</a> to initialize tables.';
     }
-    $error = 'That login did not match. Please check your details.';
 }
 
 $pageTitle = 'Admin login';

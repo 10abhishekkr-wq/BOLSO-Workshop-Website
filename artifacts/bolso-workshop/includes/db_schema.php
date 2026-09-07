@@ -1,0 +1,148 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../config/database.php';
+
+/**
+ * Ensures all required BOLSO database tables and default records exist.
+ * Safe to execute at any time (uses IF NOT EXISTS and ON DUPLICATE KEY UPDATE).
+ */
+function bolso_ensure_schema(?PDO $pdo = null): array
+{
+    if (!$pdo) {
+        $pdo = bolso_db();
+    }
+    if (!$pdo) {
+        return [
+            'success' => false,
+            'errors' => ['Could not connect to database. Please check credentials in config/config.php or config/config.local.php.'],
+            'created' => [],
+        ];
+    }
+
+    $created = [];
+    $errors = [];
+
+    // 1. Admins Table
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS admins (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(80) NOT NULL UNIQUE,
+            password_hash VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        // Seed default admin if empty
+        $stmt = $pdo->query("SELECT COUNT(*) FROM admins");
+        if ((int)$stmt->fetchColumn() === 0) {
+            $defaultHash = '$2y$12$34ugcnZpYPzpseZkemkfw.3vQrX.48DZb1k1YHTKFjF1kt5b8aOs6'; // bolso2026
+            $ins = $pdo->prepare("INSERT INTO admins (username, password_hash) VALUES ('admin', :hash)");
+            $ins->execute([':hash' => $defaultHash]);
+            $created[] = "Seeded default admin account (username: admin, password: bolso2026)";
+        }
+        $created[] = "admins table verified";
+    } catch (Throwable $e) {
+        $errors[] = "admins table: " . $e->getMessage();
+    }
+
+    // 2. Workshops Table
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS workshops (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            slug VARCHAR(40) NOT NULL UNIQUE,
+            title VARCHAR(120) NOT NULL,
+            duration_days TINYINT UNSIGNED NOT NULL,
+            online_price DECIMAL(10,2) NOT NULL,
+            offline_price DECIMAL(10,2) NOT NULL,
+            max_students TINYINT UNSIGNED NOT NULL DEFAULT 6,
+            active TINYINT(1) NOT NULL DEFAULT 1
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        // Seed default workshops
+        $pdo->exec("INSERT INTO workshops (slug, title, duration_days, online_price, offline_price, max_students)
+        VALUES
+            ('2-day', '2-Day Workshop', 2, 399.00, 399.00, 6),
+            ('5-day', '5-Day Workshop', 5, 899.00, 1299.00, 6)
+        ON DUPLICATE KEY UPDATE title = VALUES(title), online_price = VALUES(online_price), offline_price = VALUES(offline_price);");
+        $created[] = "workshops table verified & seeded (2-day, 5-day)";
+    } catch (Throwable $e) {
+        $errors[] = "workshops table: " . $e->getMessage();
+    }
+
+    // 3. Users Table
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS users (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(160) NOT NULL,
+            email VARCHAR(190) NOT NULL UNIQUE,
+            whatsapp VARCHAR(40) NOT NULL,
+            password_hash VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_user_email (email)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $created[] = "users table verified";
+    } catch (Throwable $e) {
+        $errors[] = "users table: " . $e->getMessage();
+    }
+
+    // 4. Registrations Table
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS registrations (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NULL,
+            name VARCHAR(160) NOT NULL,
+            whatsapp VARCHAR(40) NOT NULL,
+            email VARCHAR(190) NOT NULL,
+            workshop VARCHAR(40) NOT NULL,
+            mode ENUM('online', 'offline') NOT NULL,
+            preferred_date VARCHAR(160) NOT NULL,
+            interest VARCHAR(80) NOT NULL,
+            experience VARCHAR(80) NULL,
+            message TEXT NULL,
+            price DECIMAL(10,2) NOT NULL,
+            registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            payment_status ENUM('pending', 'paid', 'failed', 'refunded') NOT NULL DEFAULT 'pending',
+            payment_method VARCHAR(50) NOT NULL DEFAULT 'online',
+            timing_slot VARCHAR(255) NULL,
+            timing_sent_at DATETIME NULL,
+            CONSTRAINT fk_registration_user FOREIGN KEY (user_id) REFERENCES users(id)
+                ON UPDATE CASCADE ON DELETE SET NULL,
+            CONSTRAINT fk_registration_workshop FOREIGN KEY (workshop) REFERENCES workshops(slug)
+                ON UPDATE CASCADE ON DELETE RESTRICT,
+            INDEX idx_registration_user (user_id),
+            INDEX idx_registration_workshop (workshop),
+            INDEX idx_registration_mode (mode),
+            INDEX idx_registration_payment (payment_status),
+            INDEX idx_registration_pay_method (payment_method)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $created[] = "registrations table verified";
+    } catch (Throwable $e) {
+        $errors[] = "registrations table: " . $e->getMessage();
+    }
+
+    // 5. Payments Table
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS payments (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            registration_id INT UNSIGNED NOT NULL,
+            provider VARCHAR(60) NOT NULL,
+            provider_payment_id VARCHAR(190) NULL,
+            amount DECIMAL(10,2) NOT NULL,
+            status ENUM('pending', 'paid', 'failed', 'refunded') NOT NULL DEFAULT 'pending',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            CONSTRAINT fk_payment_registration FOREIGN KEY (registration_id) REFERENCES registrations(id)
+                ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $created[] = "payments table verified";
+    } catch (Throwable $e) {
+        $errors[] = "payments table: " . $e->getMessage();
+    }
+
+    return [
+        'success' => empty($errors),
+        'created' => $created,
+        'errors' => $errors,
+    ];
+}

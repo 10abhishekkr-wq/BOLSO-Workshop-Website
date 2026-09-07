@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS bolso CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE bolso;
+-- BOLSO Workshop Database Schema
+-- Compatible with any MySQL/MariaDB database (Local XAMPP, Hostinger, cPanel, VPS)
 
 CREATE TABLE IF NOT EXISTS admins (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

@@ -35,35 +35,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        $pdo = bolso_db();
-        if (!$pdo) {
-            $errors[] = 'Database connection error. Please try again shortly.';
-        } else {
-            $stmt = $pdo->prepare('SELECT id, name, email, whatsapp, password_hash FROM users WHERE LOWER(email) = LOWER(:email) LIMIT 1');
-            $stmt->execute([':email' => $email]);
-            $user = $stmt->fetch();
-
-            if ($user && password_verify($password, (string)$user['password_hash'])) {
-                session_regenerate_id(true);
-                $_SESSION['user_id'] = (int)$user['id'];
-                $_SESSION['user_name'] = (string)$user['name'];
-                $_SESSION['user_email'] = (string)$user['email'];
-                $_SESSION['user_whatsapp'] = (string)$user['whatsapp'];
-
-                // Automatically link any past registrations placed with this email
+        try {
+            $pdo = bolso_db();
+            if (!$pdo) {
+                $errors[] = 'Database connection error. Please try again shortly.';
+            } else {
+                // Auto-heal: verify users table exists
                 try {
-                    $linkStmt = $pdo->prepare('UPDATE registrations SET user_id = :uid WHERE LOWER(email) = LOWER(:email) AND user_id IS NULL');
-                    $linkStmt->execute([':uid' => $user['id'], ':email' => $user['email']]);
-                } catch (PDOException $e) {
-                    error_log('Failed linking existing registrations: ' . $e->getMessage());
+                    $tableCheck = $pdo->query("SHOW TABLES LIKE 'users'")->fetch();
+                    if (!$tableCheck) {
+                        require_once __DIR__ . '/includes/db_schema.php';
+                        bolso_ensure_schema($pdo);
+                    }
+                } catch (Throwable $t) {
+                    require_once __DIR__ . '/includes/db_schema.php';
+                    bolso_ensure_schema($pdo);
                 }
 
-                $dest = $redirect !== '' ? $redirect : 'my-workshops.php';
-                header('Location: ' . $dest);
-                exit;
-            } else {
-                $errors[] = 'Incorrect email address or password. Please try again.';
+                $stmt = $pdo->prepare('SELECT id, name, email, whatsapp, password_hash FROM users WHERE LOWER(email) = LOWER(:email) LIMIT 1');
+                $stmt->execute([':email' => $email]);
+                $user = $stmt->fetch();
+
+                if ($user && password_verify($password, (string)$user['password_hash'])) {
+                    session_regenerate_id(true);
+                    $_SESSION['user_id'] = (int)$user['id'];
+                    $_SESSION['user_name'] = (string)$user['name'];
+                    $_SESSION['user_email'] = (string)$user['email'];
+                    $_SESSION['user_whatsapp'] = (string)$user['whatsapp'];
+
+                    // Automatically link any past registrations placed with this email
+                    try {
+                        $linkStmt = $pdo->prepare('UPDATE registrations SET user_id = :uid WHERE LOWER(email) = LOWER(:email) AND user_id IS NULL');
+                        $linkStmt->execute([':uid' => $user['id'], ':email' => $user['email']]);
+                    } catch (Throwable $e) {
+                        error_log('Failed linking existing registrations: ' . $e->getMessage());
+                    }
+
+                    $dest = $redirect !== '' ? $redirect : 'my-workshops.php';
+                    header('Location: ' . $dest);
+                    exit;
+                } else {
+                    $errors[] = 'Incorrect email address or password. Please try again.';
+                }
             }
+        } catch (Throwable $e) {
+            error_log('Student login error: ' . $e->getMessage());
+            $errors[] = 'Database error: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
         }
     }
 }
