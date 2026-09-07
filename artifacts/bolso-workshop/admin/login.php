@@ -48,10 +48,44 @@ require __DIR__ . '/../includes/header.php';
         <form method="post" class="admin-form">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
             <label for="username">Username</label><input id="username" name="username" autocomplete="username" required>
-            <label for="password">Password</label><input id="password" type="password" name="password" autocomplete="current-password" required>
+            <label for="password">Password</label>
+            <div style="position: relative; width: 100%;">
+                <input id="password" type="password" name="password" autocomplete="current-password" required style="padding-right: 44px; width: 100%;">
+                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility" title="Show password" tabindex="-1" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--ink-soft); cursor: pointer; font-size: 18px; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 3;">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
             <button class="btn btn-primary-bolso w-100 mt-3" type="submit">Sign in <i class="bi bi-arrow-right"></i></button>
         </form>
         <a class="text-link dark-link mt-4 d-inline-block" href="../index.php"><i class="bi bi-arrow-left"></i> Back to site</a>
     </div>
 </main>
+<script>
+function togglePasswordVisibility(fieldId, btn) {
+    var field = document.getElementById(fieldId);
+    if (!field) return;
+    var icon = btn ? btn.querySelector('i') : null;
+    if (field.type === 'password') {
+        field.type = 'text';
+        if (icon) {
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        }
+        if (btn) {
+            btn.setAttribute('title', 'Hide password');
+            btn.setAttribute('aria-label', 'Hide password');
+        }
+    } else {
+        field.type = 'password';
+        if (icon) {
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+        if (btn) {
+            btn.setAttribute('title', 'Show password');
+            btn.setAttribute('aria-label', 'Show password');
+        }
+    }
+}
+</script>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

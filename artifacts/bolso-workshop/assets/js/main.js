@@ -320,4 +320,32 @@
   sliders.forEach(function (slider) {
     initCardStack(slider);
   });
+
+  // Global password visibility toggle
+  window.togglePasswordVisibility = function (fieldId, btn) {
+    var field = document.getElementById(fieldId);
+    if (!field) return;
+    var icon = btn ? btn.querySelector('i') : null;
+    if (field.type === 'password') {
+      field.type = 'text';
+      if (icon) {
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      }
+      if (btn) {
+        btn.setAttribute('title', 'Hide password');
+        btn.setAttribute('aria-label', 'Hide password');
+      }
+    } else {
+      field.type = 'password';
+      if (icon) {
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
+      if (btn) {
+        btn.setAttribute('title', 'Show password');
+        btn.setAttribute('aria-label', 'Show password');
+      }
+    }
+  };
 })();

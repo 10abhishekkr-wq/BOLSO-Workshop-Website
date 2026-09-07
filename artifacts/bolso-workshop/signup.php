@@ -159,14 +159,20 @@ require __DIR__ . '/includes/header.php';
                                 <label for="password" class="form-label">Password</label>
                                 <div class="input-icon-wrap">
                                     <i class="bi bi-lock input-icon"></i>
-                                    <input type="password" id="password" name="password" class="form-control bolso-input" placeholder="At least 6 chars" required autocomplete="new-password">
+                                    <input type="password" id="password" name="password" class="form-control bolso-input has-toggle" placeholder="At least 6 chars" required autocomplete="new-password">
+                                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility" title="Show password" tabindex="-1">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
                                 </div>
                             </div>
                             <div class="col-sm-6 form-group">
                                 <label for="password_confirm" class="form-label">Confirm Password</label>
                                 <div class="input-icon-wrap">
                                     <i class="bi bi-shield-check input-icon"></i>
-                                    <input type="password" id="password_confirm" name="password_confirm" class="form-control bolso-input" placeholder="Repeat password" required autocomplete="new-password">
+                                    <input type="password" id="password_confirm" name="password_confirm" class="form-control bolso-input has-toggle" placeholder="Repeat password" required autocomplete="new-password">
+                                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password_confirm', this)" aria-label="Toggle password visibility" title="Show password" tabindex="-1">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -187,4 +193,32 @@ require __DIR__ . '/includes/header.php';
         </div>
     </div>
 </main>
+<script>
+function togglePasswordVisibility(fieldId, btn) {
+    var field = document.getElementById(fieldId);
+    if (!field) return;
+    var icon = btn ? btn.querySelector('i') : null;
+    if (field.type === 'password') {
+        field.type = 'text';
+        if (icon) {
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        }
+        if (btn) {
+            btn.setAttribute('title', 'Hide password');
+            btn.setAttribute('aria-label', 'Hide password');
+        }
+    } else {
+        field.type = 'password';
+        if (icon) {
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+        if (btn) {
+            btn.setAttribute('title', 'Show password');
+            btn.setAttribute('aria-label', 'Show password');
+        }
+    }
+}
+</script>
 <?php require __DIR__ . '/includes/footer.php'; ?>
