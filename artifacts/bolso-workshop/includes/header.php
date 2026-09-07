@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/auth.php';
 
 $pageTitle = $pageTitle ?? 'Learn to turn fabric into art';
 $activePage = $activePage ?? '';
@@ -25,7 +26,7 @@ $isAdminArea = $isAdminArea ?? false;
     <link rel="icon" type="image/png" href="<?= $isAdminArea ? '../assets/images/favicon.png' : 'assets/images/favicon.png' ?>">
     <link rel="shortcut icon" href="<?= $isAdminArea ? '../favicon.ico' : 'favicon.ico' ?>">
     <link rel="apple-touch-icon" href="<?= $isAdminArea ? '../assets/images/favicon.png' : 'assets/images/favicon.png' ?>">
-    <link rel="stylesheet" href="<?= ($isAdminArea ? '../assets/css/style.css?v=' : 'assets/css/style.css?v=') . (file_exists(__DIR__ . '/../assets/css/style.css') ? (string)filemtime(__DIR__ . '/../assets/css/style.css') : '2.1') ?>">
+    <link rel="stylesheet" href="<?= ($isAdminArea ? '../assets/css/style.css?v=' : 'assets/css/style.css?v=') . (file_exists(__DIR__ . '/../assets/css/style.css') ? (string)filemtime(__DIR__ . '/../assets/css/style.css') : '2.2') ?>">
 </head>
 <body class="<?= $isAdminArea ? 'admin-body' : '' ?>">
 <div class="site-grain" aria-hidden="true"></div>
@@ -51,10 +52,31 @@ $isAdminArea = $isAdminArea ?? false;
                 <i class="bi bi-list"></i>
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-4">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3 gap-xl-4">
                     <li class="nav-item"><a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link <?= $activePage === 'workshops' ? 'active' : '' ?>" href="workshops.php">Workshops</a></li>
                     <li class="nav-item"><a class="nav-link <?= $activePage === 'registration' ? 'active' : '' ?>" href="registration.php">Registration</a></li>
+                    
+                    <?php if (is_user_logged_in()): ?>
+                        <?php
+                            $navUser = current_user();
+                            $navFirstName = explode(' ', trim($navUser['name'] ?? 'Student'))[0];
+                        ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-user-btn <?= $activePage === 'my-workshops' ? 'active' : '' ?>" href="#" id="userNavDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i> Hi, <?= htmlspecialchars($navFirstName, ENT_QUOTES, 'UTF-8') ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end bolso-dropdown" aria-labelledby="userNavDropdown">
+                                <li><a class="dropdown-item <?= $activePage === 'my-workshops' ? 'active' : '' ?>" href="my-workshops.php"><i class="bi bi-grid me-2"></i> My Workshops</a></li>
+                                <li><a class="dropdown-item" href="registration.php"><i class="bi bi-plus-circle me-2"></i> Book Workshop</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item"><a class="nav-link <?= $activePage === 'login' ? 'active' : '' ?>" href="login.php"><i class="bi bi-person me-1"></i> Sign In</a></li>
+                    <?php endif; ?>
+
                     <li class="nav-item"><a class="nav-link admin-nav-link" href="admin/" title="Admin Panel"><i class="bi bi-shield-lock"></i> Admin</a></li>
                     <li class="nav-item"><a class="nav-cta" href="registration.php">Reserve your spot <i class="bi bi-arrow-up-right"></i></a></li>
                 </ul>

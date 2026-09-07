@@ -19,8 +19,20 @@ CREATE TABLE IF NOT EXISTS workshops (
     active TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(160) NOT NULL,
+    email VARCHAR(190) NOT NULL UNIQUE,
+    whatsapp VARCHAR(40) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_user_email (email)
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS registrations (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NULL,
     name VARCHAR(160) NOT NULL,
     whatsapp VARCHAR(40) NOT NULL,
     email VARCHAR(190) NOT NULL,
@@ -36,8 +48,11 @@ CREATE TABLE IF NOT EXISTS registrations (
     payment_method VARCHAR(50) NOT NULL DEFAULT 'online',
     timing_slot VARCHAR(255) NULL,
     timing_sent_at DATETIME NULL,
+    CONSTRAINT fk_registration_user FOREIGN KEY (user_id) REFERENCES users(id)
+        ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT fk_registration_workshop FOREIGN KEY (workshop) REFERENCES workshops(slug)
         ON UPDATE CASCADE ON DELETE RESTRICT,
+    INDEX idx_registration_user (user_id),
     INDEX idx_registration_workshop (workshop),
     INDEX idx_registration_mode (mode),
     INDEX idx_registration_payment (payment_status),

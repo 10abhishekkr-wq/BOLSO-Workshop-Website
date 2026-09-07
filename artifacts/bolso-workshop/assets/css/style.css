@@ -612,9 +612,317 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
 .detail-grid-item small { color: var(--ink-soft); font-size: 11px; display: block; text-transform: uppercase; letter-spacing: .05em; }
 .detail-grid-item strong { font-size: 14px; color: var(--ink); display: block; margin-top: 2px; }
 
-.reveal { animation: rise .75s both; }
-.reveal-delay-1 { animation-delay: .13s; }
-@keyframes rise { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+/* --------------------------------------------------------------------------
+   Student Authentication & Dashboard
+   -------------------------------------------------------------------------- */
+.user-auth-page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  padding-top: 140px;
+}
+.user-auth-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 44px 40px;
+  box-shadow: 12px 14px 0 rgba(84, 29, 44, 0.08);
+}
+.auth-title {
+  font-family: var(--display);
+  font-size: clamp(34px, 4.5vw, 44px);
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.auth-title em {
+  font-style: italic;
+  color: var(--maroon);
+}
+.auth-subtitle {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+.auth-form .form-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.input-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-icon-wrap .input-icon {
+  position: absolute;
+  left: 15px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  pointer-events: none;
+}
+.input-icon-wrap .bolso-input {
+  padding-left: 44px;
+}
+.bolso-input {
+  background: var(--cream) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 0 !important;
+  color: var(--ink) !important;
+  font-size: 14px !important;
+  padding: 12px 16px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+.bolso-input:focus {
+  border-color: var(--maroon) !important;
+  box-shadow: 0 0 0 3px rgba(124, 38, 57, 0.12) !important;
+  outline: none !important;
+}
+.form-hint {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  display: block;
+}
+.auth-switch-link {
+  color: var(--maroon);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+.auth-switch-link:hover {
+  color: var(--terracotta);
+}
+
+/* User Navbar Elements */
+.nav-user-btn {
+  font-weight: 600 !important;
+  color: var(--maroon) !important;
+  display: inline-flex;
+  align-items: center;
+}
+.bolso-dropdown {
+  background: var(--paper) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 10px 30px rgba(31, 45, 61, 0.1) !important;
+  padding: 8px 0 !important;
+}
+.bolso-dropdown .dropdown-item {
+  font-size: 13px;
+  padding: 9px 20px;
+  color: var(--ink);
+  transition: background 0.15s ease;
+}
+.bolso-dropdown .dropdown-item:hover {
+  background: rgba(216, 165, 42, 0.12);
+  color: var(--maroon);
+}
+.bolso-dropdown .dropdown-divider {
+  border-color: var(--line);
+  margin: 6px 0;
+}
+
+/* Student Dashboard */
+.student-dashboard {
+  padding-top: 135px;
+  min-height: calc(100vh - 120px);
+}
+.student-profile-bar {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 30px 35px;
+  box-shadow: 0 4px 20px rgba(31, 45, 61, 0.04);
+}
+.student-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--maroon);
+  color: var(--cream);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.student-name {
+  font-family: var(--display);
+  font-size: clamp(24px, 3.5vw, 32px);
+  color: var(--ink);
+  line-height: 1.2;
+}
+.student-meta {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.btn-outline-bolso {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 0.2s ease;
+}
+.btn-outline-bolso:hover {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+
+/* Workshop Booking Card */
+.workshop-booking-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 30px 28px;
+  box-shadow: 0 4px 18px rgba(31, 45, 61, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.workshop-booking-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(31, 45, 61, 0.07);
+}
+.booking-id-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.booking-workshop-title {
+  font-family: var(--display);
+  font-size: 24px;
+  color: var(--ink);
+}
+.badge-payment-paid {
+  background: #dbe8d3;
+  color: #3b5c30;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 3px;
+  letter-spacing: 0.03em;
+}
+.badge-payment-studio {
+  background: #fae7dc;
+  color: #9c4327;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 3px;
+  letter-spacing: 0.03em;
+}
+.badge-payment-pending {
+  background: #fdf3d8;
+  color: #8c6710;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 3px;
+  letter-spacing: 0.03em;
+}
+.badge-mode-offline {
+  background: rgba(31, 45, 61, 0.07);
+  color: var(--ink);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+.badge-mode-online {
+  background: #e1ebf5;
+  color: #1f4e79;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+.timing-highlight-box {
+  background: #fff8ee;
+  border: 1px solid #ebdbbe;
+  border-left: 4px solid var(--mustard);
+  padding: 14px 18px;
+}
+.timing-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.timing-val {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.timing-slot-confirmed {
+  font-size: 12.5px;
+  color: var(--maroon);
+}
+.timing-slot-notice {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.timing-icon {
+  font-size: 18px;
+  color: var(--mustard);
+}
+.booking-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 20px;
+}
+.booking-detail-item .detail-label {
+  display: block;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+.booking-detail-item .detail-val {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 2px;
+}
+.venue-info-box {
+  background: rgba(31, 45, 61, 0.03);
+  border: 1px solid var(--line);
+  padding: 13px 16px;
+  font-size: 12px;
+}
+.venue-icon {
+  font-size: 17px;
+  color: var(--maroon);
+}
+.venue-addr {
+  font-size: 12.5px;
+  color: var(--ink);
+  line-height: 1.45;
+}
+.concierge-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 20px rgba(31, 45, 61, 0.03);
+}
+.empty-dashboard-card {
+  background: var(--paper);
+  border: 1px dashed var(--line);
+}
+.empty-icon-wrap .empty-icon {
+  font-size: 48px;
+  color: var(--terracotta);
+  opacity: 0.75;
+}
+
 @media (max-width: 991px) {
   .brand-tagline, .brand-subtext { display: none !important; }
   .bolso-nav { padding: 18px 0; }
@@ -676,4 +984,9 @@ h2 { font-size: clamp(42px, 5.3vw, 69px); line-height: 1.03; }
   .stat-card strong { font-size: 42px; margin: 23px 0 8px; }
   .dashboard-table-head { align-items: flex-start; flex-direction: column; gap: 15px; }
   .admin-login-card { padding: 36px 25px; }
+  .user-auth-card { padding: 36px 24px; box-shadow: 6px 8px 0 rgba(84, 29, 44, 0.08); }
+  .student-profile-bar { padding: 24px 20px; }
+  .booking-details-grid { grid-template-columns: 1fr; gap: 10px; }
+  .student-dashboard { padding-top: 110px; }
+  .user-auth-page { padding-top: 110px; }
 }

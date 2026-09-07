@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
 
 $pageTitle = 'Reserve your spot';
 $activePage = 'registration';
@@ -10,6 +11,14 @@ $success = null;
 $pendingPayment = null;
 $paymentSuccess = null;
 $submitted = $_POST;
+
+$currentUser = current_user();
+$loggedInUserId = $currentUser['id'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $currentUser) {
+    $submitted['name'] = $currentUser['name'] ?? '';
+    $submitted['email'] = $currentUser['email'] ?? '';
+    $submitted['whatsapp'] = $currentUser['whatsapp'] ?? '';
+}
 
 $workshop = $_POST['workshop'] ?? $_GET['workshop'] ?? '2-day';
 $mode = $_POST['mode'] ?? 'online';
@@ -110,11 +119,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                     $paymentMethod = 'online';
                 }
 
+                // If not logged in, check if user exists with this email to auto-link
+                $regUserId = $loggedInUserId;
+                if ($regUserId === null && $email !== '') {
+                    try {
+                        $findUserStmt = $pdo->prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(:email) LIMIT 1');
+                        $findUserStmt->execute([':email' => $email]);
+                        $matchedUser = $findUserStmt->fetch();
+                        if ($matchedUser) {
+                            $regUserId = (int)$matchedUser['id'];
+                        }
+                    } catch (PDOException $e) {
+                        // ignore
+                    }
+                }
+
                 $statement = $pdo->prepare(
-                    'INSERT INTO registrations (name, whatsapp, email, workshop, mode, preferred_date, interest, experience, message, price, payment_status, payment_method)
-                     VALUES (:name, :whatsapp, :email, :workshop, :mode, :preferred_date, :interest, :experience, :message, :price, :payment_status, :payment_method)'
+                    'INSERT INTO registrations (user_id, name, whatsapp, email, workshop, mode, preferred_date, interest, experience, message, price, payment_status, payment_method)
+                     VALUES (:user_id, :name, :whatsapp, :email, :workshop, :mode, :preferred_date, :interest, :experience, :message, :price, :payment_status, :payment_method)'
                 );
                 $statement->execute([
+                    ':user_id' => $regUserId,
                     ':name' => $name,
                     ':whatsapp' => $whatsapp,
                     ':email' => $email,
@@ -467,6 +492,28 @@ require __DIR__ . '/includes/header.php';
                 <?php else: ?>
                     <?php if ($errors): ?><div class="alert bolso-alert" role="alert"><strong>Almost there.</strong><ul><?php foreach ($errors as $error): ?><li><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></li><?php endforeach; ?></ul></div><?php endif; ?>
                     <form method="post" action="registration.php" class="registration-form" novalidate>
+                        <?php if ($currentUser): ?>
+                            <div class="user-booking-banner mb-4 p-3 d-flex flex-wrap justify-content-between align-items-center gap-2" style="background: rgba(189,92,62,.09); border-left: 3px solid var(--terracotta); border-radius: 4px;">
+                                <div style="font-size: 13.5px; color: var(--ink);">
+                                    <i class="bi bi-person-check-fill text-success me-2"></i>
+                                    Booking as <strong><?= htmlspecialchars($currentUser['name'], ENT_QUOTES, 'UTF-8') ?></strong> (<?= htmlspecialchars($currentUser['email'], ENT_QUOTES, 'UTF-8') ?>). This reservation will be linked to your student dashboard.
+                                </div>
+                                <div>
+                                    <a href="logout.php" class="text-link dark-link" style="font-size: 12px; text-decoration: underline;">Switch account</a>
+                                </div>
+                            </div>
+                        <?php else: ?>
+                            <div class="user-booking-banner mb-4 p-3 d-flex flex-wrap justify-content-between align-items-center gap-2" style="background: rgba(31,45,61,.05); border-left: 3px solid var(--ink-soft); border-radius: 4px;">
+                                <div style="font-size: 13px; color: var(--ink-soft);">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Already have a student account? <a href="login.php?redirect=registration.php" style="font-weight: 600; text-decoration: underline; color: var(--ink);">Sign in here</a> to auto-fill your details.
+                                </div>
+                                <div>
+                                    <a href="signup.php?redirect=registration.php" class="text-link dark-link" style="font-size: 12px; text-decoration: underline;">Create account</a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="form-step"><span>01</span><h2>Your details</h2></div>
                         <div class="row g-4">
                             <div class="col-md-6 form-field"><label for="name">Full name <span>*</span></label><input id="name" name="name" value="<?= htmlspecialchars((string)($submitted['name'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="Your name" required></div>
