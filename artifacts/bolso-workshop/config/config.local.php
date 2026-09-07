@@ -1,9 +1,9 @@
 <?php
 putenv('BOLSO_DB_HOST=127.0.0.1');
 putenv('BOLSO_DB_PORT=3306');
-putenv('BOLSO_DB_NAME=bolso');
-putenv('BOLSO_DB_USER=root');
-putenv('BOLSO_DB_PASSWORD=');
+putenv('BOLSO_DB_NAME=Bolsodb');
+putenv('BOLSO_DB_USER=Bolsodb');
+putenv('BOLSO_DB_PASSWORD=FAsBc8WKE3IGy2cppGnt');
 putenv('BOLSO_WHATSAPP=919674773475');
 putenv('BOLSO_PAYMENT_KEY=rzp_test_TXHzubPWVcRrT7');
 putenv('BOLSO_PAYMENT_SECRET=WBOpN3a5npmtmWHNc5wIREEN');
