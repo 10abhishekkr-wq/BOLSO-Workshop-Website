@@ -79,7 +79,39 @@ require __DIR__ . '/includes/header.php';
         <div class="container">
             <div class="section-label"><span>02</span><span class="line"></span><span>The BOLSO way</span></div>
             <div class="about-grid">
-                <div class="about-heading reveal"><h2>There is art<br>in the <em>everyday.</em></h2></div>
+                <div class="about-heading reveal">
+                    <div class="about-kicker"><span class="kicker-sparkle">✦</span><span>The Studio Philosophy</span></div>
+                    <h2>There is art<br>in the <em class="brush-accent">everyday.</em></h2>
+                    <div class="about-craft-card">
+                        <div class="craft-card-badge">
+                            <span class="craft-pill"><i class="bi bi-patch-check-fill"></i> Studio Standards</span>
+                            <div class="craft-palette" title="Curated Studio Pigments">
+                                <span class="palette-swatch swatch-maroon" title="Deep Maroon"></span>
+                                <span class="palette-swatch swatch-rust" title="Terracotta"></span>
+                                <span class="palette-swatch swatch-gold" title="Ochre Gold"></span>
+                                <span class="palette-swatch swatch-sage" title="Sage Green"></span>
+                                <span class="palette-swatch swatch-slate" title="Ink Navy"></span>
+                            </div>
+                        </div>
+                        <p class="craft-quote">“We don’t paint on canvases that hang on walls. We paint on the clothes you live in.”</p>
+                        <div class="craft-perks">
+                            <div class="craft-perk">
+                                <span class="craft-perk-icon"><i class="bi bi-droplet-half"></i></span>
+                                <div class="craft-perk-body">
+                                    <strong>Soft-Touch Inks</strong>
+                                    <small>Zero crack · 100% washable</small>
+                                </div>
+                            </div>
+                            <div class="craft-perk">
+                                <span class="craft-perk-icon"><i class="bi bi-people-fill"></i></span>
+                                <div class="craft-perk-body">
+                                    <strong>Max 6 Students</strong>
+                                    <small>Personal 1-on-1 guidance</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="about-copy reveal reveal-delay-1">
                     <p class="lead-copy">A plain tee. A canvas tote. Your favourite old pair of jeans. We believe the things closest to us deserve a little more feeling.</p>
                     <p>BOLSO started with custom fabric paintings and grew into a place to learn the process for yourself. From the first brushstroke to the last soft wash, you’ll learn how to make colour sit beautifully on cloth.</p>
