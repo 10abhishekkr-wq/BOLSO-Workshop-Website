@@ -90,7 +90,7 @@ h1 em, h2 em, h3 em { color: var(--maroon); font-style: italic; }
 .image-placeholder.small .placeholder-brush { font-size: 75px; }
 .image-caption { position: absolute; bottom: 14px; left: 16px; z-index: 3; color: rgba(251,248,241,.75); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
 .art-orbit, .art-swatch { display: none; }
-.hero-stamp { position: absolute; top: -15px; right: -20px; display: grid; place-items: center; width: 106px; height: 106px; border: 1.5px solid var(--maroon); border-radius: 50%; color: var(--maroon); font-family: var(--display); font-size: 16px; font-style: italic; line-height: 1.05; text-align: center; transform: rotate(12deg); z-index: 12; background: rgba(246, 240, 230, 0.88); backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(84, 29, 44, 0.12); pointer-events: none; }
+.hero-stamp { position: absolute; top: -60px; right: -135px; display: grid; place-items: center; width: 104px; height: 104px; border: 1.5px solid var(--maroon); border-radius: 50%; color: var(--maroon); font-family: var(--display); font-size: 16px; font-style: italic; line-height: 1.05; text-align: center; transform: rotate(12deg); z-index: 12; background: rgba(246, 240, 230, 0.88); backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(84, 29, 44, 0.12); pointer-events: none; }
 .hero-stamp i { font-family: var(--body); font-size: 16px; position: absolute; right: 10px; top: 12px; }
 .hero-bottom-line, .section-label { display: flex; align-items: center; gap: 14px; }
 .hero-bottom-line { bottom: 25px; color: var(--ink-soft); font-size: 10px; left: 50%; letter-spacing: .12em; position: absolute; text-transform: uppercase; transform: translateX(-50%); white-space: nowrap; }
@@ -961,6 +961,7 @@ input::-ms-clear {
   .hero-section { min-height: auto; padding-top: 150px; }
   .hero-grid, .guidance-grid, .registration-grid { gap: 55px; grid-template-columns: 1fr; }
   .hero-art { margin: 0 auto; max-width: 520px; width: 100%; }
+  .hero-stamp { top: -15px; right: 15px; }
   .about-grid { gap: 35px; }
   .registration-aside { border-left: 0; border-top: 1px solid var(--line); padding: 35px 0 0; }
   .aside-sticky { max-width: 500px; }
