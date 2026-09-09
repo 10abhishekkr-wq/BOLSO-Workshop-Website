@@ -69,7 +69,10 @@ require __DIR__ . '/../includes/header.php';
         <form method="post" class="admin-form">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(admin_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
             <label for="username">Username</label><input id="username" name="username" autocomplete="username" required>
-            <label for="password">Password</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <label for="password" style="margin-bottom: 0;">Password</label>
+                <a href="forgot-password.php" style="font-size: 11px; color: var(--ink-soft); text-decoration: underline;">Forgot password?</a>
+            </div>
             <div style="position: relative; width: 100%;">
                 <input id="password" type="password" name="password" autocomplete="current-password" required style="padding-right: 44px; width: 100%;">
                 <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility" title="Show password" tabindex="-1" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--ink-soft); cursor: pointer; font-size: 18px; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 3;">

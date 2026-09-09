@@ -1303,7 +1303,9 @@ function bolso_get_notifications(int $limit = 50, int $offset = 0, array $filter
         $sql .= ' WHERE ' . implode(' AND ', $where);
     }
 
-    $sql .= " ORDER BY n.id DESC LIMIT {$limit} OFFSET {$offset}";
+    $safeLimit = max(1, min(100, (int)$limit));
+    $safeOffset = max(0, (int)$offset);
+    $sql .= " ORDER BY n.id DESC LIMIT {$safeLimit} OFFSET {$safeOffset}";
 
     try {
         $stmt = $pdo->prepare($sql);
@@ -1313,5 +1315,53 @@ function bolso_get_notifications(int $limit = 50, int $offset = 0, array $filter
         error_log('Error fetching notification logs: ' . $e->getMessage());
         return [];
     }
+}
+
+/**
+ * Send password reset email for users or admins.
+ */
+function bolso_send_password_reset_email(string $userType, string $toEmail, string $toName, string $resetLink): array
+{
+    $appName = 'BOLSO Fabric Art Studio';
+    $roleName = $userType === 'admin' ? 'Studio Administrator' : 'Student';
+    $subject = "Reset Your Password · {$appName}";
+    $safeName = htmlspecialchars($toName, ENT_QUOTES, 'UTF-8');
+    $safeLink = htmlspecialchars($resetLink, ENT_QUOTES, 'UTF-8');
+
+    $html = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f6f0e6; color: #1f2d3d; margin: 0; padding: 30px 15px; }
+  .card { max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid rgba(31,45,61,0.12); padding: 32px; box-shadow: 0 8px 24px rgba(84,29,44,0.06); }
+  .logo { font-size: 24px; font-weight: bold; color: #7c2639; font-style: italic; letter-spacing: 0.1em; text-align: center; margin-bottom: 24px; }
+  h2 { font-size: 20px; color: #1f2d3d; margin-top: 0; }
+  p { font-size: 14px; line-height: 1.6; color: #496174; }
+  .btn { display: inline-block; background: #7c2639; color: #f6f0e6 !important; text-decoration: none; padding: 13px 28px; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; border-radius: 4px; margin: 20px 0; }
+  .footnote { font-size: 12px; color: #8898aa; border-top: 1px solid #eee; padding-top: 16px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">BOLSO</div>
+  <h2>Password Reset Request</h2>
+  <p>Hello <strong>{$safeName}</strong>,</p>
+  <p>We received a request to reset your password for your BOLSO {$roleName} account. Click the button below to choose a new password:</p>
+  <div style="text-align: center;">
+    <a href="{$safeLink}" class="btn">Reset My Password</a>
+  </div>
+  <p>Or paste this link into your browser:</p>
+  <p style="word-break: break-all; font-size: 12px; color: #7c2639;">{$safeLink}</p>
+  <p class="footnote">This link will expire in <strong>1 hour</strong>. If you did not request a password reset, you can safely ignore this email — your account remains secure.</p>
+</div>
+</body>
+</html>
+HTML;
+
+    $plainText = "Hello {$toName},\n\nWe received a request to reset your password for your BOLSO {$roleName} account.\n\nTo reset your password, please open the following link in your browser:\n{$resetLink}\n\nThis link will expire in 1 hour.\nIf you did not request this, please ignore this email.\n\n- BOLSO Fabric Art Studio";
+
+    return bolso_send_mail($toEmail, $toName, $subject, $html, $plainText, null, $userType === 'admin' ? 'admin' : 'customer');
 }
 

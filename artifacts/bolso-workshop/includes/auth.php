@@ -99,3 +99,114 @@ function verify_user_csrf(?string $token): bool
         && !empty($_SESSION['user_csrf'])
         && hash_equals($_SESSION['user_csrf'], $token);
 }
+
+/**
+ * -------------------------------------------------------------
+ * Password Reset Helpers (Secure Token Hashing + 1hr Expiry)
+ * -------------------------------------------------------------
+ */
+
+function bolso_create_password_reset(string $userType, int $userId, string $email): ?string
+{
+    $pdo = bolso_db();
+    if (!$pdo) return null;
+
+    if (!in_array($userType, ['user', 'admin'], true)) {
+        return null;
+    }
+
+    try {
+        // Invalidate prior unused tokens for this user/admin
+        $cancelStmt = $pdo->prepare('UPDATE password_resets SET used_at = NOW() WHERE user_type = :type AND user_id = :uid AND used_at IS NULL');
+        $cancelStmt->execute([':type' => $userType, ':uid' => $userId]);
+
+        $rawToken = bin2hex(random_bytes(32));
+        $tokenHash = hash('sha256', $rawToken);
+
+        $insStmt = $pdo->prepare(
+            'INSERT INTO password_resets (user_type, user_id, email, token_hash, expires_at)
+             VALUES (:type, :uid, :email, :token_hash, DATE_ADD(NOW(), INTERVAL 1 HOUR))'
+        );
+        $insStmt->execute([
+            ':type' => $userType,
+            ':uid' => $userId,
+            ':email' => $email,
+            ':token_hash' => $tokenHash,
+        ]);
+
+        return $rawToken;
+    } catch (PDOException $e) {
+        error_log('Error creating password reset: ' . $e->getMessage());
+        return null;
+    }
+}
+
+function bolso_verify_reset_token(string $userType, string $rawToken): ?array
+{
+    $pdo = bolso_db();
+    if (!$pdo) return null;
+
+    $rawToken = trim($rawToken);
+    if ($rawToken === '') return null;
+
+    $tokenHash = hash('sha256', $rawToken);
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT * FROM password_resets 
+             WHERE user_type = :type 
+               AND token_hash = :hash 
+               AND used_at IS NULL 
+               AND expires_at > NOW() 
+             LIMIT 1'
+        );
+        $stmt->execute([
+            ':type' => $userType,
+            ':hash' => $tokenHash,
+        ]);
+        $record = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $record ?: null;
+    } catch (PDOException $e) {
+        error_log('Error verifying reset token: ' . $e->getMessage());
+        return null;
+    }
+}
+
+function bolso_complete_password_reset(int $resetId, string $userType, int $userId, string $newPassword): bool
+{
+    $pdo = bolso_db();
+    if (!$pdo) return false;
+
+    if (strlen($newPassword) < 6) {
+        return false;
+    }
+
+    $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
+
+    try {
+        $pdo->beginTransaction();
+
+        if ($userType === 'user') {
+            $stmt = $pdo->prepare('UPDATE users SET password_hash = :hash WHERE id = :id');
+            $stmt->execute([':hash' => $newHash, ':id' => $userId]);
+        } elseif ($userType === 'admin') {
+            $stmt = $pdo->prepare('UPDATE admins SET password_hash = :hash WHERE id = :id');
+            $stmt->execute([':hash' => $newHash, ':id' => $userId]);
+        } else {
+            $pdo->rollBack();
+            return false;
+        }
+
+        $markStmt = $pdo->prepare('UPDATE password_resets SET used_at = NOW() WHERE id = :rid');
+        $markStmt->execute([':rid' => $resetId]);
+
+        $pdo->commit();
+        return true;
+    } catch (PDOException $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        error_log('Error completing password reset: ' . $e->getMessage());
+        return false;
+    }
+}

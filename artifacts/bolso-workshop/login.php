@@ -133,6 +133,7 @@ require __DIR__ . '/includes/header.php';
                         <div class="form-group mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <label for="password" class="form-label mb-0">Password</label>
+                                <a href="forgot-password.php" class="small text-muted" style="font-size: 11.5px; text-decoration: underline;">Forgot password?</a>
                             </div>
                             <div class="input-icon-wrap">
                                 <i class="bi bi-lock input-icon"></i>

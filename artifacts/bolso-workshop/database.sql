@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS admins (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(80) NOT NULL UNIQUE,
+    email VARCHAR(190) NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
@@ -72,6 +73,20 @@ CREATE TABLE IF NOT EXISTS payments (
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS password_resets (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_type ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+    user_id INT UNSIGNED NOT NULL,
+    email VARCHAR(190) NOT NULL,
+    token_hash VARCHAR(64) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    used_at DATETIME NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_reset_token (token_hash),
+    INDEX idx_reset_user (user_type, user_id),
+    INDEX idx_reset_expires (expires_at)
+) ENGINE=InnoDB;
+
 INSERT INTO workshops (slug, title, duration_days, online_price, offline_price, max_students)
 VALUES
     ('2-day', '2-Day Workshop', 2, 399.00, 399.00, 6),
@@ -80,7 +95,8 @@ ON DUPLICATE KEY UPDATE title = VALUES(title), online_price = VALUES(online_pric
 
 -- Change this password after importing the database.
 -- Username: admin
+-- Email: 10abhishekkr@gmail.com
 -- Password: bolso2026
-INSERT INTO admins (username, password_hash)
-VALUES ('admin', '$2y$12$34ugcnZpYPzpseZkemkfw.3vQrX.48DZb1k1YHTKFjF1kt5b8aOs6')
-ON DUPLICATE KEY UPDATE username = VALUES(username);
+INSERT INTO admins (username, email, password_hash)
+VALUES ('admin', '10abhishekkr@gmail.com', '$2y$12$34ugcnZpYPzpseZkemkfw.3vQrX.48DZb1k1YHTKFjF1kt5b8aOs6')
+ON DUPLICATE KEY UPDATE email = VALUES(email);

@@ -28,17 +28,29 @@ function bolso_ensure_schema(?PDO $pdo = null): array
         $pdo->exec("CREATE TABLE IF NOT EXISTS admins (
             id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(80) NOT NULL UNIQUE,
+            email VARCHAR(190) NULL UNIQUE,
             password_hash VARCHAR(255) NOT NULL,
             created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        // Ensure email column exists on existing admins table
+        try {
+            $colCheck = $pdo->query("SHOW COLUMNS FROM admins LIKE 'email'")->fetch();
+            if (!$colCheck) {
+                @$pdo->exec("ALTER TABLE admins ADD COLUMN email VARCHAR(190) NULL UNIQUE AFTER username");
+            }
+        } catch (Throwable $ignore) {}
 
         // Seed default admin if empty
         $stmt = $pdo->query("SELECT COUNT(*) FROM admins");
         if ((int)$stmt->fetchColumn() === 0) {
             $defaultHash = '$2y$12$34ugcnZpYPzpseZkemkfw.3vQrX.48DZb1k1YHTKFjF1kt5b8aOs6'; // bolso2026
-            $ins = $pdo->prepare("INSERT INTO admins (username, password_hash) VALUES ('admin', :hash)");
+            $ins = $pdo->prepare("INSERT INTO admins (username, email, password_hash) VALUES ('admin', '10abhishekkr@gmail.com', :hash)");
             $ins->execute([':hash' => $defaultHash]);
-            $created[] = "Seeded default admin account (username: admin, password: bolso2026)";
+            $created[] = "Seeded default admin account (username: admin, email: 10abhishekkr@gmail.com, password: bolso2026)";
+        } else {
+            // Update admin email if null
+            @$pdo->exec("UPDATE admins SET email = '10abhishekkr@gmail.com' WHERE username = 'admin' AND (email IS NULL OR email = '')");
         }
         $created[] = "admins table verified";
     } catch (Throwable $e) {
@@ -138,6 +150,26 @@ function bolso_ensure_schema(?PDO $pdo = null): array
         $created[] = "payments table verified";
     } catch (Throwable $e) {
         $errors[] = "payments table: " . $e->getMessage();
+    }
+
+    // 6. Password Resets Table
+    try {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS password_resets (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_type ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+            user_id INT UNSIGNED NOT NULL,
+            email VARCHAR(190) NOT NULL,
+            token_hash VARCHAR(64) NOT NULL,
+            expires_at DATETIME NOT NULL,
+            used_at DATETIME NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_reset_token (token_hash),
+            INDEX idx_reset_user (user_type, user_id),
+            INDEX idx_reset_expires (expires_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $created[] = "password_resets table verified";
+    } catch (Throwable $e) {
+        $errors[] = "password_resets table: " . $e->getMessage();
     }
 
     return [
