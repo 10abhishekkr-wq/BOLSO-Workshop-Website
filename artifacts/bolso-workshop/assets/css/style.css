@@ -89,14 +89,8 @@ h1 em, h2 em, h3 em { color: var(--maroon); font-style: italic; }
 .image-placeholder small { font-size: 10px; letter-spacing: .13em; line-height: 1.6; text-transform: uppercase; }
 .image-placeholder.small .placeholder-brush { font-size: 75px; }
 .image-caption { position: absolute; bottom: 14px; left: 16px; z-index: 3; color: rgba(251,248,241,.75); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
-.art-orbit { border: 1px solid rgba(124,38,57,.24); border-radius: 50%; position: absolute; pointer-events: none; }
-.orbit-one { width: 490px; height: 230px; top: 105px; left: 15px; transform: rotate(-33deg); }
-.orbit-two { width: 450px; height: 195px; top: 140px; left: -10px; transform: rotate(38deg); }
-.art-swatch { position: absolute; border-radius: 50%; pointer-events: none; }
-.swatch-rust { width: 22px; height: 22px; background: var(--terracotta); left: 30px; top: 110px; }
-.swatch-blue { width: 14px; height: 14px; background: var(--ink); right: 20px; top: 190px; }
-.swatch-mustard { width: 34px; height: 34px; background: var(--mustard); right: 40px; bottom: 65px; }
-.hero-stamp { position: absolute; bottom: 20px; left: -15px; display: grid; place-items: center; width: 106px; height: 106px; border: 1.5px solid var(--maroon); border-radius: 50%; color: var(--maroon); font-family: var(--display); font-size: 16px; font-style: italic; line-height: 1.05; text-align: center; transform: rotate(-13deg); z-index: 12; background: rgba(246, 240, 230, 0.88); backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(84, 29, 44, 0.12); pointer-events: none; }
+.art-orbit, .art-swatch { display: none; }
+.hero-stamp { position: absolute; top: 15px; right: 10px; display: grid; place-items: center; width: 106px; height: 106px; border: 1.5px solid var(--maroon); border-radius: 50%; color: var(--maroon); font-family: var(--display); font-size: 16px; font-style: italic; line-height: 1.05; text-align: center; transform: rotate(10deg); z-index: 12; background: rgba(246, 240, 230, 0.88); backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(84, 29, 44, 0.12); pointer-events: none; }
 .hero-stamp i { font-family: var(--body); font-size: 16px; position: absolute; right: 10px; top: 12px; }
 .hero-bottom-line, .section-label { display: flex; align-items: center; gap: 14px; }
 .hero-bottom-line { bottom: 25px; color: var(--ink-soft); font-size: 10px; left: 50%; letter-spacing: .12em; position: absolute; text-transform: uppercase; transform: translateX(-50%); white-space: nowrap; }

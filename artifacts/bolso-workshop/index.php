@@ -19,10 +19,6 @@ require __DIR__ . '/includes/header.php';
                 <div class="hero-proof"><strong>Only 6</strong><span>students per batch</span><i></i><strong>2–5 days</strong><span>of guided making</span></div>
             </div>
             <div class="hero-art reveal reveal-delay-1">
-                <div class="art-orbit orbit-one"></div>
-                <div class="art-orbit orbit-two"></div>
-                <div class="art-swatch swatch-rust"></div>
-                <div class="art-swatch swatch-blue"></div>
                 <div class="card-stack-container hero-stack-container" id="heroCardStackSlider" data-card-stack>
                     <div class="card-stack-track">
                         <div class="card-stack-item" data-index="0">
