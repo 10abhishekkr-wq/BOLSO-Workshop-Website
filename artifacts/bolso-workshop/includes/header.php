@@ -52,10 +52,22 @@ $isAdminArea = $isAdminArea ?? false;
                 <i class="bi bi-list"></i>
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3 gap-xl-4">
-                    <li class="nav-item"><a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="index.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link <?= $activePage === 'workshops' ? 'active' : '' ?>" href="workshops.php">Workshops</a></li>
-                    <li class="nav-item"><a class="nav-link <?= $activePage === 'registration' ? 'active' : '' ?>" href="registration.php">Registration</a></li>
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 gap-xl-3">
+                    <li class="nav-item">
+                        <a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="index.php">
+                            <i class="bi bi-house-door nav-icon"></i> <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= $activePage === 'workshops' ? 'active' : '' ?>" href="workshops.php">
+                            <i class="bi bi-palette nav-icon"></i> <span>Workshops</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= $activePage === 'registration' ? 'active' : '' ?>" href="registration.php">
+                            <i class="bi bi-journal-bookmark nav-icon"></i> <span>Registration</span>
+                        </a>
+                    </li>
                     
                     <?php if (is_user_logged_in()): ?>
                         <?php
@@ -64,7 +76,7 @@ $isAdminArea = $isAdminArea ?? false;
                         ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle nav-user-btn <?= $activePage === 'my-workshops' ? 'active' : '' ?>" href="#" id="userNavDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-1"></i> Hi, <?= htmlspecialchars($navFirstName, ENT_QUOTES, 'UTF-8') ?>
+                                <i class="bi bi-person-circle nav-icon text-success"></i> <span>Hi, <?= htmlspecialchars($navFirstName, ENT_QUOTES, 'UTF-8') ?></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end bolso-dropdown" aria-labelledby="userNavDropdown">
                                 <li><a class="dropdown-item <?= $activePage === 'my-workshops' ? 'active' : '' ?>" href="my-workshops.php"><i class="bi bi-grid me-2"></i> My Workshops</a></li>
@@ -74,11 +86,24 @@ $isAdminArea = $isAdminArea ?? false;
                             </ul>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link <?= $activePage === 'login' ? 'active' : '' ?>" href="login.php"><i class="bi bi-person me-1"></i> Sign In</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link <?= $activePage === 'login' ? 'active' : '' ?>" href="login.php">
+                                <i class="bi bi-person-circle nav-icon"></i> <span>Sign In</span>
+                            </a>
+                        </li>
                     <?php endif; ?>
 
-                    <li class="nav-item"><a class="nav-link admin-nav-link" href="admin/" title="Admin Panel"><i class="bi bi-shield-lock"></i> Admin</a></li>
-                    <li class="nav-item"><a class="nav-cta" href="registration.php">Reserve your spot <i class="bi bi-arrow-up-right"></i></a></li>
+                    <li class="nav-item">
+                        <a class="nav-link admin-nav-link" href="admin/" title="Admin Studio">
+                            <i class="bi bi-shield-lock nav-icon"></i> <span>Admin</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-cta" href="registration.php">
+                            <span>Reserve your spot</span>
+                            <span class="nav-cta-arrow"><i class="bi bi-arrow-up-right"></i></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
