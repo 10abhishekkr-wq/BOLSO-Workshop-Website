@@ -7,6 +7,20 @@ require __DIR__ . '/includes/header.php';
 ?>
 <main>
     <section class="hero-section">
+        <!-- Hanging artisan tag with animated string suspended from the top right corner -->
+        <div class="hero-hanging-assembly" aria-label="Make it wearable craft tag">
+            <div class="hanging-pin" title="Artisan Tag Pin"></div>
+            <div class="hanging-string">
+                <span class="string-cord"></span>
+                <span class="string-knot"></span>
+            </div>
+            <div class="hero-stamp hanging-badge">
+                <div class="stamp-eyelet"></div>
+                <span>Make it<br><em>wearable</em></span>
+                <i class="bi bi-stars"></i>
+            </div>
+        </div>
+
         <div class="container hero-grid">
             <div class="hero-copy reveal">
                 <div class="hero-kicker"><span></span> Small-batch fabric painting workshops</div>
@@ -79,7 +93,6 @@ require __DIR__ . '/includes/header.php';
                         </button>
                     </div>
                 </div>
-                <div class="hero-stamp"><span>Make it<br>wearable</span><i class="bi bi-stars"></i></div>
             </div>
         </div>
         <div class="hero-bottom-line"><span>01</span><span class="line"></span><span>Art · Emotion · Fashion.</span></div>

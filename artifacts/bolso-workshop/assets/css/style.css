@@ -276,35 +276,217 @@ h1 em, h2 em, h3 em { color: var(--maroon); font-style: italic; }
 .image-caption { position: absolute; bottom: 14px; left: 16px; z-index: 3; color: rgba(251,248,241,.75); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
 .art-orbit, .art-swatch { display: none; }
 
-@keyframes stampFloat {
-  0%, 100% { transform: rotate(12deg) translateY(0); }
-  50% { transform: rotate(14deg) translateY(-8px); }
+/* ==========================================================================
+   Hanging Artisan Tag with Animated String ("Make it Wearable")
+   ========================================================================== */
+
+@keyframes hangSway {
+  0% {
+    transform: rotate(5deg);
+  }
+  25% {
+    transform: rotate(0.8deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(-0.8deg);
+  }
+  100% {
+    transform: rotate(5deg);
+  }
 }
-.hero-stamp {
+
+@keyframes badgeSecondarySway {
+  0% {
+    transform: rotate(2deg);
+  }
+  50% {
+    transform: rotate(-2.5deg);
+  }
+  100% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes stringTension {
+  0%, 100% {
+    opacity: 0.92;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.hero-hanging-assembly {
   position: absolute;
-  top: -60px;
-  right: -135px;
-  display: grid;
-  place-items: center;
-  width: 104px;
-  height: 104px;
-  border: 1.5px solid var(--maroon);
+  top: 0;
+  right: clamp(35px, 6.5vw, 130px);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  animation: hangSway 6.5s ease-in-out infinite;
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+}
+
+.hero-hanging-assembly:hover {
+  animation: hangSway 3.4s ease-in-out infinite;
+}
+
+.hero-hanging-assembly:hover .hero-stamp.hanging-badge {
+  box-shadow: 0 12px 30px rgba(84, 29, 44, 0.2), inset 0 0 0 4px rgba(246, 240, 230, 0.9);
+  border-color: var(--terracotta);
+}
+
+.hero-hanging-assembly:hover .string-cord {
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--maroon) 0px,
+    var(--maroon) 4px,
+    var(--terracotta) 4px,
+    var(--terracotta) 8px,
+    var(--mustard) 8px,
+    var(--mustard) 12px
+  );
+}
+
+.hero-hanging-assembly:active {
+  cursor: grabbing;
+}
+
+/* Brass/Gold Mounting Pin at the Ceiling/Top Edge */
+.hanging-pin {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe6a3 0%, #d8a52a 50%, #7c2639 100%);
+  box-shadow: 0 2px 5px rgba(84, 29, 44, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(84, 29, 44, 0.35);
+  position: relative;
+  z-index: 4;
+  margin-top: -3px;
+}
+
+/* The Hanging Twine / String */
+.hanging-string {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.string-cord {
+  width: 1.5px;
+  height: 135px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--terracotta) 0px,
+    var(--terracotta) 5px,
+    var(--mustard) 5px,
+    var(--mustard) 10px,
+    var(--maroon) 10px,
+    var(--maroon) 15px
+  );
+  box-shadow: 1px 0 2px rgba(84, 29, 44, 0.15);
+  animation: stringTension 4s ease-in-out infinite;
+}
+
+.string-knot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--terracotta);
+  border: 1px solid var(--maroon);
+  box-shadow: 0 1px 3px rgba(84, 29, 44, 0.3);
+  margin-top: -2px;
+  position: relative;
+  z-index: 3;
+}
+
+/* The Hanging Circular Stamp Badge */
+.hero-stamp.hanging-badge {
+  position: relative;
+  top: auto;
+  right: auto;
+  margin-top: -4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 112px;
+  height: 112px;
+  border: 1.5px dashed var(--maroon);
   border-radius: 50%;
   color: var(--maroon);
   font-family: var(--display);
   font-size: 16px;
-  font-style: italic;
-  line-height: 1.05;
+  line-height: 1.08;
   text-align: center;
-  transform: rotate(12deg);
-  z-index: 12;
-  background: rgba(246, 240, 230, 0.92);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 12px rgba(84, 29, 44, 0.12);
-  pointer-events: none;
-  animation: stampFloat 5s ease-in-out infinite;
+  background: rgba(251, 248, 241, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 10px 26px rgba(84, 29, 44, 0.13), inset 0 0 0 4px rgba(246, 240, 230, 0.7);
+  transform-origin: top center;
+  animation: badgeSecondarySway 6.5s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease, border-color 0.3s ease;
+  pointer-events: auto;
 }
-.hero-stamp i { font-family: var(--body); font-size: 16px; position: absolute; right: 10px; top: 12px; }
+
+.hero-stamp.hanging-badge span {
+  display: block;
+  font-family: var(--display);
+  font-size: 15.5px;
+  font-style: normal;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.hero-stamp.hanging-badge span em {
+  font-style: italic;
+  color: var(--maroon);
+  font-weight: 700;
+  display: inline-block;
+  font-size: 17px;
+}
+
+.hero-stamp.hanging-badge i.bi-stars {
+  position: absolute;
+  right: 13px;
+  top: 14px;
+  font-size: 14px;
+  color: var(--mustard);
+}
+
+/* Punched eyelet hole at top of badge */
+.stamp-eyelet {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 1.5px solid var(--terracotta);
+  box-shadow: inset 0 1px 2px rgba(84, 29, 44, 0.4);
+  z-index: 4;
+}
+
+/* Subtle inner ring */
+.hero-stamp.hanging-badge::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(124, 38, 57, 0.18);
+  pointer-events: none;
+}
 .hero-bottom-line, .section-label { display: flex; align-items: center; gap: 14px; }
 .hero-bottom-line { bottom: 25px; color: var(--ink-soft); font-size: 10px; left: 50%; letter-spacing: .12em; position: absolute; text-transform: uppercase; transform: translateX(-50%); white-space: nowrap; }
 .line { background: var(--line); display: inline-block; height: 1px; width: 50px; }
@@ -1555,8 +1737,11 @@ input::-ms-clear {
   .bolso-nav .nav-cta { display: inline-flex; width: fit-content; margin-top: 12px; }
   .hero-section { min-height: auto; padding-top: 150px; }
   .hero-grid, .guidance-grid, .registration-grid { gap: 55px; grid-template-columns: 1fr; }
-  .hero-art { margin: 0 auto; max-width: 520px; width: 100%; }
-  .hero-stamp { top: -15px; right: 15px; }
+  .hero-hanging-assembly { right: 22px; top: 0; }
+  .string-cord { height: 95px; }
+  .hero-stamp.hanging-badge { width: 96px; height: 96px; }
+  .hero-stamp.hanging-badge span { font-size: 13.5px; }
+  .hero-stamp.hanging-badge span em { font-size: 15px; }
   .about-grid { gap: 35px; }
   .registration-aside { border-left: 0; border-top: 1px solid var(--line); padding: 35px 0 0; }
   .aside-sticky { max-width: 500px; }
@@ -1569,7 +1754,8 @@ input::-ms-clear {
   .hero-section { padding-top: 130px; }
   .hero-intro { font-size: 15px; }
   .hero-art { height: 430px; margin: 20px auto 0; width: 100%; max-width: 100%; transform: none; display: flex; justify-content: center; }
-  .hero-stamp { display: none; }
+  .hero-hanging-assembly { right: 16px; top: 0; transform-origin: top center; transform: scale(0.82); }
+  .string-cord { height: 75px; }
   .hero-image-frame { height: 350px; left: 60px; width: 265px; }
   .orbit-one { width: 390px; }
   .orbit-two { width: 350px; }
@@ -1615,4 +1801,10 @@ input::-ms-clear {
   .booking-details-grid { grid-template-columns: 1fr; gap: 10px; }
   .student-dashboard { padding-top: 110px; }
   .user-auth-page { padding-top: 110px; }
+}
+
+@media (max-width: 575px) {
+  .hero-hanging-assembly {
+    display: none;
+  }
 }
