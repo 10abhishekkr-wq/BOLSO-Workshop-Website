@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/mailer.php';
 
 /**
  * Clean and format phone number for international WhatsApp.
@@ -259,8 +260,8 @@ function bolso_smtp_send(
 }
 
 /**
- * Universal Mail Dispatcher.
- * Uses SMTP if configured; falls back to PHP mail(); logs full message to database & file.
+ * Universal Mail Dispatcher using official PHPMailer.
+ * Dispatches via PHPMailer SMTP / mail() with automatic database and file logging.
  */
 function bolso_send_mail(
     string $toEmail,
@@ -271,92 +272,7 @@ function bolso_send_mail(
     ?int $regId = null,
     string $recipientType = 'customer'
 ): array {
-    $toEmail = trim($toEmail);
-    if (!filter_var($toEmail, FILTER_VALIDATE_EMAIL)) {
-        bolso_log_notification([
-            'registration_id' => $regId,
-            'recipient_type' => $recipientType,
-            'channel' => 'email',
-            'destination' => $toEmail,
-            'subject' => $subject,
-            'message' => $htmlBody,
-            'status' => 'failed',
-            'error_message' => 'Invalid email address syntax',
-        ]);
-        return ['success' => false, 'error' => 'Invalid email address', 'method' => 'none'];
-    }
-
-    $smtpHost = bolso_config('smtp_host');
-    $smtpPort = (int)bolso_config('smtp_port', '587');
-    $smtpUser = bolso_config('smtp_user');
-    $smtpPass = bolso_config('smtp_pass');
-    $smtpSecure = bolso_config('smtp_secure', 'tls');
-    $fromEmail = bolso_config('smtp_from', '10abhishekkr@gmail.com');
-    $fromName = bolso_config('smtp_from_name', 'BOLSO Fabric Art Studio');
-
-    // 1. Try Custom SMTP if host is provided
-    if ($smtpHost !== '') {
-        $smtpResult = bolso_smtp_send(
-            $smtpHost,
-            $smtpPort,
-            $smtpUser,
-            $smtpPass,
-            $smtpSecure,
-            $fromEmail,
-            $fromName,
-            $toEmail,
-            $subject,
-            $htmlBody
-        );
-
-        if ($smtpResult['success']) {
-            bolso_log_notification([
-                'registration_id' => $regId,
-                'recipient_type' => $recipientType,
-                'channel' => 'email',
-                'destination' => $toEmail,
-                'subject' => $subject,
-                'message' => $htmlBody,
-                'status' => 'sent',
-                'error_message' => null,
-            ]);
-            return ['success' => true, 'method' => 'smtp', 'error' => null];
-        } else {
-            error_log('BOLSO SMTP Send failed: ' . $smtpResult['error'] . '. Falling back to mail().');
-        }
-    }
-
-    // 2. Try PHP mail() function
-    $headers = [
-        "MIME-Version: 1.0",
-        "Content-type: text/html; charset=UTF-8",
-        "From: " . sprintf('=?UTF-8?B?%s?= <%s>', base64_encode($fromName), $fromEmail),
-        "Reply-To: {$fromEmail}",
-        "X-Mailer: BOLSO Studio Notification Engine",
-    ];
-
-    $mailSent = @mail($toEmail, '=?UTF-8?B?' . base64_encode($subject) . '?=', $htmlBody, implode("\r\n", $headers));
-
-    // Determine final status
-    $status = $mailSent ? 'sent' : 'simulated';
-    $error = $mailSent ? null : 'PHP mail() not active locally; notification logged and simulated for review.';
-
-    bolso_log_notification([
-        'registration_id' => $regId,
-        'recipient_type' => $recipientType,
-        'channel' => 'email',
-        'destination' => $toEmail,
-        'subject' => $subject,
-        'message' => $htmlBody,
-        'status' => $status,
-        'error_message' => $error,
-    ]);
-
-    return [
-        'success' => true,
-        'method' => $mailSent ? 'mail_function' : 'simulated_log',
-        'error' => $error,
-    ];
+    return bolso_send_mail_via_phpmailer($toEmail, $toName, $subject, $htmlBody, $plainText, $regId, $recipientType);
 }
 
 /**
@@ -467,6 +383,7 @@ function bolso_build_customer_email_html(array $data): string
     $workshopTitle = htmlspecialchars($data['workshop_title'] ?? ($data['workshop'] ?? 'Fabric Painting'), ENT_QUOTES, 'UTF-8');
     $mode = htmlspecialchars(ucfirst($data['mode'] ?? 'online'), ENT_QUOTES, 'UTF-8');
     $preferredDate = htmlspecialchars($data['preferred_date'] ?? 'Upcoming Batch', ENT_QUOTES, 'UTF-8');
+    $timingSlot = htmlspecialchars($data['timing_slot'] ?? ($data['timing'] ?? 'Morning Batch (10:30 AM – 1:30 PM)'), ENT_QUOTES, 'UTF-8');
     $price = number_format((float)($data['price'] ?? 0));
     $paymentId = htmlspecialchars($data['payment_id'] ?? 'PAID-VERIFIED', ENT_QUOTES, 'UTF-8');
     $regId = (int)($data['id'] ?? ($data['registration_id'] ?? 0));
@@ -481,18 +398,29 @@ function bolso_build_customer_email_html(array $data): string
     $pageTitle = $isPayAtStudio ? 'Spot Reserved - BOLSO Workshop' : 'Payment Confirmed - BOLSO Workshop';
 
     $introHtml = $isPayAtStudio
-        ? "We are delighted to confirm that your in-person spot for the <strong>{$workshopTitle}</strong> (Offline Studio Batch) is secured! Since you opted to <strong>Pay Offline</strong>, your workshop fee of <strong>₹{$price}</strong> will be collected in Cash or via UPI directly at our studio upon arrival on Day 1."
-        : "We are delighted to confirm that your payment of <strong>₹{$price}</strong> has been received successfully. Your registration for the <strong>{$workshopTitle}</strong> is officially secured.";
+        ? "We are delighted to confirm that your in-person spot for the <strong>{$workshopTitle}</strong> (Offline Studio Batch) is officially secured! Since you opted to <strong>Pay at Studio</strong>, your workshop fee of <strong>₹{$price}</strong> will be collected in Cash or via UPI directly at our Kolkata studio upon arrival on Day 1."
+        : "Thank you so much for choosing BOLSO! We are delighted to confirm that your payment of <strong>₹{$price}</strong> has been received successfully. Your registration for the <strong>{$workshopTitle}</strong> is officially secured.";
 
-    $venueHtml = $isPayAtStudio
+    $venueHtml = ($isPayAtStudio || strtolower($data['mode'] ?? '') === 'offline')
         ? '<div style="background: #fdfaf5; border-left: 4px solid #d46d47; border-radius: 8px; padding: 18px 22px; margin: 24px 0;">
             <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #8e232e;">📍 Studio Location &amp; Venue</h3>
-            <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #2e3842;">
+            <p style="margin: 0 0 8px 0; font-size: 14px; line-height: 1.55; color: #2e3842;">
                 <strong>Jayanti Abasan, Jhowtala Hatiara, Near Lokenath Mandir, Chinar Park, Kolkata - 700157</strong><br>
-                <span style="font-size: 12.5px; color: #78716c;">All fabric canvases, pigments, materials and artist colour palettes will be ready at the studio.</span>
+                <span style="font-size: 12.5px; color: #78716c;">All fabric canvases, soft-touch pigments, fine brushes, and curated artist colour palettes will be prepared for you at the studio.</span>
             </p>
+            <div style="margin-top: 10px;">
+                <a href="https://maps.google.com/?q=Jayanti+Abasan+Jhowtala+Hatiara+Chinar+Park+Kolkata+700157" target="_blank" style="display: inline-block; background: #8e232e; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 6px;">
+                    Open Studio in Google Maps →
+                </a>
+            </div>
            </div>'
-        : '';
+        : '<div style="background: #f0f7ff; border-left: 4px solid #2563eb; border-radius: 8px; padding: 18px 22px; margin: 24px 0;">
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #1d4ed8;">💻 Online Live Studio Access</h3>
+            <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #2e3842;">
+                <strong>Interactive live session via Google Meet / Zoom</strong><br>
+                <span style="font-size: 12.5px; color: #64748b;">The private class link and material prep guide will be sent directly to your WhatsApp (' . $whatsapp . ') and email before the session starts.</span>
+            </p>
+           </div>';
 
     $statusVal = $isPayAtStudio 
         ? '<span style="color: #b45309; font-weight: 700;">Pay at Studio (Cash / UPI on Arrival)</span>'
@@ -520,7 +448,7 @@ function bolso_build_customer_email_html(array $data): string
     h2.greeting { font-family: "Georgia", serif; font-size: 26px; margin: 0 0 14px 0; color: #172432; }
     p.intro { font-size: 16px; line-height: 1.6; color: #445466; margin: 0 0 24px 0; }
     
-    /* Timing clarification callout box */
+    /* Timing callout box */
     .timing-box { background: #fff9ed; border-left: 4px solid #c97a3e; border-radius: 8px; padding: 18px 22px; margin: 26px 0; }
     .timing-box h3 { margin: 0 0 8px 0; font-size: 16px; color: #8e232e; display: flex; align-items: center; gap: 8px; }
     .timing-box p { margin: 0; font-size: 14.5px; line-height: 1.55; color: #2e3842; }
@@ -532,7 +460,12 @@ function bolso_build_customer_email_html(array $data): string
     .details-table td.label { width: 38%; color: #6a7c92; font-weight: 500; background: #faf7f2; }
     .details-table td.value { width: 62%; color: #172432; font-weight: 600; }
 
-    .btn-wrap { text-align: center; margin: 32px 0 16px; }
+    .contact-card { background: #faf7f2; border: 1px solid #efe7db; border-radius: 10px; padding: 20px 22px; margin: 26px 0; }
+    .contact-card h4 { margin: 0 0 8px 0; font-size: 15px; color: #8e232e; }
+    .contact-card p { margin: 0 0 10px 0; font-size: 13.5px; color: #496174; line-height: 1.5; }
+    .contact-card ul { margin: 0; padding-left: 20px; font-size: 13px; color: #1f2d3d; line-height: 1.7; }
+
+    .btn-wrap { text-align: center; margin: 28px 0 16px; }
     .btn-whatsapp { display: inline-block; background: #25d366; color: #ffffff !important; text-decoration: none; font-size: 15px; font-weight: 600; padding: 14px 28px; border-radius: 999px; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3); }
 
     .email-footer { background: #faf7f2; padding: 24px 30px; text-align: center; font-size: 12px; color: #8091a5; border-top: 1px solid #efe7db; }
@@ -554,11 +487,12 @@ function bolso_build_customer_email_html(array $data): string
 
         {$venueHtml}
 
-        <!-- Explicit timing clarification requested by user -->
+        <!-- Explicit timing slot details -->
         <div class="timing-box">
             <h3>🕒 Workshop Timing &amp; Batch Schedule</h3>
             <p>
-                <strong>Your timing for the workshop will be given to you very soon!</strong> Our studio instructors are finalizing the batch schedule and will reach out to you directly on WhatsApp (<strong>{$whatsapp}</strong>) and email with your exact schedule and session access details.
+                <strong>Selected Slot: {$timingSlot}</strong><br>
+                Our studio instructors are preparing your batch and will reach out to you directly on WhatsApp (<strong>{$whatsapp}</strong>) and email with your final orientation guide and timing confirmation.
             </p>
         </div>
 
@@ -575,11 +509,15 @@ function bolso_build_customer_email_html(array $data): string
                 <td class="label">Learning Mode</td>
                 <td class="value">{$mode}</td>
             </tr>
-            {$paymentMethodRow}
             <tr>
-                <td class="label">Preferred Date</td>
+                <td class="label">Preferred Batch Date</td>
                 <td class="value">{$preferredDate}</td>
             </tr>
+            <tr>
+                <td class="label">Timing Slot</td>
+                <td class="value"><strong>{$timingSlot}</strong></td>
+            </tr>
+            {$paymentMethodRow}
             <tr>
                 <td class="label">Payment Reference</td>
                 <td class="value" style="font-family: monospace; font-size: 13px;">{$paymentId}</td>
@@ -590,8 +528,19 @@ function bolso_build_customer_email_html(array $data): string
             </tr>
         </table>
 
+        <!-- Admin Contact Details -->
+        <div class="contact-card">
+            <h4>📞 Need Assistance or Have Questions?</h4>
+            <p>Our Studio Admin is available anytime to assist with directions, scheduling, or material queries:</p>
+            <ul>
+                <li><strong>Admin Email:</strong> <a href="mailto:10abhishekkr@gmail.com" style="color: #8e232e;">10abhishekkr@gmail.com</a></li>
+                <li><strong>WhatsApp Helpline:</strong> <a href="https://wa.me/{$studioWhatsApp}" style="color: #25d366;">+{$studioWhatsApp}</a></li>
+                <li><strong>Studio Address:</strong> Jayanti Abasan, Jhowtala Hatiara, Chinar Park, Kolkata - 700157</li>
+            </ul>
+        </div>
+
         <div class="btn-wrap">
-            <a class="btn-whatsapp" href="https://wa.me/{$studioWhatsApp}?text=Hello%20BOLSO!%20My%20spot%20is%20reserved%20for%20workshop%20reg%20%23{$regId}.%20Looking%20forward%20to%20my%20timing." target="_blank">
+            <a class="btn-whatsapp" href="https://wa.me/{$studioWhatsApp}?text=Hello%20BOLSO!%20My%20spot%20is%20reserved%20for%20workshop%20reg%20%23{$regId}.%20Looking%20forward%20to%20my%20session." target="_blank">
                 Chat with Studio on WhatsApp →
             </a>
         </div>
@@ -620,6 +569,7 @@ function bolso_build_admin_email_html(array $data): string
     $workshopTitle = htmlspecialchars($data['workshop_title'] ?? ($data['workshop'] ?? '2-Day Workshop'), ENT_QUOTES, 'UTF-8');
     $mode = htmlspecialchars(ucfirst($data['mode'] ?? 'online'), ENT_QUOTES, 'UTF-8');
     $preferredDate = htmlspecialchars($data['preferred_date'] ?? 'Upcoming Batch', ENT_QUOTES, 'UTF-8');
+    $timingSlot = htmlspecialchars($data['timing_slot'] ?? ($data['timing'] ?? 'Not specified'), ENT_QUOTES, 'UTF-8');
     $price = number_format((float)($data['price'] ?? 0));
     $paymentId = htmlspecialchars($data['payment_id'] ?? 'VERIFIED_PAYMENT', ENT_QUOTES, 'UTF-8');
     $regId = (int)($data['id'] ?? ($data['registration_id'] ?? 0));
@@ -641,15 +591,15 @@ function bolso_build_admin_email_html(array $data): string
 
     $actionNotice = $isPayAtStudio
         ? '<div class="action-notice" style="background: #fff8e1; border-left: 4px solid #f59e0b; color: #78350f;">
-            <strong>👉 Action Required:</strong> Contact ' . $name . ' to provide their workshop timing soon, and collect <strong>₹' . $price . '</strong> (Cash/UPI) upon arrival at the studio on Day 1!
+            <strong>👉 Action Required:</strong> Contact ' . $name . ' to coordinate their workshop timing (Slot: <strong>' . $timingSlot . '</strong>), and collect <strong>₹' . $price . '</strong> (Cash/UPI) upon arrival at the studio on Day 1!
            </div>'
         : '<div class="action-notice">
-            <strong>👉 Action Required:</strong> Please contact ' . $name . ' to provide their workshop timing soon!
+            <strong>👉 Action Required:</strong> Please contact ' . $name . ' on WhatsApp (+91 ' . $cleanWa . ') to confirm their workshop timing (Slot: <strong>' . $timingSlot . '</strong>)!
            </div>';
 
     $waDirectLink = $isPayAtStudio
-        ? 'https://wa.me/' . $cleanWa . '?text=' . rawurlencode("Hello {$data['name']}! Thank you for registering for the BOLSO {$workshopTitle} (Offline Studio Batch). Your spot is reserved (Pay ₹{$price} at Studio). Here is your workshop timing: ")
-        : 'https://wa.me/' . $cleanWa . '?text=' . rawurlencode("Hello {$data['name']}! Thank you for registering for the BOLSO {$workshopTitle} workshop. Your payment of ₹{$price} is received. Here is your workshop timing: ");
+        ? 'https://wa.me/' . $cleanWa . '?text=' . rawurlencode("Hello {$data['name']}! Thank you for registering for the BOLSO {$workshopTitle} (Offline Studio Batch). Your spot is reserved (Pay ₹{$price} at Studio). Your chosen slot is {$timingSlot}. Here are your session details: ")
+        : 'https://wa.me/' . $cleanWa . '?text=' . rawurlencode("Hello {$data['name']}! Thank you for registering for the BOLSO {$workshopTitle} workshop. Your payment of ₹{$price} is received. Your chosen slot is {$timingSlot}. Here are your session details: ");
 
     return <<<HTML
 <!DOCTYPE html>
@@ -693,7 +643,7 @@ function bolso_build_admin_email_html(array $data): string
     </div>
     <div class="admin-body">
         <div class="highlight-card">
-            <h3>👤 Customer Information</h3>
+            <h3>👤 Student / User Information</h3>
             <div class="customer-item"><strong>Full Name:</strong> <span style="font-size: 17px; font-weight: bold; color: #172432;">{$name}</span></div>
             <div class="customer-item"><strong>Email:</strong> <a href="mailto:{$email}" style="color: #8e232e; font-weight: bold;">{$email}</a></div>
             <div class="customer-item"><strong>WhatsApp No:</strong> <a href="https://wa.me/{$cleanWa}" style="color: #25d366; font-weight: bold;">+{$cleanWa} ({$whatsapp})</a></div>
@@ -701,20 +651,24 @@ function bolso_build_admin_email_html(array $data): string
 
         <table class="info-table">
             <tr>
-                <td class="lbl">Workshop</td>
+                <td class="lbl">Workshop Chosen</td>
                 <td class="val">{$workshopTitle}</td>
             </tr>
             <tr>
                 <td class="lbl">Learning Mode</td>
                 <td class="val">{$mode}</td>
             </tr>
-            {$paymentRow}
             <tr>
-                <td class="lbl">Preferred Date</td>
+                <td class="lbl">Preferred Batch Date</td>
                 <td class="val">{$preferredDate}</td>
             </tr>
             <tr>
-                <td class="lbl">Payment ID / Ref</td>
+                <td class="lbl">Timing Slot Chosen</td>
+                <td class="val" style="color: #8e232e; font-weight: bold;">{$timingSlot}</td>
+            </tr>
+            {$paymentRow}
+            <tr>
+                <td class="lbl">Payment Reference</td>
                 <td class="val" style="font-family: monospace;">{$paymentId}</td>
             </tr>
             <tr>
@@ -730,7 +684,7 @@ function bolso_build_admin_email_html(array $data): string
                 <td class="val">{$experience}</td>
             </tr>
             <tr>
-                <td class="lbl">Student Note</td>
+                <td class="lbl">Student Vision / Note</td>
                 <td class="val">{$notes}</td>
             </tr>
         </table>

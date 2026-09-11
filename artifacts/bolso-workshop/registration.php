@@ -75,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'verif
                     'workshop' => $registration['workshop'],
                     'mode' => $registration['mode'],
                     'preferred_date' => $registration['preferred_date'],
+                    'timing_slot' => $registration['timing_slot'] ?? 'Morning Batch (10:30 AM – 1:30 PM)',
                     'price' => (int)$registration['price'],
                     'payment_id' => $razorpayPaymentId,
                     'customer_wa_link' => $notifResult['customer_whatsapp_link'] ?? '',
@@ -96,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
     $whatsapp = trim((string)($_POST['whatsapp'] ?? ''));
     $email = trim((string)($_POST['email'] ?? ''));
     $preferredDate = trim((string)($_POST['preferred_date'] ?? ''));
+    $timingSlot = trim((string)($_POST['timing_slot'] ?? 'Morning Batch (10:30 AM – 1:30 PM)'));
     $interest = trim((string)($_POST['interest'] ?? ''));
     $experience = trim((string)($_POST['experience'] ?? ''));
     $message = trim((string)($_POST['message'] ?? ''));
@@ -135,8 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                 }
 
                 $statement = $pdo->prepare(
-                    'INSERT INTO registrations (user_id, name, whatsapp, email, workshop, mode, preferred_date, interest, experience, message, price, payment_status, payment_method)
-                     VALUES (:user_id, :name, :whatsapp, :email, :workshop, :mode, :preferred_date, :interest, :experience, :message, :price, :payment_status, :payment_method)'
+                    'INSERT INTO registrations (user_id, name, whatsapp, email, workshop, mode, preferred_date, timing_slot, interest, experience, message, price, payment_status, payment_method)
+                     VALUES (:user_id, :name, :whatsapp, :email, :workshop, :mode, :preferred_date, :timing_slot, :interest, :experience, :message, :price, :payment_status, :payment_method)'
                 );
                 $statement->execute([
                     ':user_id' => $regUserId,
@@ -146,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                     ':workshop' => $workshop,
                     ':mode' => $mode,
                     ':preferred_date' => $preferredDate,
+                    ':timing_slot' => $timingSlot,
                     ':interest' => $interest,
                     ':experience' => $experience,
                     ':message' => $message,
@@ -179,6 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                         'workshop' => $workshop,
                         'mode' => $mode,
                         'preferred_date' => $preferredDate,
+                        'timing_slot' => $timingSlot,
                         'interest' => $interest,
                         'experience' => $experience,
                         'message' => $message,
@@ -197,6 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                         'workshop' => $workshop,
                         'mode' => $mode,
                         'preferred_date' => $preferredDate,
+                        'timing_slot' => $timingSlot,
                         'price' => $price,
                         'payment_method' => 'offline',
                         'customer_wa_link' => $notifRes['customer_whatsapp_link'] ?? '',
@@ -217,6 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                                 'registration_id' => (string)$registrationId,
                                 'name' => $name,
                                 'workshop' => $workshop,
+                                'timing_slot' => $timingSlot,
                             ],
                         ];
 
@@ -246,6 +252,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                                 'whatsapp' => $whatsapp,
                                 'workshop' => $workshop,
                                 'mode' => $mode,
+                                'preferred_date' => $preferredDate,
+                                'timing_slot' => $timingSlot,
                                 'payment_method' => 'online',
                             ];
                         } else {
@@ -264,6 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                             'workshop' => $workshop,
                             'mode' => $mode,
                             'preferred_date' => $preferredDate,
+                            'timing_slot' => $timingSlot,
                             'interest' => $interest,
                             'experience' => $experience,
                             'message' => $message,
@@ -282,6 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                             'workshop' => $workshop,
                             'mode' => $mode,
                             'preferred_date' => $preferredDate,
+                            'timing_slot' => $timingSlot,
                             'price' => $price,
                             'payment_method' => 'online',
                             'customer_wa_link' => $notifRes['customer_whatsapp_link'] ?? '',
@@ -557,10 +567,23 @@ require __DIR__ . '/includes/header.php';
                                 <small id="onlineOnlyNotice" class="text-muted mt-2 d-block <?= $mode === 'offline' ? 'd-none' : '' ?>" style="font-size: 11.5px;">
                                     <i class="bi bi-info-circle"></i> "Pay at Studio" is available for offline in-person workshops at our Kolkata studio. Online classes require online payment.
                                 </small>
+                            <div class="col-12 price-display">
+                                <span>Your workshop investment</span>
+                                <strong id="priceDisplay">₹<?= number_format($price) ?></strong>
+                                <small id="priceNote"><?= $mode === 'offline' && $workshop === '5-day' ? 'Materials, colours &amp; artist colour palettes provided to keep.' : ($mode === 'offline' ? 'Offline in-person studio batch.' : 'Live classes over Google Meet.') ?></small>
                             </div>
-
-                            <div class="col-12 price-display"><span>Your workshop investment</span><strong id="priceDisplay">₹<?= number_format($price) ?></strong><small id="priceNote"><?= $mode === 'offline' && $workshop === '5-day' ? 'Materials, colours &amp; artist colour palettes provided to keep.' : ($mode === 'offline' ? 'Offline in-person studio batch.' : 'Live classes over Google Meet.') ?></small></div>
-                            <div class="col-12 form-field"><label for="preferred_date">Preferred date / batch <span>*</span></label><input id="preferred_date" name="preferred_date" value="<?= htmlspecialchars((string)($submitted['preferred_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="e.g. First weekend of September" required></div>
+                            <div class="col-md-6 form-field">
+                                <label for="preferred_date">Preferred date / batch <span>*</span></label>
+                                <input id="preferred_date" name="preferred_date" value="<?= htmlspecialchars((string)($submitted['preferred_date'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="e.g. First weekend of September" required>
+                            </div>
+                            <div class="col-md-6 form-field">
+                                <label for="timing_slot">Preferred timing slot <span>*</span></label>
+                                <select id="timing_slot" name="timing_slot">
+                                    <option value="Morning Batch (10:30 AM – 1:30 PM)" <?= ($submitted['timing_slot'] ?? '') === 'Morning Batch (10:30 AM – 1:30 PM)' ? 'selected' : '' ?>>Morning Batch (10:30 AM – 1:30 PM)</option>
+                                    <option value="Evening Batch (4:00 PM – 7:00 PM)" <?= ($submitted['timing_slot'] ?? '') === 'Evening Batch (4:00 PM – 7:00 PM)' ? 'selected' : '' ?>>Evening Batch (4:00 PM – 7:00 PM)</option>
+                                    <option value="Flexible / Weekend Only" <?= ($submitted['timing_slot'] ?? '') === 'Flexible / Weekend Only' ? 'selected' : '' ?>>Flexible / Weekend Only</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-step"><span>03</span><h2>Make it yours</h2></div>
                         <div class="form-field"><label>What would you like to paint? <span>*</span></label><div class="interest-options"><label><input type="radio" name="interest" value="T-shirt" <?= ($submitted['interest'] ?? '') === 'T-shirt' ? 'checked' : '' ?>><span>T-shirt</span></label><label><input type="radio" name="interest" value="Bag" <?= ($submitted['interest'] ?? '') === 'Bag' ? 'checked' : '' ?>><span>Bag</span></label><label><input type="radio" name="interest" value="Jeans/Denim" <?= ($submitted['interest'] ?? '') === 'Jeans/Denim' ? 'checked' : '' ?>><span>Jeans / Denim</span></label><label><input type="radio" name="interest" value="Other Fabric" <?= ($submitted['interest'] ?? '') === 'Other Fabric' ? 'checked' : '' ?>><span>Other fabric</span></label></div></div>

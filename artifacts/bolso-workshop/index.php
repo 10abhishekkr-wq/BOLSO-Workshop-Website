@@ -13,10 +13,24 @@ require __DIR__ . '/includes/header.php';
                 <h1>Learn to turn<br><em>fabric into art.</em></h1>
                 <p class="hero-intro">Create beautiful, soft and wearable paintings with your own hands. BOLSO brings personal guidance, joyful practice and a little more colour to the everyday.</p>
                 <div class="hero-actions">
-                    <a class="btn btn-primary-bolso" href="registration.php">Reserve your spot <i class="bi bi-arrow-up-right"></i></a>
-                    <a class="text-link" href="#about">Discover BOLSO <i class="bi bi-arrow-down"></i></a>
+                    <a class="btn btn-primary-bolso hero-main-btn" href="registration.php">
+                        <span>Reserve your spot</span> <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                    <a class="hero-discover-btn" href="#about">
+                        <span>Discover BOLSO</span> <i class="bi bi-arrow-down"></i>
+                    </a>
                 </div>
-                <div class="hero-proof"><strong>Only 6</strong><span>students per batch</span><i></i><strong>2–5 days</strong><span>of guided making</span></div>
+                <div class="hero-proof">
+                    <div class="proof-chip">
+                        <i class="bi bi-people-fill text-terracotta"></i>
+                        <strong>Only 6</strong> <span>students per batch</span>
+                    </div>
+                    <span class="proof-divider"></span>
+                    <div class="proof-chip">
+                        <i class="bi bi-calendar2-week-fill text-terracotta"></i>
+                        <strong>2–5 days</strong> <span>of guided making</span>
+                    </div>
+                </div>
             </div>
             <div class="hero-art reveal reveal-delay-1">
                 <div class="card-stack-container hero-stack-container" id="heroCardStackSlider" data-card-stack>
@@ -119,10 +133,74 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
             <div class="material-row">
-                <div class="material-item"><span class="material-number">01</span><img class="material-img" src="img3.png" alt=""><span class="material-icon">✦</span><strong>T-shirts</strong><small>Make your daily uniform yours.</small></div>
-                <div class="material-item"><span class="material-number">02</span><img   class="material-img"src="img4.png" alt=""><span class="material-icon">◌</span><strong>Bags</strong><small>Carry a little bit of joy.</small></div>
-                <div class="material-item"><span class="material-number">03</span><img  class="material-img"  src="img2.png" alt=""><span class="material-icon">⌁</span><strong>Denim</strong><small>Give old favourites new life.</small></div>
-                <div class="material-item"><span class="material-number">04</span><img   class="material-img" src="img1.png" alt=""><span class="material-icon">✺</span><strong>Anything fabric</strong><small>There are no wrong canvases.</small></div>
+                <div class="material-card reveal">
+                    <div class="material-card-media">
+                        <img class="material-img" src="img3.png" alt="Hand-painted custom T-shirts">
+                        <span class="material-tag">01 · Everyday Cotton</span>
+                        <div class="material-overlay">
+                            <span class="material-view-hint">Custom T-Shirts <i class="bi bi-arrow-up-right"></i></span>
+                        </div>
+                    </div>
+                    <div class="material-card-body">
+                        <div class="material-meta">
+                            <span class="material-glyph">✦</span>
+                            <span class="material-number">01 / Cotton</span>
+                        </div>
+                        <strong>Custom T-Shirts</strong>
+                        <small>Turn everyday staples into personal, washable wearable art.</small>
+                    </div>
+                </div>
+                <div class="material-card reveal reveal-delay-1">
+                    <div class="material-card-media">
+                        <img class="material-img" src="img4.png" alt="Hand-painted canvas tote bags">
+                        <span class="material-tag">02 · Botanical Canvas</span>
+                        <div class="material-overlay">
+                            <span class="material-view-hint">Canvas Totes <i class="bi bi-arrow-up-right"></i></span>
+                        </div>
+                    </div>
+                    <div class="material-card-body">
+                        <div class="material-meta">
+                            <span class="material-glyph">◌</span>
+                            <span class="material-number">02 / Canvas</span>
+                        </div>
+                        <strong>Canvas Bags</strong>
+                        <small>Heavyweight raw tote bags carrying joyful botanical illustrations.</small>
+                    </div>
+                </div>
+                <div class="material-card reveal reveal-delay-2">
+                    <div class="material-card-media">
+                        <img class="material-img" src="img2.png" alt="Artisan painted denim jackets and jeans">
+                        <span class="material-tag">03 · Upcycled Denim</span>
+                        <div class="material-overlay">
+                            <span class="material-view-hint">Denim Art <i class="bi bi-arrow-up-right"></i></span>
+                        </div>
+                    </div>
+                    <div class="material-card-body">
+                        <div class="material-meta">
+                            <span class="material-glyph">⌁</span>
+                            <span class="material-number">03 / Denim</span>
+                        </div>
+                        <strong>Denim &amp; Jackets</strong>
+                        <small>Give old jeans and jackets a vivid second life with layered brushwork.</small>
+                    </div>
+                </div>
+                <div class="material-card reveal reveal-delay-3">
+                    <div class="material-card-media">
+                        <img class="material-img" src="img1.png" alt="Linen and handcrafted fabric painting">
+                        <span class="material-tag">04 · Open Canvases</span>
+                        <div class="material-overlay">
+                            <span class="material-view-hint">Fabric Art <i class="bi bi-arrow-up-right"></i></span>
+                        </div>
+                    </div>
+                    <div class="material-card-body">
+                        <div class="material-meta">
+                            <span class="material-glyph">✺</span>
+                            <span class="material-number">04 / Linen</span>
+                        </div>
+                        <strong>Linens &amp; Silks</strong>
+                        <small>There are no wrong fabrics. Explore textures, silks, and home textiles.</small>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -143,22 +221,28 @@ require __DIR__ . '/includes/header.php';
                         <div class="tile-learn-wrap">
                             <span class="tile-learn-title">What you'll learn:</span>
                             <ul class="tile-learn-points">
-                                <li><i class="bi bi-check2"></i> <span><strong>Fabric &amp; Pigment Basics:</strong> Prepping cotton, denim &amp; linen for smooth, crack-free colour absorption.</span></li>
-                                <li><i class="bi bi-check2"></i> <span><strong>Brushwork &amp; Shading:</strong> Fluid brush control, blending gradients and soft-wash layering.</span></li>
-                                <li><i class="bi bi-check2"></i> <span><strong>First Finished Garment:</strong> Paint and finish your own wearable custom T-shirt or canvas tote.</span></li>
-                                <li><i class="bi bi-check2"></i> <span><strong>Personal Mentorship:</strong> Live step-by-step guidance in intimate batches (max 6 students).</span></li>
+                                <li><span class="tile-check-icon"><i class="bi bi-check-lg"></i></span> <span><strong>Fabric &amp; Pigment Basics:</strong> Prepping cotton, denim &amp; linen for smooth, crack-free colour absorption.</span></li>
+                                <li><span class="tile-check-icon"><i class="bi bi-check-lg"></i></span> <span><strong>Brushwork &amp; Shading:</strong> Fluid brush control, blending gradients and soft-wash layering.</span></li>
+                                <li><span class="tile-check-icon"><i class="bi bi-check-lg"></i></span> <span><strong>First Finished Garment:</strong> Paint and finish your own wearable custom T-shirt or canvas tote.</span></li>
+                                <li><span class="tile-check-icon"><i class="bi bi-check-lg"></i></span> <span><strong>Personal Mentorship:</strong> Live step-by-step guidance in intimate batches (max 6 students).</span></li>
                             </ul>
                         </div>
                     </div>
                     <div class="tile-bottom">
-                        <div class="tile-price-wrap">
-                            <span class="price-val">From ₹399</span>
-                            <span class="price-sub">Online &amp; Offline · Pay online or at studio</span>
+                        <div class="tile-price-box">
+                            <div class="tile-price-main">
+                                <span class="price-val">₹399</span>
+                                <span class="price-unit">/ participant</span>
+                            </div>
+                            <span class="tile-mode-pill"><i class="bi bi-check2-circle"></i> Online &amp; Offline Available</span>
                         </div>
-                        <a href="registration.php?workshop=2-day">Book this <i class="bi bi-arrow-up-right"></i></a>
+                        <a class="btn-tile-cta btn-tile-gold" href="registration.php?workshop=2-day">
+                            <span>Book 2-Day Pass</span> <i class="bi bi-arrow-up-right"></i>
+                        </a>
                     </div>
                 </article>
                 <article class="workshop-tile tile-sand reveal reveal-delay-1">
+                    <div class="tile-badge-featured"><i class="bi bi-stars"></i> Studio Signature · Most Loved</div>
                     <div class="tile-top"><span class="tile-tag">The deep dive</span><span>02 / 02</span></div>
                     <div class="tile-middle">
                         <p class="tile-days">5 days · Complete mastery</p>
@@ -167,9 +251,9 @@ require __DIR__ . '/includes/header.php';
                         <div class="tile-learn-wrap">
                             <span class="tile-learn-title">What you'll learn:</span>
                             <ul class="tile-learn-points">
-                                <li><i class="bi bi-check2"></i> <span><strong>Advanced Techniques:</strong> Multi-pass washes, textured strokes &amp; ombre depth on denim, jackets &amp; linen.</span></li>
-                                <li><i class="bi bi-check2"></i> <span><strong>Signature Style &amp; Composition:</strong> Discovering your motif language, freehand sketching and pattern balance.</span></li>
-                                <li><i class="bi bi-check2"></i> <span><strong>Multi-Piece Collection:</strong> Paint jackets, denim, tote bags and statement wardrobe pieces.</span></li>
+                                <li><span class="tile-check-icon"><i class="bi bi-check-lg"></i></span> <span><strong>Advanced Techniques:</strong> Multi-pass washes, textured strokes &amp; ombre depth on denim, jackets &amp; linen.</span></li>
+                                <li><span class="tile-check-icon"><i class="bi bi-check-lg"></i></span> <span><strong>Signature Style &amp; Composition:</strong> Discovering your motif language, freehand sketching and pattern balance.</span></li>
+                                <li><span class="tile-check-icon"><i class="bi bi-check-lg"></i></span> <span><strong>Multi-Piece Collection:</strong> Paint jackets, denim, tote bags and statement wardrobe pieces.</span></li>
                                 <li class="palette-perk">
                                     <div class="palette-perk-badge">
                                         <i class="bi bi-palette-fill"></i>
@@ -180,11 +264,16 @@ require __DIR__ . '/includes/header.php';
                         </div>
                     </div>
                     <div class="tile-bottom">
-                        <div class="tile-price-wrap">
-                            <span class="price-val">From ₹899</span>
-                            <span class="price-sub">Online ₹899 · Offline ₹1,299 (Pay at Studio available)</span>
+                        <div class="tile-price-box">
+                            <div class="tile-price-main">
+                                <span class="price-val">₹899 <small class="text-muted" style="font-size: 14px; font-weight: normal;">– ₹1,299</small></span>
+                                <span class="price-unit">/ participant</span>
+                            </div>
+                            <span class="tile-mode-pill"><i class="bi bi-award"></i> Comprehensive 5-Day Mastery</span>
                         </div>
-                        <a href="registration.php?workshop=5-day">Book this <i class="bi bi-arrow-up-right"></i></a>
+                        <a class="btn-tile-cta btn-tile-maroon" href="registration.php?workshop=5-day">
+                            <span>Book 5-Day Mastery</span> <i class="bi bi-arrow-up-right"></i>
+                        </a>
                     </div>
                 </article>
             </div>
@@ -246,13 +335,45 @@ require __DIR__ . '/includes/header.php';
                 <div class="section-label"><span>04</span><span class="line"></span><span>Learn by making</span></div>
                 <h2>Personal guidance,<br><em>real practice.</em></h2>
                 <p>Small groups mean there’s room for every question, every happy accident and every “can I try this?” moment.</p>
-                <ul class="check-list">
-                    <li><span>01</span> Beginner-friendly techniques</li>
-                    <li><span>02</span> Hands-on painting practice</li>
-                    <li><span>03</span> Live instructor-led guidance</li>
-                    <li><span>04</span> A wearable piece to be proud of</li>
-                </ul>
-                <a class="btn btn-outline-bolso" href="registration.php">I’m ready to make <i class="bi bi-arrow-up-right"></i></a>
+                <div class="guidance-feature-grid">
+                    <div class="guidance-feature-card">
+                        <div class="feature-card-icon"><i class="bi bi-palette"></i></div>
+                        <div class="feature-card-text">
+                            <span class="feature-card-num">01</span>
+                            <h4>Beginner-Friendly Techniques</h4>
+                            <p>Soft washable pigments, step-by-step canvas prep &amp; zero cracking guarantee.</p>
+                        </div>
+                    </div>
+                    <div class="guidance-feature-card">
+                        <div class="feature-card-icon"><i class="bi bi-brush"></i></div>
+                        <div class="feature-card-text">
+                            <span class="feature-card-num">02</span>
+                            <h4>Hands-On Painting Practice</h4>
+                            <p>Paint on real cloth, not scrap theory. Master ombre blending and fluid strokes.</p>
+                        </div>
+                    </div>
+                    <div class="guidance-feature-card">
+                        <div class="feature-card-icon"><i class="bi bi-person-video3"></i></div>
+                        <div class="feature-card-text">
+                            <span class="feature-card-num">03</span>
+                            <h4>Live Instructor Mentorship</h4>
+                            <p>Intimate cohorts capped at 6 students for real-time 1-on-1 guidance.</p>
+                        </div>
+                    </div>
+                    <div class="guidance-feature-card">
+                        <div class="feature-card-icon"><i class="bi bi-gem"></i></div>
+                        <div class="feature-card-text">
+                            <span class="feature-card-num">04</span>
+                            <h4>A Wearable Masterpiece</h4>
+                            <p>Finish a custom, machine-washable garment or bag you'll love wearing daily.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="guidance-actions">
+                    <a class="btn btn-primary-bolso guidance-cta-btn" href="registration.php">
+                        <span>I’m ready to make</span> <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -261,7 +382,10 @@ require __DIR__ . '/includes/header.php';
         <div class="container cta-inner">
             <span class="eyebrow">Your next favourite thing</span>
             <h2>Bring a little more<br><em>feeling</em> to fabric.</h2>
-            <a class="btn btn-light-bolso" href="registration.php">Reserve your spot <i class="bi bi-arrow-up-right"></i></a>
+            <p class="cta-sub">Small batches · All materials included · Kolkata studio &amp; live online</p>
+            <a class="btn btn-light-bolso cta-btn" href="registration.php">
+                <span>Reserve your spot</span> <i class="bi bi-arrow-up-right"></i>
+            </a>
             <div class="cta-doodle">✳</div>
         </div>
     </section>
