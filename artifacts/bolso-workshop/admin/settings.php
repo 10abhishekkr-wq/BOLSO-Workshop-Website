@@ -113,6 +113,27 @@ if ($pdo) {
                     admin_flash('success', 'Live notification gateway credentials saved successfully! Use the test form below to verify.');
                     header('Location: settings.php');
                     exit;
+                } elseif ($action === 'test_smtp_live') {
+                    require_once __DIR__ . '/../includes/mailer.php';
+                    $smtpHost = trim((string)($_POST['smtp_host'] ?? bolso_config('smtp_host', 'smtp.gmail.com')));
+                    $smtpPort = (int)($_POST['smtp_port'] ?? bolso_config('smtp_port', '587'));
+                    $smtpUser = trim((string)($_POST['smtp_user'] ?? bolso_config('smtp_user', '10abhishekkr@gmail.com')));
+                    $smtpPass = trim((string)($_POST['smtp_pass'] ?? bolso_config('smtp_pass', '')));
+                    $smtpSecure = trim((string)($_POST['smtp_secure'] ?? bolso_config('smtp_secure', 'tls')));
+                    $testTo = trim((string)($_POST['test_to_email'] ?? '10abhishekkr@gmail.com'));
+
+                    if ($smtpPass === '') {
+                        admin_flash('danger', 'Cannot test SMTP: App Password is empty! Please generate and paste your 16-character Google App Password in the field below.');
+                    } else {
+                        $testResult = bolso_test_smtp_connection($smtpHost, $smtpPort, $smtpUser, $smtpPass, $smtpSecure, $testTo);
+                        if ($testResult['success']) {
+                            admin_flash('success', '🎉 ' . $testResult['message']);
+                        } else {
+                            admin_flash('danger', '❌ Live SMTP Test Failed: ' . $testResult['message'] . ' — Note: For Gmail, you must use a 16-character App Password from myaccount.google.com/apppasswords.');
+                        }
+                    }
+                    header('Location: settings.php');
+                    exit;
                 }
             }
         }
@@ -327,8 +348,15 @@ require __DIR__ . '/../includes/header.php';
                                 <!-- Section A: Gmail / SMTP Email Delivery -->
                                 <div class="col-lg-6">
                                     <div class="p-3 border rounded h-100 bg-white">
-                                        <h6 class="fw-bold text-dark mb-2"><i class="bi bi-envelope text-primary me-1"></i> Real Email Delivery (Gmail SMTP)</h6>
-                                        <p class="text-muted small mb-3">To send emails to customer inboxes and <code>10abhishekkr@gmail.com</code>:</p>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-envelope text-primary me-1"></i> Real Email Delivery (Gmail SMTP)</h6>
+                                            <?php if (trim(bolso_config('smtp_pass', '')) !== ''): ?>
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check-circle me-1"></i> Credentials Set</span>
+                                            <?php else: ?>
+                                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="bi bi-exclamation-triangle me-1"></i> App Password Needed</span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <p class="text-muted small mb-3">Delivers real automated emails to customer inboxes and <code>10abhishekkr@gmail.com</code> via authenticated SMTP:</p>
 
                                         <div class="mb-2">
                                             <label class="form-label small mb-1">SMTP Host</label>
@@ -360,6 +388,13 @@ require __DIR__ . '/../includes/header.php';
                                             <small class="text-muted d-block mt-1" style="font-size:11px;">
                                                 Generate from: <a href="https://myaccount.google.com/apppasswords" target="_blank" class="text-primary text-decoration-none fw-semibold">Google Account &rarr; Security &rarr; 2-Step Verification &rarr; App Passwords</a>.
                                             </small>
+                                        </div>
+
+                                        <div class="mt-3 pt-2 border-top d-flex align-items-center justify-content-between gap-2">
+                                            <button type="submit" name="action" value="test_smtp_live" class="btn btn-sm btn-outline-primary" formnovalidate>
+                                                <i class="bi bi-send-check me-1"></i> Test SMTP Connection Now
+                                            </button>
+                                            <small class="text-muted" style="font-size: 11px;">Pings 10abhishekkr@gmail.com</small>
                                         </div>
                                     </div>
                                 </div>

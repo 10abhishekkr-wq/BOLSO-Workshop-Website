@@ -50,3 +50,7 @@
 [2026-09-11 17:20:35] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: 📍 Spot Reserved (Pay at Studio): ₹1,299 to collect from Aditi Sen (Signature 5-Day Fabric Art Mastery)  | Error: Could not instantiate mail function.
 [2026-09-11 17:20:35] [CUSTOMER|WHATSAPP] To: 919876543210 | Status: READY | Subject: WhatsApp Notification  | Error: No WhatsApp API Gateway configured in Settings. wa.me link ready for 1-click dispatch.
 [2026-09-11 17:20:35] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification  | Error: No WhatsApp API Gateway configured in Settings. wa.me link ready for 1-click dispatch.
+[2026-09-12 06:31:58] [CUSTOMER|EMAIL] To: aditi.sen.test@example.com | Status: SIMULATED | Subject: Spot Reserved: Your BOLSO Studio Workshop Spot is Confirmed! (ID: #8888)  | Error: Extension missing: openssl
+[2026-09-12 06:31:58] [ADMIN|EMAIL] To: 10abhishekkr@gmail.com | Status: SIMULATED | Subject: 📍 Spot Reserved (Pay at Studio): ₹1,299 to collect from Aditi Sen (Signature 5-Day Fabric Art Mastery)  | Error: Extension missing: openssl
+[2026-09-12 06:31:58] [CUSTOMER|WHATSAPP] To: 919876543210 | Status: READY | Subject: WhatsApp Notification  | Error: No WhatsApp API Gateway configured in Settings. wa.me link ready for 1-click dispatch.
+[2026-09-12 06:31:58] [ADMIN|WHATSAPP] To: 919341469219 | Status: READY | Subject: WhatsApp Notification  | Error: No WhatsApp API Gateway configured in Settings. wa.me link ready for 1-click dispatch.

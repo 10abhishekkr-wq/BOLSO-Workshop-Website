@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'verif
                     'payment_id' => $razorpayPaymentId,
                     'customer_wa_link' => $notifResult['customer_whatsapp_link'] ?? '',
                     'admin_wa_link' => $notifResult['admin_whatsapp_link'] ?? '',
+                    'email_sent' => !empty($notifResult['customer_email']['sent']) || !empty($notifResult['admin_email']['sent']),
                 ];
             }
         } catch (PDOException $exception) {
@@ -206,6 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                         'payment_method' => 'offline',
                         'customer_wa_link' => $notifRes['customer_whatsapp_link'] ?? '',
                         'admin_wa_link' => $notifRes['admin_whatsapp_link'] ?? '',
+                        'email_sent' => !empty($notifRes['customer_email']['sent']) || !empty($notifRes['admin_email']['sent']),
                     ];
                 } else {
                     // Online payment flow
@@ -296,6 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'verif
                             'payment_method' => 'online',
                             'customer_wa_link' => $notifRes['customer_whatsapp_link'] ?? '',
                             'admin_wa_link' => $notifRes['admin_whatsapp_link'] ?? '',
+                            'email_sent' => !empty($notifRes['customer_email']['sent']) || !empty($notifRes['admin_email']['sent']),
                         ];
                     }
                 }
@@ -364,7 +367,11 @@ require __DIR__ . '/includes/header.php';
                         </div>
 
                         <div class="mt-4 pt-3 border-top" style="font-size: 12px; color: #6a7c92;">
-                            <span><i class="bi bi-check-circle-fill text-success"></i> Notifications dispatched to Admin (<strong>10abhishekkr@gmail.com</strong> &amp; <strong>WhatsApp 9341469219</strong>)</span>
+                            <?php if (!empty($paymentSuccess['email_sent'])): ?>
+                                <span><i class="bi bi-check-circle-fill text-success"></i> Automated workshop confirmation emails delivered to <strong><?= htmlspecialchars($paymentSuccess['email'] ?? '', ENT_QUOTES, 'UTF-8') ?></strong> &amp; <strong>10abhishekkr@gmail.com</strong>.</span>
+                            <?php else: ?>
+                                <span><i class="bi bi-shield-check text-primary"></i> Registration recorded! (Live automated email delivery activates once Gmail App Password is configured in Studio Settings). Tap WhatsApp above for instant 1-click confirmation.</span>
+                            <?php endif; ?>
                         </div>
 
                         <a class="text-link dark-link d-block mt-4" href="index.php">Back to BOLSO <i class="bi bi-arrow-right"></i></a>
@@ -494,7 +501,11 @@ require __DIR__ . '/includes/header.php';
                         </div>
 
                         <div class="mt-4 pt-3 border-top" style="font-size: 12px; color: #6a7c92;">
-                            <span><i class="bi bi-check-circle-fill text-success"></i> Studio Admin alerted at <strong>10abhishekkr@gmail.com</strong> &amp; <strong>WhatsApp (+91 9341469219)</strong></span>
+                            <?php if (!empty($success['email_sent'])): ?>
+                                <span><i class="bi bi-check-circle-fill text-success"></i> Automated workshop confirmation emails delivered to <strong><?= htmlspecialchars($success['email'] ?? '', ENT_QUOTES, 'UTF-8') ?></strong> &amp; <strong>10abhishekkr@gmail.com</strong>.</span>
+                            <?php else: ?>
+                                <span><i class="bi bi-shield-check text-primary"></i> Registration recorded! (Live automated email delivery activates once Gmail App Password is configured in Studio Settings). Tap WhatsApp above for instant 1-click confirmation.</span>
+                            <?php endif; ?>
                         </div>
 
                         <a class="text-link dark-link d-block mt-4" href="index.php">Back to BOLSO <i class="bi bi-arrow-right"></i></a>
