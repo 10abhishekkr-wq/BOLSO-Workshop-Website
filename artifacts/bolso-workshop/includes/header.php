@@ -57,6 +57,11 @@ $isAdminArea = $isAdminArea ?? false;
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 gap-xl-3">
                     <li class="nav-item">
+                        <a class="nav-link <?= $activePage === 'welcome' ? 'active' : '' ?>" href="welcome.php" title="Artisan Studio Welcome Intro">
+                            <i class="bi bi-stars nav-icon"></i> <span>Welcome</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="index.php">
                             <i class="bi bi-house-door nav-icon"></i> <span>Home</span>
                         </a>

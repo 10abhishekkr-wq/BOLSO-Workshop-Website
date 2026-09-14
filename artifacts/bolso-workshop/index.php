@@ -44,6 +44,11 @@ require __DIR__ . '/includes/header.php';
                         <i class="bi bi-calendar2-week-fill text-terracotta"></i>
                         <strong>2–5 days</strong> <span>of guided making</span>
                     </div>
+                    <span class="proof-divider"></span>
+                    <div class="proof-chip">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <strong>4.9/5</strong> <span>rated by 250+ makers</span>
+                    </div>
                 </div>
             </div>
             <div class="hero-art reveal reveal-delay-1">
@@ -99,7 +104,15 @@ require __DIR__ . '/includes/header.php';
     </section>
 
     <section class="marquee-strip" aria-label="BOLSO principles">
-        <div class="marquee-track"><span>MAKE SOMETHING SOFT</span><i>✳</i><span>MAKE SOMETHING YOU</span><i>✳</i><span>MAKE SOMETHING TO WEAR</span><i>✳</i><span>MAKE SOMETHING SOFT</span><i>✳</i></div>
+        <div class="marquee-track">
+            <span>MAKE SOMETHING SOFT</span><i>✳</i>
+            <span>MAKE SOMETHING YOU</span><i>✳</i>
+            <span>MAKE SOMETHING TO WEAR</span><i>✳</i>
+            <span>100% WASHABLE &amp; CRACK-FREE</span><i>✳</i>
+            <span>HANDCRAFTED IN KOLKATA</span><i>✳</i>
+            <span>SMALL-BATCH ARTISAN FABRIC ART</span><i>✳</i>
+            <span>MAKE SOMETHING SOFT</span><i>✳</i>
+        </div>
     </section>
 
     <section class="section-space about-section" id="about">
@@ -386,6 +399,66 @@ require __DIR__ . '/includes/header.php';
                     <a class="btn btn-primary-bolso guidance-cta-btn" href="registration.php">
                         <span>I’m ready to make</span> <i class="bi bi-arrow-up-right"></i>
                     </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STUDENT REVIEWS & STORIES -->
+    <section class="section-space reviews-section" style="background: #ffffff; border-top: 1px solid #ebd9c8; border-bottom: 1px solid #ebd9c8;">
+        <div class="container">
+            <div class="text-center mb-5 reveal">
+                <span class="eyebrow">Student Stories</span>
+                <h2>Made with their own hands.</h2>
+                <p class="text-muted mx-auto" style="max-width: 540px;">See what our students created in their very first fabric painting sessions.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="h-100 p-4 rounded-4 reveal" style="background: #fbf7ef; border: 1px solid #ebd9c8;">
+                        <div class="d-flex text-warning mb-3">
+                            <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4" style="font-size: 14.5px; line-height: 1.6; color: #2e3842;">“I had never painted on clothes before. Abhishek made the brushwork and shading so approachable. My custom botanical tote bag is now my daily carryall!”</p>
+                        <div class="d-flex align-items-center gap-3 pt-3 border-top border-dark border-opacity-10">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width: 42px; height: 42px; background: #7c2639; font-size: 15px;">P</div>
+                            <div>
+                                <strong class="d-block text-dark" style="font-size: 14px;">Priya Sen</strong>
+                                <small class="text-muted">Beginner · 2-Day Workshop</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="h-100 p-4 rounded-4 reveal reveal-delay-1" style="background: #fbf7ef; border: 1px solid #ebd9c8;">
+                        <div class="d-flex text-warning mb-3">
+                            <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4" style="font-size: 14.5px; line-height: 1.6; color: #2e3842;">“The physical colour palettes and German soft-touch inks in the 5-day workshop were incredible. The painted jacket has survived 6 washes and still looks freshly painted.”</p>
+                        <div class="d-flex align-items-center gap-3 pt-3 border-top border-dark border-opacity-10">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width: 42px; height: 42px; background: #c25e3e; font-size: 15px;">R</div>
+                            <div>
+                                <strong class="d-block text-dark" style="font-size: 14px;">Rahul Mukherjee</strong>
+                                <small class="text-muted">Fashion Student · 5-Day Mastery</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="h-100 p-4 rounded-4 reveal reveal-delay-2" style="background: #fbf7ef; border: 1px solid #ebd9c8;">
+                        <div class="d-flex text-warning mb-3">
+                            <i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill me-1"></i><i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4" style="font-size: 14.5px; line-height: 1.6; color: #2e3842;">“The intimate batch of only 6 students makes all the difference. You get real 1-on-1 guidance rather than getting lost in a crowded hall. Pure creative joy!”</p>
+                        <div class="d-flex align-items-center gap-3 pt-3 border-top border-dark border-opacity-10">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width: 42px; height: 42px; background: #2f5d34; font-size: 15px;">A</div>
+                            <div>
+                                <strong class="d-block text-dark" style="font-size: 14px;">Ananya Das</strong>
+                                <small class="text-muted">Studio Attendee · Kolkata Batch</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
