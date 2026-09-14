@@ -30,6 +30,9 @@ $isAdminArea = $isAdminArea ?? false;
 </head>
 <body class="<?= $isAdminArea ? 'admin-body' : '' ?>">
 <div class="site-grain" aria-hidden="true"></div>
+<?php if (!$isAdminArea && $activePage === 'home'): ?>
+    <?php require __DIR__ . '/splash_screen.php'; ?>
+<?php endif; ?>
 <?php if ($isAdminArea): ?>
     <?php if (!empty($_SESSION['admin_id'])): ?>
         <?php require __DIR__ . '/admin_nav.php'; ?>
@@ -53,6 +56,11 @@ $isAdminArea = $isAdminArea ?? false;
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 gap-xl-3">
+                    <li class="nav-item">
+                        <a class="nav-link <?= $activePage === 'welcome' ? 'active' : '' ?>" href="welcome.php" title="Artisan Studio Welcome Intro">
+                            <i class="bi bi-stars nav-icon"></i> <span>Welcome</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link <?= $activePage === 'home' ? 'active' : '' ?>" href="index.php">
                             <i class="bi bi-house-door nav-icon"></i> <span>Home</span>

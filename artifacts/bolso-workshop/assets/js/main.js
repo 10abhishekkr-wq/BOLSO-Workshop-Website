@@ -348,4 +348,101 @@
       }
     }
   };
+
+  // =========================================================================
+  // BOLSO ARTISAN WELCOME & ENTRANCE SPLASH CONTROLLER
+  // =========================================================================
+  var splash = document.getElementById('bolsoSplashScreen');
+  if (splash) {
+    var isStandalone = splash.classList.contains('standalone-mode');
+    var hasSeenSplash = sessionStorage.getItem('bolso_splash_seen');
+    var isReplay = window.location.search.indexOf('replay=1') !== -1;
+
+    var btnEnter = document.getElementById('btnSplashEnter');
+    var btnSkip = document.getElementById('btnSplashSkip');
+    var ringFill = document.getElementById('splashRingFill');
+    var autoDismissTimer = null;
+    var progressInterval = null;
+    var startTime = Date.now();
+    var duration = 3800; // 3.8s total entrance experience
+    var isDismissed = false;
+
+    function dismissSplash(immediate) {
+      if (isDismissed) return;
+      isDismissed = true;
+      if (autoDismissTimer) clearTimeout(autoDismissTimer);
+      if (progressInterval) clearInterval(progressInterval);
+
+      sessionStorage.setItem('bolso_splash_seen', '1');
+
+      if (isStandalone && !immediate) {
+        window.location.href = 'index.php';
+        return;
+      }
+
+      splash.classList.add('splash-fade-out');
+      setTimeout(function () {
+        splash.classList.add('is-hidden');
+      }, 850);
+    }
+
+    // Check if should be shown
+    if (!isStandalone && hasSeenSplash && !isReplay) {
+      splash.classList.add('is-hidden');
+    } else {
+      splash.classList.remove('is-hidden');
+
+      // Animate circular progress ring
+      if (ringFill) {
+        var totalOffset = 107; // 2 * PI * 17
+        ringFill.style.strokeDashoffset = totalOffset;
+        progressInterval = setInterval(function () {
+          var elapsed = Date.now() - startTime;
+          var pct = Math.min(1, elapsed / duration);
+          ringFill.style.strokeDashoffset = totalOffset * (1 - pct);
+          if (pct >= 1) {
+            clearInterval(progressInterval);
+          }
+        }, 30);
+      }
+
+      // Auto dismiss after 3.8s
+      autoDismissTimer = setTimeout(function () {
+        dismissSplash(false);
+      }, duration);
+
+      if (btnEnter) {
+        btnEnter.addEventListener('click', function () {
+          dismissSplash(false);
+        });
+      }
+
+      if (btnSkip) {
+        btnSkip.addEventListener('click', function () {
+          dismissSplash(true);
+        });
+      }
+
+      // Keyboard accessibility
+      window.addEventListener('keydown', function (e) {
+        if (!isDismissed && (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          dismissSplash(true);
+        }
+      });
+    }
+  }
+
+  // Handle footer or nav replay button clicks
+  var replayButtons = document.querySelectorAll('#btnReplayIntro, #btnReplayIntroBottom');
+  replayButtons.forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      sessionStorage.removeItem('bolso_splash_seen');
+      var splashEl = document.getElementById('bolsoSplashScreen');
+      if (splashEl && !splashEl.classList.contains('standalone-mode')) {
+        e.preventDefault();
+        window.location.href = 'index.php?replay=1';
+      }
+    });
+  });
 })();

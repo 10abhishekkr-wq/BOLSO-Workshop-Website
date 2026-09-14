@@ -17,6 +17,7 @@ declare(strict_types=1);
                 <a href="workshops.php">Workshops</a>
                 <a href="registration.php">Reserve a spot</a>
                 <a href="index.php#about">About BOLSO</a>
+                <a href="welcome.php" id="btnReplayIntro" style="color: #e5a93c; font-weight: 500;"><i class="bi bi-stars"></i> Replay Studio Intro</a>
                 <a href="admin/login.php" style="opacity: 0.6; font-size: 11px;">Admin studio <i class="bi bi-lock"></i></a>
             </div>
             <div class="footer-links">
@@ -28,7 +29,7 @@ declare(strict_types=1);
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© <?= date('Y') ?> BOLSO. Made by hand.</span>
+            <span>© <?= date('Y') ?> BOLSO. Made by hand. · <a href="welcome.php" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">Replay Welcome Intro ✦</a></span>
             <span>Small batches. Big feelings.</span>
         </div>
     </div>
