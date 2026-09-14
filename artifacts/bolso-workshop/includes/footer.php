@@ -71,6 +71,27 @@ declare(strict_types=1);
         </div>
     </div>
 </footer>
+
+<!-- Floating 1-Click WhatsApp Studio Concierge -->
+<aside class="floating-whatsapp-concierge" id="whatsappConcierge" aria-label="WhatsApp Studio Concierge">
+    <a href="https://wa.me/919341469219?text=Hi%20Abhishek!%20I%20have%20a%20query%20about%20the%20upcoming%20BOLSO%20fabric%20art%20workshop." 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="concierge-link" 
+       title="Chat directly with Instructor Abhishek on WhatsApp">
+        <div class="concierge-avatar-wrap">
+            <i class="bi bi-whatsapp"></i>
+            <span class="concierge-status-beacon" title="Abhishek is online"></span>
+        </div>
+        <div class="concierge-text">
+            <span class="concierge-label">Have questions?</span>
+            <strong class="concierge-action">Chat on WhatsApp</strong>
+        </div>
+        <div class="concierge-arrow">
+            <i class="bi bi-arrow-up-right"></i>
+        </div>
+    </a>
+</aside>
 <?php endif; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= $isAdminArea ? '../assets/js/main.js' : 'assets/js/main.js' ?>"></script>

@@ -445,4 +445,112 @@
       }
     });
   });
+
+  /* ==========================================================================
+     Interactive Before & After Garment Transformation Slider
+     ========================================================================== */
+  var comparisonSlider = document.getElementById('artisanComparisonSlider');
+  if (comparisonSlider) {
+    var overlay = document.getElementById('comparisonOverlay');
+    var handle = document.getElementById('comparisonHandle');
+    var isDragging = false;
+    var sliderRect = null;
+
+    function setSliderPosition(xPercentage) {
+      var clamped = Math.max(0, Math.min(100, xPercentage));
+      comparisonSlider.setAttribute('data-position', clamped);
+      if (overlay) {
+        overlay.style.clipPath = 'polygon(0 0, ' + clamped + '% 0, ' + clamped + '% 100%, 0 100%)';
+      }
+      if (handle) {
+        handle.style.left = clamped + '%';
+        handle.setAttribute('aria-valuenow', Math.round(clamped));
+      }
+    }
+
+    function updateFromClientX(clientX) {
+      if (!sliderRect) {
+        sliderRect = comparisonSlider.getBoundingClientRect();
+      }
+      var offsetX = clientX - sliderRect.left;
+      var pct = (offsetX / sliderRect.width) * 100;
+      setSliderPosition(pct);
+    }
+
+    function onPointerDown(e) {
+      isDragging = true;
+      sliderRect = comparisonSlider.getBoundingClientRect();
+      comparisonSlider.classList.add('is-dragging');
+      var clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+      updateFromClientX(clientX);
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      var clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+      updateFromClientX(clientX);
+    }
+
+    function onPointerUp() {
+      if (isDragging) {
+        isDragging = false;
+        comparisonSlider.classList.remove('is-dragging');
+      }
+    }
+
+    // Desktop mouse events
+    comparisonSlider.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    // Mobile touch events
+    comparisonSlider.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+    window.addEventListener('touchend', onPointerUp);
+
+    // Keyboard accessibility for handle
+    if (handle) {
+      handle.addEventListener('keydown', function (e) {
+        var current = parseFloat(comparisonSlider.getAttribute('data-position')) || 50;
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          setSliderPosition(current - 5);
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          setSliderPosition(current + 5);
+        }
+      });
+    }
+
+    // Refresh rect on resize
+    window.addEventListener('resize', function () {
+      sliderRect = comparisonSlider.getBoundingClientRect();
+    });
+
+    // Auto-hint subtle oscillation on first scroll into view
+    if ('IntersectionObserver' in window) {
+      var hintObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && !comparisonSlider.dataset.hinted) {
+            comparisonSlider.dataset.hinted = 'true';
+            comparisonSlider.classList.add('hint-animating');
+            setTimeout(function () {
+              setSliderPosition(35);
+              setTimeout(function () {
+                setSliderPosition(65);
+                setTimeout(function () {
+                  setSliderPosition(50);
+                  comparisonSlider.classList.remove('hint-animating');
+                }, 450);
+              }, 450);
+            }, 350);
+            hintObserver.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+      hintObserver.observe(comparisonSlider);
+    } else {
+      setSliderPosition(50);
+    }
+  }
 })();

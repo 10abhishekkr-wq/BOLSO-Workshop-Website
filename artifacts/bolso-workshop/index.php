@@ -231,10 +231,107 @@ require __DIR__ . '/includes/header.php';
         </div>
     </section>
 
+    <!-- SECTION 03: BEFORE & AFTER TRANSFORMATION SLIDER -->
+    <section class="transformation-section section-space" id="transformation">
+        <div class="container">
+            <div class="split-heading reveal">
+                <div class="section-label"><span>03</span><span class="line"></span><span>The Artisan Transformation</span></div>
+                <span class="artisan-badge-pill"><i class="bi bi-magic text-terracotta"></i> Interactive Reveal</span>
+            </div>
+
+            <div class="transformation-card reveal reveal-delay-1">
+                <div class="row align-items-center g-4 g-xl-5">
+                    <div class="col-lg-5">
+                        <div class="transformation-content">
+                            <span class="eyebrow">Real Student Outcome</span>
+                            <h2>From plain cloth<br>to <em>wearable art.</em></h2>
+                            <p class="transformation-desc">Drag the center artisan divider to reveal how an unpainted, store-bought cotton tote transforms into a permanent, machine-washable botanical artwork in just 2 days of guided making.</p>
+                            
+                            <div class="transformation-perks-list">
+                                <div class="t-perk-item">
+                                    <div class="t-perk-icon"><i class="bi bi-shield-check"></i></div>
+                                    <div>
+                                        <strong>100% Machine Washable</strong>
+                                        <small>Heat-cured textile pigments that never crack, peel, or wash away.</small>
+                                    </div>
+                                </div>
+                                <div class="t-perk-item">
+                                    <div class="t-perk-icon"><i class="bi bi-hand-index-thumb"></i></div>
+                                    <div>
+                                        <strong>Ultra-Soft Cloth Touch</strong>
+                                        <small>Soft-touch German pigments that sink deep into natural fibers with zero cloth stiffness.</small>
+                                    </div>
+                                </div>
+                                <div class="t-perk-item">
+                                    <div class="t-perk-icon"><i class="bi bi-palette2"></i></div>
+                                    <div>
+                                        <strong>Zero Art Background Required</strong>
+                                        <small>Step-by-step tracing, outlining, and ombre wash techniques taught live.</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-2">
+                                <a href="registration.php" class="btn btn-primary-bolso">
+                                    <span>Paint Your Own Bag</span> <i class="bi bi-arrow-up-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <div class="comparison-outer-frame">
+                            <div class="comparison-slider-widget" id="artisanComparisonSlider" data-position="50">
+                                <!-- Base/Before Layer (Plain Cotton Bag) -->
+                                <div class="comparison-layer comparison-layer-before">
+                                    <img src="assets/images/canvas_tote_plain.jpg" alt="Before: Plain unpainted canvas tote bag" class="comparison-img" draggable="false">
+                                    <span class="comparison-tag tag-before"><i class="bi bi-record-circle"></i> Before · Blank Cloth</span>
+                                </div>
+
+                                <!-- Overlay/After Layer (Hand-Painted Botanical Bag) -->
+                                <div class="comparison-layer comparison-layer-after" id="comparisonOverlay">
+                                    <img src="assets/images/canvas_tote_painted.png" alt="After: Handcrafted botanical painted tote bag" class="comparison-img" draggable="false">
+                                    <span class="comparison-tag tag-after"><i class="bi bi-brush-fill"></i> After · Hand-Painted Art</span>
+                                </div>
+
+                                <!-- Tactile Artisan Slider Handle -->
+                                <div class="comparison-slider-handle" id="comparisonHandle" role="slider" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Drag to compare before and after painting" tabindex="0">
+                                    <div class="handle-stem-top"></div>
+                                    <div class="handle-dial">
+                                        <i class="bi bi-chevron-left"></i>
+                                        <span class="handle-grip"></span>
+                                        <i class="bi bi-chevron-right"></i>
+                                    </div>
+                                    <div class="handle-stem-bottom"></div>
+                                </div>
+
+                                <div class="slider-drag-hint">
+                                    <i class="bi bi-arrows-expand-vertical"></i> <span>Drag left / right to reveal</span>
+                                </div>
+                            </div>
+
+                            <div class="comparison-caption-bar">
+                                <div class="caption-item">
+                                    <span class="cap-step">Input</span>
+                                    <strong class="cap-name">340 GSM Raw Cotton Tote</strong>
+                                </div>
+                                <div class="caption-arrow"><i class="bi bi-arrow-right"></i></div>
+                                <div class="caption-item">
+                                    <span class="cap-step">Output</span>
+                                    <strong class="cap-name">Wearable Botanical Masterpiece</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="workshop-preview section-space">
         <div class="container">
             <div class="split-heading">
-                <div class="section-label"><span>03</span><span class="line"></span><span>Choose your pace</span></div>
+                <div class="section-label"><span>04</span><span class="line"></span><span>Choose your pace</span></div>
                 <a class="text-link dark-link" href="workshops.php">View all workshops <i class="bi bi-arrow-up-right"></i></a>
             </div>
             <div class="workshop-preview-grid">
@@ -306,6 +403,143 @@ require __DIR__ . '/includes/header.php';
         </div>
     </section>
 
+    <!-- SECTION 05: ALL-INCLUSIVE STUDIO KIT SHOWCASE -->
+    <section class="section-space studio-kit-section" id="studio-kit">
+        <div class="container">
+            <div class="split-heading reveal">
+                <div class="section-label"><span>05</span><span class="line"></span><span>All materials included</span></div>
+                <span class="artisan-badge-pill"><i class="bi bi-box2-heart text-terracotta"></i> 100% Studio Supplies Provided</span>
+            </div>
+
+            <div class="kit-header-row reveal reveal-delay-1">
+                <div class="kit-header-copy">
+                    <span class="eyebrow">Studio Gear &amp; Supplies</span>
+                    <h2>Everything you need to create.<br><em>All on your table.</em></h2>
+                    <p class="kit-lead">You never have to hunt for specialty fabric inks, chemical mediums, or precision brushes. We curate, test, and provide professional-grade supplies for every maker.</p>
+                </div>
+                <div class="kit-header-note">
+                    <div class="kit-note-card">
+                        <i class="bi bi-stars text-warning fs-4"></i>
+                        <div>
+                            <strong>No Shopping List Needed</strong>
+                            <p class="mb-0">Walk in empty-handed; walk out with finished wearable art, professional pigments, and your custom palette.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-2 kit-grid">
+                <!-- Card 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="kit-card reveal">
+                        <div class="kit-card-icon-wrap bg-soft-maroon">
+                            <i class="bi bi-palette-fill"></i>
+                        </div>
+                        <div class="kit-card-body">
+                            <span class="kit-card-num">01 / Inks</span>
+                            <h4>12x Curated Textile Pigments</h4>
+                            <p>Premium non-toxic German textile emulsions that chemically bond into natural fibers without stiffening the cloth.</p>
+                            <div class="kit-card-foot">
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Soft-touch</span>
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Fade-proof</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="kit-card reveal reveal-delay-1">
+                        <div class="kit-card-icon-wrap bg-soft-terracotta">
+                            <i class="bi bi-brush-fill"></i>
+                        </div>
+                        <div class="kit-card-body">
+                            <span class="kit-card-num">02 / Brushes</span>
+                            <h4>5x Precision Artist Brushes</h4>
+                            <p>Curated set including wide flat wash brushes for large fills, filberts for organic floral petals, and 00 liner brushes for fine lines.</p>
+                            <div class="kit-card-foot">
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Mixed-hair</span>
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Zero shedding</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="kit-card reveal reveal-delay-2">
+                        <div class="kit-card-icon-wrap bg-soft-sand">
+                            <i class="bi bi-bag-heart-fill"></i>
+                        </div>
+                        <div class="kit-card-body">
+                            <span class="kit-card-num">03 / Canvas</span>
+                            <h4>Heavyweight Canvas Tote Bag</h4>
+                            <p>340 GSM unbleached natural organic cotton bag with reinforced shoulder webbing. Pre-washed and ready to paint.</p>
+                            <div class="kit-card-foot">
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Provided to keep</span>
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> 340 GSM pure</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="kit-card reveal">
+                        <div class="kit-card-icon-wrap bg-soft-sage">
+                            <i class="bi bi-droplet-half"></i>
+                        </div>
+                        <div class="kit-card-body">
+                            <span class="kit-card-num">04 / Medium</span>
+                            <h4>Textile Medium &amp; Wash-Fixer</h4>
+                            <p>Specialized fluid medium that improves paint glide and fixes pigments for 100% washing-machine resistance up to 30°C.</p>
+                            <div class="kit-card-foot">
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Heat-cured</span>
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Crack-free</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="kit-card reveal reveal-delay-1">
+                        <div class="kit-card-icon-wrap bg-soft-gold">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                        </div>
+                        <div class="kit-card-body">
+                            <span class="kit-card-num">05 / Palette</span>
+                            <h4>Studio Palette &amp; Harmony Guide</h4>
+                            <p>Smooth hardwood studio mixing palette and laminated color temperature harmony wheel for effortless custom shading.</p>
+                            <div class="kit-card-foot">
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Color wheel</span>
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Mixing recipes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="kit-card reveal reveal-delay-2">
+                        <div class="kit-card-icon-wrap bg-soft-slate">
+                            <i class="bi bi-award-fill"></i>
+                        </div>
+                        <div class="kit-card-body">
+                            <span class="kit-card-num">06 / Certificate</span>
+                            <h4>Signed Studio Certificate</h4>
+                            <p>Official BOLSO Certificate of Completion signed by instructor Abhishek, plus a laminated garment washing &amp; preservation guide.</p>
+                            <div class="kit-card-foot">
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Signed credential</span>
+                                <span class="kit-chip"><i class="bi bi-check-circle-fill text-success"></i> Care manual</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="section-space guidance-section">
         <div class="container guidance-grid">
             <div class="guidance-art reveal">
@@ -358,7 +592,7 @@ require __DIR__ . '/includes/header.php';
                 <div class="handwritten">softly<br>boldly<br>you.</div>
             </div>
             <div class="guidance-copy reveal reveal-delay-1">
-                <div class="section-label"><span>04</span><span class="line"></span><span>Learn by making</span></div>
+                <div class="section-label"><span>06</span><span class="line"></span><span>Learn by making</span></div>
                 <h2>Personal guidance,<br><em>real practice.</em></h2>
                 <p>Small groups mean there’s room for every question, every happy accident and every “can I try this?” moment.</p>
                 <div class="guidance-feature-grid">
