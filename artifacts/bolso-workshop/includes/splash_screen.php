@@ -47,20 +47,20 @@ $isStandalone = $isStandalone ?? false;
 
             <!-- Interactive Enter Button & Circular Progress Ring -->
             <div class="splash-actions-wrap">
-                <button type="button" class="btn-splash-enter btn-splash-enter-lg" id="btnSplashEnter" aria-label="Enter BOLSO Studio">
+                <a href="index.php?enter=1" class="btn-splash-enter btn-splash-enter-lg text-decoration-none" id="btnSplashEnter" aria-label="Enter BOLSO Studio">
                     <span class="enter-lbl">Enter Studio</span>
                     <i class="bi bi-arrow-right enter-ico"></i>
                     <svg class="splash-progress-ring splash-progress-ring-lg" viewBox="0 0 40 40" aria-hidden="true">
                         <circle class="ring-track" cx="20" cy="20" r="17"/>
                         <circle class="ring-fill" id="splashRingFill" cx="20" cy="20" r="17"/>
                     </svg>
-                </button>
+                </a>
             </div>
 
             <div class="splash-skip-wrap">
-                <button type="button" class="splash-skip-link" id="btnSplashSkip">
+                <a href="index.php?enter=1" class="splash-skip-link text-decoration-none" id="btnSplashSkip">
                     <span>Skip to website <i class="bi bi-chevron-double-right"></i></span>
-                </button>
+                </a>
             </div>
         </div>
     </div>

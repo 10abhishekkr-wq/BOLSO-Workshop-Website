@@ -30,7 +30,22 @@ $isAdminArea = $isAdminArea ?? false;
 </head>
 <body class="<?= $isAdminArea ? 'admin-body' : '' ?>">
 <div class="site-grain" aria-hidden="true"></div>
-<?php if (!$isAdminArea && $activePage === 'home'): ?>
+<?php 
+$shouldShowSplash = false;
+if (!$isAdminArea && $activePage === 'home') {
+    $hasSeenSplash = !empty($_COOKIE['bolso_splash_seen']) || !empty($_SESSION['bolso_splash_seen']);
+    $isEnterRequest = isset($_GET['enter']) || isset($_GET['home']) || isset($_GET['nosplash']);
+    $isReplayRequest = isset($_GET['replay']);
+    
+    if ($isEnterRequest) {
+        setcookie('bolso_splash_seen', '1', time() + (86400 * 30), '/');
+        $_SESSION['bolso_splash_seen'] = '1';
+    } elseif (!$hasSeenSplash || $isReplayRequest) {
+        $shouldShowSplash = true;
+    }
+}
+?>
+<?php if ($shouldShowSplash): ?>
     <?php require __DIR__ . '/splash_screen.php'; ?>
 <?php endif; ?>
 <?php if ($isAdminArea): ?>

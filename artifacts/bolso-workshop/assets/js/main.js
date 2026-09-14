@@ -94,11 +94,15 @@
 
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener('click', function (event) {
-      var target = document.querySelector(link.getAttribute('href'));
-      if (target) {
-        event.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      var href = link.getAttribute('href');
+      if (!href || href === '#' || href.length <= 1) return;
+      try {
+        var target = document.querySelector(href);
+        if (target) {
+          event.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } catch (err) {}
     });
   });  // 3D Card Stack Slider (Cover-flow / Stacked Deck matching user reference)
   function initCardStack(container) {
@@ -355,8 +359,19 @@
   var splash = document.getElementById('bolsoSplashScreen');
   if (splash) {
     var isStandalone = splash.classList.contains('standalone-mode');
-    var hasSeenSplash = sessionStorage.getItem('bolso_splash_seen');
+
+    // Safely read storage and cookies
+    var hasSeenSplash = false;
+    try {
+      hasSeenSplash = sessionStorage.getItem('bolso_splash_seen') === '1' ||
+                      localStorage.getItem('bolso_splash_seen') === '1' ||
+                      document.cookie.indexOf('bolso_splash_seen=1') !== -1;
+    } catch (e) {}
+
     var isReplay = window.location.search.indexOf('replay=1') !== -1;
+    var isEnterReq = window.location.search.indexOf('enter=1') !== -1 ||
+                     window.location.search.indexOf('nosplash=1') !== -1 ||
+                     window.location.search.indexOf('home=1') !== -1;
 
     var btnEnter = document.getElementById('btnSplashEnter');
     var btnSkip = document.getElementById('btnSplashSkip');
@@ -367,16 +382,24 @@
     var duration = 3800; // 3.8s total entrance experience
     var isDismissed = false;
 
+    function markSeen() {
+      try {
+        sessionStorage.setItem('bolso_splash_seen', '1');
+        localStorage.setItem('bolso_splash_seen', '1');
+        document.cookie = 'bolso_splash_seen=1; path=/; max-age=' + (86400 * 30);
+      } catch (e) {}
+    }
+
     function dismissSplash(immediate) {
       if (isDismissed) return;
       isDismissed = true;
       if (autoDismissTimer) clearTimeout(autoDismissTimer);
       if (progressInterval) clearInterval(progressInterval);
 
-      sessionStorage.setItem('bolso_splash_seen', '1');
+      markSeen();
 
-      if (isStandalone && !immediate) {
-        window.location.href = 'index.php';
+      if (isStandalone) {
+        window.location.href = 'index.php?enter=1';
         return;
       }
 
@@ -387,7 +410,7 @@
     }
 
     // Check if should be shown
-    if (!isStandalone && hasSeenSplash && !isReplay) {
+    if ((!isStandalone && hasSeenSplash && !isReplay) || isEnterReq) {
       splash.classList.add('is-hidden');
     } else {
       splash.classList.remove('is-hidden');
@@ -406,20 +429,34 @@
         }, 30);
       }
 
-      // Auto dismiss after 3.8s
-      autoDismissTimer = setTimeout(function () {
-        dismissSplash(false);
-      }, duration);
+      // Auto dismiss after 3.8s on home page
+      if (!isStandalone) {
+        autoDismissTimer = setTimeout(function () {
+          dismissSplash(false);
+        }, duration);
+      }
 
       if (btnEnter) {
-        btnEnter.addEventListener('click', function () {
-          dismissSplash(false);
+        btnEnter.addEventListener('click', function (e) {
+          if (isStandalone) {
+            markSeen();
+            // Let normal link navigation proceed to index.php?enter=1
+          } else {
+            e.preventDefault();
+            dismissSplash(false);
+          }
         });
       }
 
       if (btnSkip) {
-        btnSkip.addEventListener('click', function () {
-          dismissSplash(true);
+        btnSkip.addEventListener('click', function (e) {
+          if (isStandalone) {
+            markSeen();
+            // Let normal link navigation proceed to index.php?enter=1
+          } else {
+            e.preventDefault();
+            dismissSplash(true);
+          }
         });
       }
 
@@ -437,7 +474,11 @@
   var replayButtons = document.querySelectorAll('#btnReplayIntro, #btnReplayIntroBottom');
   replayButtons.forEach(function (btn) {
     btn.addEventListener('click', function (e) {
-      sessionStorage.removeItem('bolso_splash_seen');
+      try {
+        sessionStorage.removeItem('bolso_splash_seen');
+        localStorage.removeItem('bolso_splash_seen');
+        document.cookie = 'bolso_splash_seen=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      } catch (err) {}
       var splashEl = document.getElementById('bolsoSplashScreen');
       if (splashEl && !splashEl.classList.contains('standalone-mode')) {
         e.preventDefault();
