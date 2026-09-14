@@ -27,7 +27,7 @@ $isStandalone = $isStandalone ?? false;
             <div class="splash-medallion splash-medallion-lg" title="BOLSO Fabric Art Studio Seal">
                 <div class="medallion-stitch-ring"></div>
                 <div class="medallion-inner">
-                    <img src="assets/images/logo.png" alt="BOLSO Studio Seal" class="medallion-logo medallion-logo-lg">
+                    <img src="assets/images/logo.png?v=<?= file_exists(__DIR__ . '/../assets/images/logo.png') ? filemtime(__DIR__ . '/../assets/images/logo.png') : '3' ?>" alt="BOLSO Studio Seal" class="medallion-logo medallion-logo-lg">
                 </div>
                 <!-- Sparkle accents around the medallion -->
                 <span class="medallion-sparkle sp-top"><i class="bi bi-stars"></i></span>

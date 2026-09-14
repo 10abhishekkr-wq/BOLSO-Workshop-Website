@@ -2353,8 +2353,10 @@ input::-ms-clear {
 }
 
 .medallion-logo.medallion-logo-lg {
-  max-width: 82px;
-  max-height: 46px;
+  max-width: 92px;
+  max-height: 52px;
+  width: auto;
+  height: auto;
 }
 
 /* Brand Typography */
