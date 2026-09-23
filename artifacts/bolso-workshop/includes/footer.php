@@ -29,6 +29,7 @@ declare(strict_types=1);
                 <?php else: ?>
                     <a href="login.php">Student Sign In</a>
                 <?php endif; ?>
+                <a href="admin/index.php"><i class="bi bi-shield-lock me-1"></i> Admin Panel</a>
             </div>
 
             <div class="footer-links">
@@ -39,9 +40,12 @@ declare(strict_types=1);
                 <a href="mailto:10abhishekkr@gmail.com">
                     <i class="bi bi-envelope me-1"></i> 10abhishekkr@gmail.com
                 </a>
-                <a href="admin/login.php" style="opacity: 0.65; font-size: 11.5px; margin-top: 10px;">
-                    <i class="bi bi-shield-lock me-1"></i> Admin Studio Portal
-                </a>
+                <div class="mt-2 pt-2 border-top border-white border-opacity-10">
+                    <a href="admin/index.php" class="badge rounded-pill bg-white bg-opacity-10 text-white px-3 py-2 text-decoration-none d-inline-flex align-items-center gap-1 admin-footer-badge" style="border: 1px solid rgba(255,255,255,0.22); font-size: 11.5px; transition: all 0.2s ease;">
+                        <i class="bi bi-shield-lock-fill text-warning"></i>
+                        <span>Admin Studio Portal</span>
+                    </a>
+                </div>
             </div>
 
             <div class="footer-location-col">
@@ -67,7 +71,7 @@ declare(strict_types=1);
 
         <div class="footer-bottom">
             <span>© <?= date('Y') ?> BOLSO Fabric Art Studio. Made by hand.</span>
-            <span>Small batches. Big feelings. Kolkata &amp; Worldwide.</span>
+            <span>Small batches. Big feelings. Kolkata &amp; Worldwide. · <a href="admin/index.php" class="text-white-50 text-decoration-none" style="font-size: 11px;" title="BOLSO Studio Admin"><i class="bi bi-shield-lock me-1"></i>Admin Panel</a></span>
         </div>
     </div>
 </footer>

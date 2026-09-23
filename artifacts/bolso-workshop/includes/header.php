@@ -105,6 +105,7 @@ if (!$isAdminArea && $activePage === 'home') {
                                 <li><a class="dropdown-item <?= $activePage === 'my-workshops' ? 'active' : '' ?>" href="my-workshops.php"><i class="bi bi-grid me-2"></i> My Workshops</a></li>
                                 <li><a class="dropdown-item" href="registration.php"><i class="bi bi-plus-circle me-2"></i> Book Workshop</a></li>
                                 <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="admin/index.php"><i class="bi bi-shield-lock me-2 text-warning"></i> Admin Studio</a></li>
                                 <li><a class="dropdown-item text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
                             </ul>
                         </li>
@@ -115,6 +116,18 @@ if (!$isAdminArea && $activePage === 'home') {
                             </a>
                         </li>
                     <?php endif; ?>
+
+                    <li class="nav-item">
+                        <?php if (is_admin_logged_in()): ?>
+                            <a class="nav-link admin-nav-link admin-logged-in" href="admin/dashboard.php" title="BOLSO Admin Studio Dashboard (Logged In)">
+                                <i class="bi bi-shield-check nav-icon text-success"></i> <span>Admin</span>
+                            </a>
+                        <?php else: ?>
+                            <a class="nav-link admin-nav-link" href="admin/login.php" title="BOLSO Admin Studio Portal">
+                                <i class="bi bi-shield-lock nav-icon"></i> <span>Admin</span>
+                            </a>
+                        <?php endif; ?>
+                    </li>
 
                     <li class="nav-item ms-lg-2">
                         <a class="nav-cta" href="registration.php">

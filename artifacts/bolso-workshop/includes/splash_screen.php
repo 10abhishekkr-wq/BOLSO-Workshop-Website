@@ -61,6 +61,10 @@ $isStandalone = $isStandalone ?? false;
                 <a href="index.php?enter=1" class="splash-skip-link text-decoration-none" id="btnSplashSkip">
                     <span>Skip to website <i class="bi bi-chevron-double-right"></i></span>
                 </a>
+                <span style="color: rgba(255,255,255,0.35); margin: 0 8px;">·</span>
+                <a href="admin/index.php" class="splash-skip-link text-decoration-none" title="BOLSO Studio Admin">
+                    <i class="bi bi-shield-lock me-1"></i><span>Admin Panel</span>
+                </a>
             </div>
         </div>
     </div>

@@ -15,8 +15,11 @@ require __DIR__ . '/includes/header.php';
         <a href="index.php?enter=1" class="btn btn-primary-bolso me-2 shadow-sm" style="padding: 10px 24px; font-size: 14px;">
             <i class="bi bi-house-door me-1"></i> Enter Website
         </a>
-        <a href="workshops.php" class="btn btn-light-bolso shadow-sm" style="padding: 10px 24px; font-size: 14px;">
+        <a href="workshops.php" class="btn btn-light-bolso shadow-sm me-2" style="padding: 10px 24px; font-size: 14px;">
             <i class="bi bi-palette me-1"></i> Explore Workshops
+        </a>
+        <a href="admin/index.php" class="btn btn-outline-light shadow-sm" style="padding: 10px 20px; font-size: 13px; border-radius: 999px; background: rgba(0,0,0,0.3); backdrop-filter: blur(6px); border-color: rgba(255,255,255,0.35);">
+            <i class="bi bi-shield-lock me-1 text-warning"></i> Admin Panel
         </a>
     </div>
 </main>
