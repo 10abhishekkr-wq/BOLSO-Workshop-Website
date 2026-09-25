@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 $pageTitle = 'Workshops & Classes';
+$pageOgTitle = 'BOLSO Workshops & Classes — Signature Handcrafted Fabric Art';
+$pageOgDescription = 'Explore hands-on small-batch workshops from 2-day fundamentals to 5-day comprehensive studio courses. Learn tote bag painting, color washes, and textile art. Online & in Kolkata.';
 $activePage = 'workshops';
 require __DIR__ . '/includes/header.php';
 ?>

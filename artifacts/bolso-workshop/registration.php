@@ -5,6 +5,8 @@ require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 
 $pageTitle = 'Reserve your spot';
+$pageOgTitle = 'Reserve Your Spot | BOLSO Fabric Art Studio Workshops';
+$pageOgDescription = 'Book your seat in BOLSO small-batch fabric painting workshops. Intimate batches limited to 6 students. Online and in-person Kolkata classes.';
 $activePage = 'registration';
 $errors = [];
 $success = null;

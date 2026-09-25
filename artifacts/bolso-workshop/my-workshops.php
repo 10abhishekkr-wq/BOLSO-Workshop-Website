@@ -43,6 +43,8 @@ $displayWhatsapp = $userRecord['whatsapp'] ?? $currentUser['whatsapp'] ?? '';
 $joinedDate = !empty($userRecord['created_at']) ? date('M Y', strtotime($userRecord['created_at'])) : date('M Y');
 
 $pageTitle = 'My Workshops';
+$pageOgTitle = 'My Workshops Dashboard | BOLSO Fabric Art Studio';
+$pageOgDescription = 'Access your workshop schedule, enrollment details, and course materials.';
 $activePage = 'my-workshops';
 require __DIR__ . '/includes/header.php';
 ?>

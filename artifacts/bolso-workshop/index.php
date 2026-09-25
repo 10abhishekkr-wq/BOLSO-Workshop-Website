@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 $pageTitle = 'Learn to turn fabric into art';
+$pageOgTitle = 'BOLSO | Learn to Turn Fabric into Art — Handcrafted Fabric Painting Workshops';
+$pageOgDescription = 'Create beautiful, soft, and wearable fabric paintings with your own hands. Guided small-batch fabric painting workshops in Kolkata & online. Only 6 students per batch.';
 $activePage = 'home';
 require __DIR__ . '/includes/header.php';
 ?>

@@ -98,6 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Create Account';
+$pageOgTitle = 'Create Your Student Account | BOLSO Fabric Art Studio';
+$pageOgDescription = 'Join the BOLSO creative community. Register for small-batch fabric painting workshops and manage your studio reservations.';
 $activePage = 'signup';
 require __DIR__ . '/includes/header.php';
 ?>

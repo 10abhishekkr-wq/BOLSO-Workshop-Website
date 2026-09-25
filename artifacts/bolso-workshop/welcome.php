@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 $pageTitle = 'Welcome to BOLSO Fabric Art Studio';
+$pageOgTitle = 'Welcome to BOLSO | Handcrafted Fabric Art & Workshops';
+$pageOgDescription = 'Step into BOLSO Fabric Art Studio. Handcrafted small-batch fabric painting workshops in Kolkata & worldwide. Art · Emotion · Fashion.';
 $activePage = 'welcome';
 $isStandalone = true;
 require __DIR__ . '/includes/header.php';

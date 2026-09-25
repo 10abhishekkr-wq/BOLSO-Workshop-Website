@@ -86,6 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Sign In';
+$pageOgTitle = 'Sign In | BOLSO Fabric Art Studio';
+$pageOgDescription = 'Sign in to your BOLSO student account to access your enrolled workshops, class schedules, and connect with your instructors.';
 $activePage = 'login';
 require __DIR__ . '/includes/header.php';
 ?>

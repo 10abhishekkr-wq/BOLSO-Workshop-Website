@@ -7,17 +7,69 @@ require_once __DIR__ . '/auth.php';
 $pageTitle = $pageTitle ?? 'Learn to turn fabric into art';
 $activePage = $activePage ?? '';
 $isAdminArea = $isAdminArea ?? false;
+
+// Compute absolute base URL and current URL for social graph / Open Graph crawlers
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
+$scheme = $isHttps ? 'https' : 'http';
+$serverHost = $_SERVER['HTTP_HOST'] ?? 'a10.snumcaj.com';
+$scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+if ($isAdminArea && str_ends_with($scriptDir, '/admin')) {
+    $baseWorkshopDir = substr($scriptDir, 0, -6);
+} else {
+    $baseWorkshopDir = $scriptDir;
+}
+$siteBaseUrl = rtrim($scheme . '://' . $serverHost . $baseWorkshopDir, '/');
+$currentUrl = $scheme . '://' . $serverHost . ($_SERVER['REQUEST_URI'] ?? '/');
+
+// Open Graph & Meta configurations
+$ogSiteName = 'BOLSO Fabric Art Studio';
+$ogTitle = $pageOgTitle ?? ($pageTitle . ' | BOLSO — Fabric Art Studio');
+$ogDescription = $pageOgDescription ?? $pageDescription ?? 'Learn to turn fabric into art with BOLSO. Small-batch, guided fabric painting workshops in Kolkata and online. Handcrafted wearable art. Art · Emotion · Fashion.';
+$metaDescription = $pageDescription ?? $ogDescription;
+
+// Default OG Image: high-res 16:9 social share banner
+$defaultOgImage = $siteBaseUrl . '/assets/images/og_image.jpg';
+$ogImage = $pageOgImage ?? $defaultOgImage;
+$ogImageType = $pageOgImageType ?? 'image/jpeg';
+$ogImageWidth = $pageOgImageWidth ?? '1376';
+$ogImageHeight = $pageOgImageHeight ?? '768';
+$ogImageAlt = $pageOgImageAlt ?? 'BOLSO Fabric Art Studio — Handcrafted Small-Batch Workshops & Wearable Art';
+$ogType = $pageOgType ?? 'website';
+$ogLocale = 'en_IN';
 ?>
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="BOLSO teaches beautiful, soft and wearable fabric painting in small-batch online and offline workshops.">
-    <meta property="og:title" content="<?= htmlspecialchars($pageTitle . ' | BOLSO', ENT_QUOTES, 'UTF-8') ?>">
-    <meta property="og:description" content="Art, Emotion, Fashion. Learn to turn fabric into art with BOLSO.">
-    <meta property="og:type" content="website">
     <title><?= htmlspecialchars($pageTitle . ' | BOLSO', ENT_QUOTES, 'UTF-8') ?></title>
+    <meta name="description" content="<?= htmlspecialchars($metaDescription, ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="canonical" href="<?= htmlspecialchars($currentUrl, ENT_QUOTES, 'UTF-8') ?>">
+
+    <!-- Open Graph Meta Tags (Facebook, WhatsApp, LinkedIn, Telegram, Discord, iMessage) -->
+    <meta property="og:site_name" content="<?= htmlspecialchars($ogSiteName, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:type" content="<?= htmlspecialchars($ogType, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($currentUrl, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($ogTitle, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($ogDescription, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($ogImage, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image:secure_url" content="<?= htmlspecialchars($ogImage, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image:type" content="<?= htmlspecialchars($ogImageType, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image:width" content="<?= htmlspecialchars((string)$ogImageWidth, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image:height" content="<?= htmlspecialchars((string)$ogImageHeight, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image:alt" content="<?= htmlspecialchars($ogImageAlt, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:locale" content="<?= htmlspecialchars($ogLocale, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:locale:alternate" content="en_US">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<?= htmlspecialchars($currentUrl, ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="twitter:title" content="<?= htmlspecialchars($ogTitle, ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($ogDescription, ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($ogImage, ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="twitter:image:alt" content="<?= htmlspecialchars($ogImageAlt, ENT_QUOTES, 'UTF-8') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
